@@ -6,9 +6,11 @@
 @section('content')
 @foreach($sections as $section)
     @includeIf('public.home-sections.' . $section->type, [
-        'section' => $section,
-        'services' => $services,
-        'news' => $news,
+        'section'    => $section,
+        'services'   => $services,
+        'news'       => $news,
+        'offices'    => $offices,
+        'mapsApiKey' => $mapsApiKey,
     ])
 @endforeach
 

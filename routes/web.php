@@ -42,6 +42,6 @@ Route::group(
         Route::get('/contacte', [ContactController::class, 'index'])->name('contact');
         Route::post('/contacte', [ContactController::class, 'store'])->name('contact.store');
 
-        Route::get('/oficines', [OfficesController::class, 'index'])->name('offices.index');
+        Route::get(LaravelLocalization::transRoute('routes.offices'), [OfficesController::class, 'index'])->name('offices.index');
     }
 );

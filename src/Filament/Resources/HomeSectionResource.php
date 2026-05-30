@@ -254,6 +254,7 @@ class HomeSectionResource extends Resource
                                             'carousel'           => '🎠 Carrusel',
                                             'news_highlight'     => '📰 Noticias destacadas',
                                             'contact_cta'        => '📬 Llamada a contacto',
+                                            'offices_map'        => '🗺️ Mapa de oficinas',
                                         ]),
                                     TextInput::make('sort_order')->label('Orden')->numeric()->default(0),
                                     Toggle::make('is_active')->label('Activa')->default(true)->inline(false),
@@ -284,6 +285,7 @@ class HomeSectionResource extends Resource
                     'carousel'           => 'Carrusel',
                     'news_highlight'     => 'Noticias destacadas',
                     'contact_cta'        => 'Llamada a contacto',
+                    'offices_map'        => 'Mapa de oficinas',
                 ]),
             ])
             ->reorderable('sort_order')

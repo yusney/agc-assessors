@@ -36,9 +36,8 @@ final class OfficesController extends Controller
         );
 
         return view('public.pages.offices.index', [
-            'offices'       => $offices,
+            'offices'        => $offices,
             'officesGeoJson' => $officesGeoJson,
-            'mapsApiKey'    => config('services.google_maps.key', ''),
         ]);
     }
 }

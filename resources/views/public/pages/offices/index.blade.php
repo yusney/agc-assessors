@@ -15,29 +15,41 @@
     </p>
 </section>
 
-{{-- Full-width Google Map --}}
+{{-- Full-width Leaflet map --}}
 <section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto mb-12">
-    <div
-        x-data="{
-            map: null,
-            offices: @json($officesGeoJson),
-            init() {
-                this.map = new google.maps.Map(this.$el, {
-                    zoom: 7,
-                    center: { lat: 41.3879, lng: 2.16992 },
-                    styles: [{ featureType: 'all', stylers: [{ saturation: -20 }] }]
-                });
-                this.offices.forEach(o => {
-                    const marker = new google.maps.Marker({ position: { lat: o.lat, lng: o.lng }, map: this.map, title: o.name });
-                    const iw = new google.maps.InfoWindow({ content: '<b>' + o.name + '</b><br>' + o.address });
-                    marker.addListener('click', () => iw.open(this.map, marker));
-                });
-            }
-        }"
-        class="w-full rounded-2xl overflow-hidden"
-        style="min-height: 500px;">
-    </div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ $mapsApiKey }}&callback=Function.prototype"></script>
+    @if(!empty($officesGeoJson))
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs=" crossorigin=""></script>
+
+    <div id="offices-map-page" class="w-full rounded-2xl overflow-hidden" style="min-height: 500px;"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var offices = @json($officesGeoJson);
+        var map = L.map('offices-map-page', { scrollWheelZoom: false });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        var markers = offices.map(function (o) {
+            var m = L.marker([o.lat, o.lng]).addTo(map);
+            m.bindPopup('<strong>' + o.name + '</strong><br>' + o.address);
+            return m;
+        });
+
+        if (markers.length === 1) {
+            map.setView([offices[0].lat, offices[0].lng], 14);
+        } else if (markers.length > 1) {
+            var group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.2));
+        } else {
+            map.setView([41.3879, 2.16992], 7);
+        }
+    });
+    </script>
+    @endif
 </section>
 
 {{-- Offices card grid --}}

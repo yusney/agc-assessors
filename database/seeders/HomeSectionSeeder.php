@@ -43,18 +43,15 @@ class HomeSectionSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'slug' => 'home-news',
-                'type' => 'news_highlight',
-                'title' => ['ca' => 'Actualitat', 'es' => 'Actualidad', 'en' => 'Latest news'],
-                'subtitle' => [
-                    'ca' => 'Novetats fiscals, laborals i empresarials.',
-                    'es' => 'Novedades fiscales, laborales y empresariales.',
-                    'en' => 'Tax, labour and business updates.',
-                ],
-                'cta_label' => ['ca' => 'Veure tot', 'es' => 'Ver todo', 'en' => 'View all'],
-                'cta_url' => '/actualitat',
-                'settings' => ['limit' => 3],
+                'slug' => 'home-intro',
+                'type' => 'intro',
                 'sort_order' => 20,
+                'is_active' => true,
+            ],
+            [
+                'slug' => 'home-stats',
+                'type' => 'stats',
+                'sort_order' => 30,
                 'is_active' => true,
             ],
             [
@@ -68,42 +65,42 @@ class HomeSectionSeeder extends Seeder
                 ],
                 'settings' => [
                     'icons' => ['balance', 'work_outline', 'monitoring', 'gavel', 'real_estate_agent', 'groups'],
-                ],
-                'sort_order' => 30,
-                'is_active' => true,
-            ],
-            [
-                'slug' => 'home-carousel',
-                'type' => 'carousel',
-                'title' => [
-                    'ca' => 'Assessorament amb mirada llarga',
-                    'es' => 'Asesoramiento con visión de futuro',
-                    'en' => 'Advice with a long-term view',
-                ],
-                'subtitle' => [
-                    'ca' => 'Un espai visual per destacar campanyes, serveis o missatges estratègics des de Filament.',
-                    'es' => 'Un espacio visual para destacar campañas, servicios o mensajes estratégicos desde Filament.',
-                    'en' => 'A visual space to highlight campaigns, services or strategic messages from Filament.',
-                ],
-                'carousel_items' => [
-                    [
-                        'image_url' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&auto=format&fit=crop',
-                        'eyebrow' => ['ca' => 'Fiscal', 'es' => 'Fiscal', 'en' => 'Tax'],
-                        'title' => ['ca' => 'Planificació fiscal sense improvisar', 'es' => 'Planificación fiscal sin improvisar', 'en' => 'Tax planning without improvisation'],
-                        'body' => ['ca' => 'Anticipem obligacions i oportunitats perquè cada decisió tingui context.', 'es' => 'Anticipamos obligaciones y oportunidades para que cada decisión tenga contexto.', 'en' => 'We anticipate obligations and opportunities so every decision has context.'],
-                        'cta_label' => ['ca' => 'Parlem-ne', 'es' => 'Hablemos', 'en' => 'Let\'s talk'],
-                        'cta_url' => '/contacte',
-                    ],
-                    [
-                        'image_url' => 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1400&auto=format&fit=crop',
-                        'eyebrow' => ['ca' => 'Empresa', 'es' => 'Empresa', 'en' => 'Business'],
-                        'title' => ['ca' => 'Decisions empresarials amb dades clares', 'es' => 'Decisiones empresariales con datos claros', 'en' => 'Business decisions with clear data'],
-                        'body' => ['ca' => 'Comptabilitat, fiscalitat i gestió connectades per entendre millor el negoci.', 'es' => 'Contabilidad, fiscalidad y gestión conectadas para entender mejor el negocio.', 'en' => 'Accounting, tax and management connected to understand the business better.'],
-                        'cta_label' => ['ca' => 'Veure serveis', 'es' => 'Ver servicios', 'en' => 'View services'],
-                        'cta_url' => '/serveis',
+                    'service_items' => [
+                        ['service_slug' => 'assessoria-fiscal', 'icon' => 'balance'],
+                        ['service_slug' => 'assessoria-laboral', 'icon' => 'work_outline'],
+                        ['service_slug' => 'assessoria-comptable', 'icon' => 'monitoring'],
+                        ['service_slug' => 'dret-mercantil', 'icon' => 'gavel'],
+                        ['service_slug' => 'gestio-patrimonial', 'icon' => 'real_estate_agent'],
+                        ['service_slug' => 'assessoria-internacional', 'icon' => 'groups'],
                     ],
                 ],
                 'sort_order' => 40,
+                'is_active' => true,
+            ],
+            [
+                'slug' => 'home-testimonials',
+                'type' => 'testimonials',
+                'title' => [
+                    'ca' => 'Què diuen els nostres clients',
+                    'es' => 'Qué dicen nuestros clientes',
+                    'en' => 'What our clients say',
+                ],
+                'sort_order' => 50,
+                'is_active' => true,
+            ],
+            [
+                'slug' => 'home-news',
+                'type' => 'news_highlight',
+                'title' => ['ca' => 'Actualitat', 'es' => 'Actualidad', 'en' => 'Latest news'],
+                'subtitle' => [
+                    'ca' => 'Novetats fiscals, laborals i empresarials.',
+                    'es' => 'Novedades fiscales, laborales y empresariales.',
+                    'en' => 'Tax, labour and business updates.',
+                ],
+                'cta_label' => ['ca' => 'Veure tot', 'es' => 'Ver todo', 'en' => 'View all'],
+                'cta_url' => '/actualitat',
+                'settings' => ['limit' => 3],
+                'sort_order' => 60,
                 'is_active' => true,
             ],
             [
@@ -121,8 +118,22 @@ class HomeSectionSeeder extends Seeder
                     'newsletter_placeholder' => ['ca' => 'El teu correu electrònic', 'es' => 'Tu correo electrónico', 'en' => 'Your email address'],
                     'newsletter_legal' => ['ca' => 'Sense spam. Pots cancel·lar en qualsevol moment.', 'es' => 'Sin spam. Puedes cancelar en cualquier momento.', 'en' => 'No spam. You can unsubscribe at any time.'],
                 ],
-                'sort_order' => 50,
+                'sort_order' => 70,
                 'is_active' => true,
+            ],
+            [
+                'slug' => 'offices-map',
+                'type' => 'offices_map',
+                'sort_order' => 80,
+                'is_active' => true,
+            ],
+            // Keep carousel in DB but deactivated / at end — or just leave it as-is.
+            // The carousel slug is updated below to sort_order 90 so it doesn't interfere.
+            [
+                'slug' => 'home-carousel',
+                'type' => 'carousel',
+                'sort_order' => 90,
+                'is_active' => false,
             ],
         ];
 

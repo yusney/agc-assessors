@@ -1,0 +1,16 @@
+# Override exclusivo para Dev Container — no usar en producción
+services:
+  php:
+    # NO sobreescribir command: dejar que serversideup/php arranque nginx+fpm
+    volumes:
+      - ..:/var/www/html:cached
+      # Volúmenes nombrados para vendor/node_modules (evitan reconstruir en cada rebuild)
+      - vendor_data:/var/www/html/vendor
+      - node_modules_data:/var/www/html/node_modules
+    environment:
+      PHP_XDEBUG_MODE: "debug,develop"
+      PHP_IDE_CONFIG: "serverName=agc-vscode"
+
+volumes:
+  vendor_data:
+  node_modules_data:

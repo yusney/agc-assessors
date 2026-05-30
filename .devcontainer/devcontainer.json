@@ -1,0 +1,92 @@
+{
+  "name": "AGC Assessors - Laravel 13 + Filament 5",
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "docker-compose.yml"
+  ],
+  "service": "php",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "www-data",
+  "overrideCommand": false,
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": false,
+      "username": "www-data",
+      "uid": "33",
+      "gid": "33"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense",
+        "onecentlin.laravel5-snippets",
+        "ryannaddy.laravel-artisan",
+        "amirmarmul.laravel-blade-vscode",
+        "shufo.vscode-blade-formatter",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "mikestead.dotenv",
+        "streetsidesoftware.code-spell-checker",
+        "oderwat.indent-rainbow",
+        "vscode-icons-team.vscode-icons",
+        "github.copilot",
+        "github.copilot-chat",
+        "eamodio.gitlens",
+        "formulahendry.auto-rename-tag",
+        "aaron-bond.better-comments",
+        "rangav.vscode-thunder-client",
+        "xdebug.php-debug",
+        "cweijan.vscode-postgresql-client2",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": { "path": "/bin/zsh" }
+        },
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[php]": {
+          "editor.defaultFormatter": "bmewburn.vscode-intelephense"
+        },
+        "intelephense.environment.phpVersion": "8.4",
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "sqltools.connections": [
+          {
+            "name": "AGC PostgreSQL",
+            "driver": "PostgreSQL",
+            "server": "${env:DB_HOST}",
+            "port": 5432,
+            "database": "${env:DB_DATABASE}",
+            "username": "${env:DB_USERNAME}",
+            "password": "${env:DB_PASSWORD}"
+          }
+        ]
+      }
+    }
+  },
+
+  "forwardPorts": [8080, 5173, 5432, 8025, 6379],
+  "portsAttributes": {
+    "8080": { "label": "AGC App",    "onAutoForward": "openBrowser" },
+    "5173": { "label": "Vite HMR",   "onAutoForward": "silent" },
+    "5432": { "label": "PostgreSQL", "onAutoForward": "silent" },
+    "8025": { "label": "Mailpit UI", "onAutoForward": "notify" },
+    "6379": { "label": "Redis",      "onAutoForward": "silent" }
+  },
+
+  "remoteEnv": {
+    "XDEBUG_MODE": "debug,develop",
+    "PHP_IDE_CONFIG": "serverName=agc-vscode"
+  }
+}

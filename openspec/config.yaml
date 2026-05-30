@@ -1,0 +1,269 @@
+# =============================================================================
+# AGC Assessors — OpenSpec Configuration
+# =============================================================================
+# Initialized: 2025-05-29
+# Mode: openspec (artifact-first, file-based SDD workflow)
+# =============================================================================
+
+project:
+  name: AGC Assessors
+  description: Corporate website for AGC Assessors with Clean Architecture, Laravel 13 + Filament 5, MariaDB 11.4, Node 24
+  path: /home/yusney/app/agc
+  owner: Yusney (Architect)
+  created_at: 2025-05-29
+
+# =============================================================================
+# Stack & Technology
+# =============================================================================
+stack:
+  backend:
+    framework: Laravel 13
+    language: PHP 8.4
+    package_manager: Composer
+  admin_ui:
+    framework: Filament 5
+    template_engine: Blade
+  frontend:
+    bundler: Vite 6
+    node: Node 24 (Krypton LTS)
+    css: Tailwind CSS
+  database:
+    engine: MariaDB 11.4
+    orm: Eloquent
+  cache_queue:
+    redis: Redis 7 (Alpine)
+  email:
+    service: Mailpit (dev), SMTP (prod)
+  infrastructure:
+    containers: Docker + Docker Compose (8 services)
+    ci_cd: TBD
+
+# =============================================================================
+# Architecture Pattern
+# =============================================================================
+architecture:
+  pattern: Clean Architecture (Domain-Driven)
+  layers:
+    - Domain: Business logic (Domain/, models, actions, repositories interfaces, value objects)
+    - Infrastructure: Data persistence (Eloquent models, repositories implementations)
+    - Http: API routes, middleware, controllers (if applicable)
+    - Filament: Admin UI (resources, pages, widgets)
+    - Public: Frontend (routes, views, Blade templates)
+  principle: "Dependency Inversion — Domain knows nothing about Filament, Eloquent, or HTTP"
+  conventions:
+    - Namespacing: App\Domain\{Bounded Context}
+    - Naming: Action classes with business intent (CreatePostAction, PublishPostAction)
+    - Value Objects: SEOData, Locale, Image, Address (immutable, type-safe)
+    - Repository Pattern: Interfaces in Domain, implementations in Infrastructure
+
+# =============================================================================
+# Testing & Quality Assurance
+# =============================================================================
+testing:
+  strict_tdd: true
+  mode: strict
+  description: "Strict TDD enforced — test suites must run green before merge"
+  
+  test_runners:
+    unit:
+      tool: Pest / PHPUnit
+      command: make test
+      docker_command: docker compose exec php php artisan test
+      location: tests/Unit/
+      conventions: "One test file per domain entity/action; test isolation; fake/mock dependencies"
+    
+    feature:
+      tool: Pest / PHPUnit
+      command: make test
+      docker_command: docker compose exec php php artisan test
+      location: tests/Feature/
+      conventions: "Database transactions for isolation; factories for fixtures"
+    
+    e2e:
+      tool: Playwright (prepared, not yet implemented)
+      location: tests/E2E/
+      status: "Deferred — infrastructure ready"
+  
+  code_coverage:
+    tool: PHPUnit Code Coverage
+    command: make test-coverage
+    target: "> 70% coverage for Domain layer"
+  
+  static_analysis:
+    tool: PHPStan
+    level: 8 (strict)
+    command: make phpstan
+    docker_command: docker compose exec php vendor/bin/phpstan analyse --memory-limit=1G
+    config: phpstan.neon (auto-generated on composer install)
+    baseline: phpstan-baseline.neon (optional, for legacy code)
+  
+  code_style:
+    tool: Laravel Pint
+    standard: PSR-12 (with Laravel conventions)
+    command: make pint
+    docker_command: docker compose exec php vendor/bin/pint
+    dry_run: make pint-dry
+    auto_fix: "pint runs on git pre-commit (via Laravel Pint installer)"
+
+# =============================================================================
+# Development Workflow
+# =============================================================================
+workflow:
+  git:
+    branch_strategy: "Git Flow (main, develop, feature/*, bugfix/*, hotfix/*)"
+    commit_convention: "Conventional Commits (feat:, fix:, refactor:, test:, docs:, chore:)"
+    pre_commit_hooks: "Enabled via composer scripts (lint, test on stage)"
+  
+  docker:
+    compose_file: docker-compose.yml
+    build_context: .
+    services:
+      php: "PHP 8.4 + FPM + Xdebug (serverName=agc-docker)"
+      nginx: "Nginx Alpine + healthcheck"
+      database: "MariaDB 11.4 + volume persistence + init scripts"
+      redis: "Redis 7 Alpine"
+      node: "Node 24 Alpine + Vite dev server"
+      mailpit: "Email catcher (SMTP + UI)"
+      queue: "Laravel queue worker (optional profile: --profile queue)"
+      scheduler: "Laravel scheduler (optional profile: --profile scheduler)"
+    
+    lifecycle:
+      dev_setup: "make install  (one-shot: build → up → composer install → npm install → migrate → seed)"
+      daily_start: "make up"
+      daily_stop: "make down"
+      fresh_rebuild: "make fresh  (WARNING: destroys DB data)"
+      restart: "make restart"
+  
+  ide_support:
+    xdebug: "Enabled in php container (XDEBUG_MODE=debug)"
+    ide_config: "serverName=agc-docker (configure in IDE: Settings → PHP → Servers)"
+    vscode_config: "TBD — .vscode/launch.json for Xdebug + Vite debugging"
+
+# =============================================================================
+# Key Directories & Conventions
+# =============================================================================
+directory_structure:
+  src:
+    app:
+      Domain: "Business logic (models, actions, repositories interfaces, value objects, exceptions)"
+      Infrastructure: "Data persistence (repositories, migrations, factories, seeders)"
+      Http: "Routes, middleware, controllers (if stateless API endpoints needed)"
+      Filament: "Admin UI (resources for CRUD, pages, widgets, custom components)"
+      Public: "Frontend (routes/public.php, views/*, controllers for web)"
+    tests: "Unit/, Feature/, E2E/ (E2E deferred)"
+    config: "Laravel config files (app.php, database.php, filament.php, etc.)"
+    database: "Migrations, factories, seeders"
+  
+  infra:
+    docker: "PHP Dockerfile, Nginx config, MariaDB init scripts, php.ini"
+    Makefile: "Development command shortcuts (make help)"
+    docker-compose.yml: "Service orchestration"
+    .env.example: "Template for .env (DO NOT commit .env)"
+  
+  docs:
+    PRD-AGC-Clean-Architecture.md: "Product Requirements & Architecture specification"
+    DOCKER.md: "Docker setup & troubleshooting guide"
+    openspec/: "OpenSpec SDD artifacts (config.yaml, delta specs, tasks, etc.)"
+
+# =============================================================================
+# Current State: Phase 0 (Docker Infra Complete, Laravel Not Yet Installed)
+# =============================================================================
+current_phase: "docker_infra_complete_pre_laravel"
+status: "Ready to run 'make install' to bootstrap Laravel 13 + Filament 5"
+
+next_steps:
+  - "Run 'make install' to spin up Docker and install Laravel + Filament"
+  - "Create SDD proposal for initial feature scope (Posts, Categories, Offices, Services, Homepage)"
+  - "Implement Domain layer first (models, actions, repositories)"
+  - "Write unit tests for Domain logic (strict TDD)"
+  - "Implement Filament admin resources"
+  - "Build frontend views with Clean Architecture compliance"
+  - "Run PHPStan level 8 validation"
+  - "Enable pre-commit hooks for Pint + PHPStan"
+
+# =============================================================================
+# Multilocale & SEO
+# =============================================================================
+i18n:
+  locales: [ca, es, en]
+  default: ca
+  fallback: ca
+  faker_locale: ca_ES
+  package: spatie/laravel-translatable
+  middleware: SetLocale (custom middleware in Http/Middleware)
+
+seo:
+  json_ld: "Structured data with Value Objects (SEOData, BreadcrumbSchema, etc.)"
+  og_tags: "Open Graph via SEO value objects"
+  hreflang: "Alternate language links in routes/public.php"
+  sitemap: "XML sitemap generation (spatie/laravel-sitemap)"
+  robots_txt: "robots.txt in public/"
+
+# =============================================================================
+# Feature List (MVP Scope from PRD)
+# =============================================================================
+features:
+  content_management:
+    - Posts (news/articles) with categories, author, SEO
+    - Categories for posts
+    - Offices (6 locations with contact data, maps)
+    - Services (6 departments with specializations, contact forms per department)
+  
+  admin_ui:
+    - Filament resources for Posts, Categories, Offices, Services
+    - Homepage zones (hero, stats, features, testimonials, CTA, carousel)
+    - Navigation menu editor
+    - Media library with WebP optimization
+  
+  frontend:
+    - Public homepage with editable dynamic zones
+    - Static pages (About, Contact, Legal)
+    - Post listing and detail pages
+    - Office directory
+    - Service detail pages with department-specific forms
+    - Contact / lead capture forms
+  
+  technical:
+    - Multi-language support (ca, es, en)
+    - SEO (structured data, hreflang, sitemap)
+    - Accessibility (WCAG 2.1, mobile 375px+)
+    - Performance (WebP, lazy loading, N+1 query prevention)
+    - Media optimization (image transforms, WebP)
+
+# =============================================================================
+# Deployment & Production
+# =============================================================================
+deployment:
+  target: "VPS (not yet configured in this SDD)"
+  php_version: "8.4 (Alpine container in prod)"
+  cache_strategy: "Redis (configured but optional for MVP; file cache fallback)"
+  queue_processor: "Laravel Horizon (optional) or queue:work daemon"
+  static_files: "Nginx reverse proxy + Laravel storage symlink"
+  https: "Let's Encrypt (to be configured on deployment)"
+
+# =============================================================================
+# Persistence & Artifact Registry
+# =============================================================================
+persistence:
+  mode: openspec
+  registry_file: .atl/skill-registry.md
+  sdd_files:
+    config: openspec/config.yaml (this file)
+    proposals: openspec/proposals/ (SDD proposals)
+    specs: openspec/specs/ (delta specs)
+    designs: openspec/designs/ (architecture & design decisions)
+    tasks: openspec/tasks/ (implementation tasks)
+    verify: openspec/verify/ (test & verification reports)
+  engram_integration: "Available — observational artifacts synced to Engram"
+
+# =============================================================================
+# Contacts & References
+# =============================================================================
+contacts:
+  architect: "Yusney (senior architect, 15+ years)"
+  repository: "file:///home/yusney/app/agc"
+  documentation: "PRD-AGC-Clean-Architecture.md, DOCKER.md"
+  external_refs:
+    filament_docs: "https://filamentphp.com/docs"
+    laravel_docs: "https://laravel.com/docs"
+    clean_architecture: "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"

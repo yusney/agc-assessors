@@ -173,6 +173,50 @@ class HomeSectionResource extends Resource
                                         ->maxValue(12),
                                 ]),
 
+                            // ── Testimonios (solo testimonials) ──────────
+                            Section::make('Testimonios')
+                                ->hidden(fn (Get $get): bool => $get('type') !== 'testimonials')
+                                ->description('Configura los testimonios que aparecen en la sección de clientes.')
+                                ->schema([
+                                    TextInput::make('settings.limit')
+                                        ->label('Número de testimonios a mostrar')
+                                        ->numeric()
+                                        ->default(3)
+                                        ->minValue(1)
+                                        ->maxValue(12),
+                                    Repeater::make('settings.testimonials')
+                                        ->label('Testimonios')
+                                        ->schema([
+                                            TextInput::make('name')
+                                                ->label('Nombre completo')
+                                                ->required()
+                                                ->maxLength(100),
+                                            Grid::make(2)->schema([
+                                                TextInput::make('role')
+                                                    ->label('Cargo')
+                                                    ->maxLength(100),
+                                                TextInput::make('company')
+                                                    ->label('Empresa')
+                                                    ->maxLength(100),
+                                            ]),
+                                            Textarea::make('text')
+                                                ->label('Cita (ca)')
+                                                ->rows(3)
+                                                ->maxLength(500)
+                                                ->columnSpanFull(),
+                                            TextInput::make('initials')
+                                                ->label('Iniciales (avatar, 2 letras — opcional)')
+                                                ->maxLength(3)
+                                                ->helperText('Si no se especifica, se usará la primera letra del nombre.'),
+                                        ])
+                                        ->addActionLabel('Añadir testimonio')
+                                        ->collapsible()
+                                        ->collapsed()
+                                        ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+                                        ->reorderable()
+                                        ->columnSpanFull(),
+                                ]),
+
                             // ── Llamada a contacto (solo contact_cta) ─────
                             Section::make('Configuración del formulario')
                                 ->hidden(fn (Get $get): bool => $get('type') !== 'contact_cta')

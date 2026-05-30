@@ -85,6 +85,32 @@ class HomeSectionSeeder extends Seeder
                     'es' => 'Qué dicen nuestros clientes',
                     'en' => 'What our clients say',
                 ],
+                'settings' => [
+                    'limit' => 3,
+                    'testimonials' => [
+                        [
+                            'name'     => 'Maria G.',
+                            'role'     => 'Gestora de pime',
+                            'company'  => 'Distribucions Montalt',
+                            'text'     => '"AGC Assessors ha transformat la gestió fiscal de la nostra empresa. Finalment tenim tranquil·litat."',
+                            'initials' => 'MG',
+                        ],
+                        [
+                            'name'     => 'Pere R.',
+                            'role'     => 'Autònom',
+                            'company'  => 'Disseny Roca',
+                            'text'     => '"Professionalitat, rapidesa i tracte personal. Recomano AGC Assessors sense dubtar."',
+                            'initials' => 'PR',
+                        ],
+                        [
+                            'name'     => 'Anna S.',
+                            'role'     => 'Directora d\'empresa',
+                            'company'  => 'Grup Solà',
+                            'text'     => '"Portem 5 anys amb ells i mai hem tingut cap problema amb Hisenda."',
+                            'initials' => 'AS',
+                        ],
+                    ],
+                ],
                 'sort_order' => 50,
                 'is_active' => true,
             ],

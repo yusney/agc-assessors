@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             NewsSeeder::class,
             TeamMemberSeeder::class,
             MenuItemSeeder::class,
+            FooterSettingsSeeder::class,
         ]);
     }
 }

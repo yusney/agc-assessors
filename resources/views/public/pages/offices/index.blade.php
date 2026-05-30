@@ -59,6 +59,7 @@
                 '</div></div>'
             );
             m.on('mouseover', function () { m.openPopup(); });
+            return m;
         });
 
         if (markers.length === 1) {

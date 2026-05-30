@@ -18,8 +18,8 @@
 {{-- Full-width Leaflet map --}}
 <section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto mb-12">
     @if(!empty($officesGeoJson))
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <div id="offices-map-page" class="w-full rounded-2xl overflow-hidden" style="min-height: 500px;"></div>
 

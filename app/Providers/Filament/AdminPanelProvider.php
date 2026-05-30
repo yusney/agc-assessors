@@ -55,6 +55,7 @@ final class AdminPanelProvider extends PanelProvider
                 \AGC\Filament\Resources\ServiceResource::class,
                 \AGC\Filament\Resources\TeamMemberResource::class,
                 \AGC\Filament\Resources\MenuItemResource::class,
+                \AGC\Filament\Resources\OfficeResource::class,
             ])
             ->plugins([
                 CuratorPlugin::make()

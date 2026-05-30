@@ -95,6 +95,7 @@ return [
     'offices' => [
         'title'      => 'Les nostres oficines',
         'subtitle'   => 'Troba l\'oficina més propera a tu i contacta amb els nostres professionals.',
+        'offices_count' => 'oficines',
         'directions' => 'Com arribar-hi',
         'phone'      => 'Telèfon',
         'email'      => 'Correu electrònic',

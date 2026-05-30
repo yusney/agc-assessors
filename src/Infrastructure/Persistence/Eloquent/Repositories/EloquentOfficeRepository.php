@@ -8,6 +8,7 @@ use AGC\Domain\Offices\Entities\Office;
 use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use AGC\Domain\Shared\ValueObjects\TranslatableString;
 use AGC\Infrastructure\Persistence\Eloquent\Models\EloquentOffice;
+use Awcodes\Curator\Models\Media;
 
 final class EloquentOfficeRepository implements OfficeRepositoryInterface
 {
@@ -33,10 +34,14 @@ final class EloquentOfficeRepository implements OfficeRepositoryInterface
             name: new TranslatableString($model->getTranslations('name')),
             address: new TranslatableString($model->getTranslations('address')),
             city: new TranslatableString($model->getTranslations('city')),
+            description: new TranslatableString($model->getTranslations('description') ?: []),
             phone: $model->phone,
             email: $model->email,
             lat: $model->lat,
             lng: $model->lng,
+            coverUrl: $model->cover_media_id
+                ? Media::find($model->cover_media_id)?->url
+                : null,
             isActive: (bool) $model->is_active,
         );
     }

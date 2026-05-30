@@ -96,6 +96,7 @@ return [
     'offices' => [
         'title'      => 'Our offices',
         'subtitle'   => 'Find the nearest office to you and get in touch with our professionals.',
+        'offices_count' => 'offices',
         'directions' => 'Get directions',
         'phone'      => 'Phone',
         'email'      => 'Email',

@@ -8,6 +8,7 @@ use AGC\Filament\Resources\OfficeResource\Pages\CreateOffice;
 use AGC\Filament\Resources\OfficeResource\Pages\EditOffice;
 use AGC\Filament\Resources\OfficeResource\Pages\ListOffices;
 use AGC\Infrastructure\Persistence\Eloquent\Models\EloquentOffice;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
@@ -48,21 +49,28 @@ final class OfficeResource extends Resource
                             TextInput::make('name.ca')->label('Nom (ca)')->required(),
                             Textarea::make('address.ca')->label('Adreça (ca)')->rows(2),
                             TextInput::make('city.ca')->label('Ciutat (ca)'),
+                            Textarea::make('description.ca')->label('Descripció (ca)')->rows(4),
                         ]),
                         Tabs\Tab::make('Castellano')->schema([
                             TextInput::make('name.es')->label('Nombre (es)'),
                             Textarea::make('address.es')->label('Dirección (es)')->rows(2),
                             TextInput::make('city.es')->label('Ciudad (es)'),
+                            Textarea::make('description.es')->label('Descripción (es)')->rows(4),
                         ]),
                         Tabs\Tab::make('English')->schema([
                             TextInput::make('name.en')->label('Name (en)'),
                             Textarea::make('address.en')->label('Address (en)')->rows(2),
                             TextInput::make('city.en')->label('City (en)'),
+                            Textarea::make('description.en')->label('Description (en)')->rows(4),
                         ]),
                     ])->columnSpanFull(),
             ]),
 
-            Section::make('Contacte i ubicació')->schema([
+            Section::make('Imatge i contacte')->schema([
+                CuratorPicker::make('cover_media_id')
+                    ->label('Imatge de portada')
+                    ->nullable()
+                    ->columnSpanFull(),
                 Grid::make(2)->schema([
                     TextInput::make('phone')->label('Telèfon')->nullable(),
                     TextInput::make('email')->label('Email')->email()->nullable(),

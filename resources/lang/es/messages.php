@@ -96,6 +96,7 @@ return [
     'offices' => [
         'title'      => 'Nuestras oficinas',
         'subtitle'   => 'Encuentra la oficina más cercana a ti y contacta con nuestros profesionales.',
+        'offices_count' => 'oficinas',
         'directions' => 'Cómo llegar',
         'phone'      => 'Teléfono',
         'email'      => 'Email',

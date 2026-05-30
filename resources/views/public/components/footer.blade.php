@@ -1,12 +1,15 @@
 @php
     $footer = \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::get('footer', []);
-    $description = $footer['description'] ?? 'Assessoria fiscal, laboral i comptable a Caldes de Montbui.';
+    $desc = $footer['description'] ?? [];
+    $locale = app()->getLocale();
+    $description = is_array($desc)
+        ? ($desc[$locale] ?? $desc['ca'] ?? 'Assessoria fiscal, laboral i comptable a Caldes de Montbui.')
+        : ($desc ?: 'Assessoria fiscal, laboral i comptable a Caldes de Montbui.');
     $phone = $footer['phone'] ?? '+34 93 862 61 00';
     $email = $footer['email'] ?? 'agcassessors@agc.cat';
     $address = $footer['address'] ?? 'Av. Pi i Margall 114 · 08140 · Caldes de Montbui';
     $copyright = $footer['copyright'] ?? '© ' . date('Y') . ' AGC Assessors. Tots els drets reservats.';
-    $institutionalLogos = $footer['institutional_logos'] ?? [];
-    $extraLinks = $footer['extra_links'] ?? [];
+    $navLinks = $footer['nav_links'] ?? [];
 @endphp
 
 {{-- Zone 1 — Main footer --}}
@@ -14,11 +17,9 @@
     <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
 
         {{-- Left: Logo + description --}}
-        <div class="flex flex-col gap-4">
-            <div class="font-headline font-bold text-3xl tracking-tight">
-                AGC<span class="text-[#00B4D8]">.</span>
-            </div>
-            <p class="text-[15px] text-blue-100 leading-relaxed max-w-xs">
+        <div class="flex flex-col items-center md:items-start gap-4">
+            <img src="{{ asset('images/logo-footer-white.webp') }}" alt="AGC Assessors" class="h-11 w-auto object-contain">
+            <p class="text-[15px] text-blue-100 leading-relaxed text-center md:text-left">
                 {{ $description }}
             </p>
         </div>
@@ -57,13 +58,12 @@
         <div class="flex flex-col gap-3">
             <h3 class="font-semibold text-sm uppercase tracking-widest text-blue-200 mb-1">Navegació</h3>
             <nav class="flex flex-col gap-2" aria-label="Footer navigation">
-                <a href="{{ url('/avis-legal') }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ __('messages.footer.legal') }}</a>
-                <a href="{{ url('/politica-privacitat') }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ __('messages.footer.privacy') }}</a>
-                <a href="{{ url('/cookies') }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ __('messages.footer.cookies') }}</a>
-                <a href="{{ url('/contacte') }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ __('messages.nav.contact') }}</a>
-                @foreach($extraLinks as $link)
-                    @if(!empty($link['url']) && !empty($link['label']))
-                    <a href="{{ $link['url'] }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ $link['label'] }}</a>
+                @foreach($navLinks as $link)
+                    @if(!empty($link['url']))
+                    @php $label = $link['label_' . $locale] ?? $link['label_ca'] ?? $link['label'] ?? ''; @endphp
+                    @if($label)
+                    <a href="{{ $link['url'] }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ $label }}</a>
+                    @endif
                     @endif
                 @endforeach
             </nav>
@@ -72,34 +72,14 @@
     </div>
 </footer>
 
-{{-- Zone 2 — Institutional logos (only if configured) --}}
-@if(count($institutionalLogos) > 0)
-<div class="bg-[#f1f5f9] w-full py-6">
-    <div class="max-w-[1280px] mx-auto px-6 md:px-8 flex flex-wrap items-center justify-center gap-8">
-        @foreach($institutionalLogos as $logo)
-            @php $media = \Awcodes\Curator\Models\Media::find($logo['media_id'] ?? null); @endphp
-            @if($media)
-                @if(!empty($logo['url']))
-                <a href="{{ $logo['url'] }}" target="_blank" rel="noopener noreferrer">
-                @endif
-                <img src="{{ $media->url }}" alt="{{ $logo['alt'] ?? '' }}" class="h-10 object-contain grayscale hover:grayscale-0 transition-all">
-                @if(!empty($logo['url']))
-                </a>
-                @endif
-            @endif
-        @endforeach
-    </div>
-</div>
-@endif
-
-{{-- Zone 3 — Legal bar --}}
+{{-- Zone 2 — Legal bar --}}
 <div class="bg-[#1e293b] w-full py-4">
     <div class="max-w-[1280px] mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-[#94a3b8]">
         <span>{{ $copyright }}</span>
         <nav class="flex flex-wrap gap-x-6 gap-y-1" aria-label="Legal navigation">
-            <a href="{{ url('/politica-privacitat') }}" class="hover:text-white transition-colors">Política de Privacitat</a>
-            <a href="{{ url('/avis-legal') }}" class="hover:text-white transition-colors">Avís Legal</a>
-            <a href="{{ url('/cookies') }}" class="hover:text-white transition-colors">Cookies</a>
+            <a href="{{ url('/politica-privacitat') }}" class="hover:text-white transition-colors">{{ __('messages.footer.privacy') }}</a>
+            <a href="{{ url('/avis-legal') }}" class="hover:text-white transition-colors">{{ __('messages.footer.legal') }}</a>
+            <a href="{{ url('/cookies') }}" class="hover:text-white transition-colors">{{ __('messages.footer.cookies') }}</a>
         </nav>
     </div>
 </div>

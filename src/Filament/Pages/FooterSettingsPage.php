@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AGC\Filament\Pages;
 
+use AGC\Filament\Forms\Components\UrlPickerField;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
-use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -35,11 +35,17 @@ class FooterSettingsPage extends Page
         return $schema
             ->statePath('data')
             ->components([
-                Section::make('Principal')
+                Section::make('Información del footer')
                     ->schema([
-                        TextInput::make('description')
-                            ->label('Descripción corta')
-                            ->helperText('Aparece bajo el logo en el footer'),
+                        TextInput::make('description.ca')
+                            ->label('Descripción (Catalán)')
+                            ->helperText('Texto bajo el logo en la versión catalana'),
+                        TextInput::make('description.es')
+                            ->label('Descripción (Español)')
+                            ->helperText('Texto bajo el logo en la versión española'),
+                        TextInput::make('description.en')
+                            ->label('Descripción (English)')
+                            ->helperText('Texto bajo el logo en la versión inglesa'),
                         TextInput::make('phone')
                             ->label('Teléfono'),
                         TextInput::make('email')
@@ -49,42 +55,30 @@ class FooterSettingsPage extends Page
                             ->label('Dirección'),
                         TextInput::make('copyright')
                             ->label('Texto copyright')
-                            ->default('© 2025 AGC Assessors. Tots els drets reservats.'),
+                            ->default('© ' . date('Y') . ' AGC Assessors. Tots els drets reservats.'),
                     ]),
 
-                Section::make('Logos institucionales')
-                    ->collapsible()
+                Section::make('Links de navegación')
                     ->schema([
-                        Repeater::make('institutional_logos')
+                        Repeater::make('nav_links')
                             ->hiddenLabel()
                             ->schema([
-                                CuratorPicker::make('media_id')
-                                    ->label('Imagen'),
-                                TextInput::make('alt')
-                                    ->label('Texto alternativo (accesibilidad)'),
-                                TextInput::make('url')
-                                    ->label('URL de destino (opcional)')
-                                    ->url(),
-                            ])
-                            ->addActionLabel('Añadir logo')
-                            ->collapsible()
-                            ->columnSpanFull(),
-                    ]),
-
-                Section::make('Links adicionales en footer')
-                    ->collapsible()
-                    ->schema([
-                        Repeater::make('extra_links')
-                            ->hiddenLabel()
-                            ->schema([
-                                TextInput::make('label')
-                                    ->label('Texto del link'),
-                                TextInput::make('url')
+                                TextInput::make('label_ca')
+                                    ->label('Texto (Catalán)')
+                                    ->required(),
+                                TextInput::make('label_es')
+                                    ->label('Texto (Español)')
+                                    ->required(),
+                                TextInput::make('label_en')
+                                    ->label('Texto (English)')
+                                    ->required(),
+                                UrlPickerField::make('url')
                                     ->label('URL')
-                                    ->url(),
+                                    ->required(),
                             ])
                             ->addActionLabel('Añadir link')
                             ->collapsible()
+                            ->reorderable()
                             ->columnSpanFull(),
                     ]),
             ]);

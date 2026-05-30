@@ -1,4 +1,5 @@
 @if(!empty($offices))
+@php $officesUrl = LaravelLocalization::getLocalizedURL(app()->getLocale(), '/oficines'); @endphp
 <section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20" id="oficines">
 
     {{-- Section header: title left, optional CTA right (same pattern as news_highlight) --}}
@@ -13,7 +14,7 @@
         </div>
 
         @if($section->localized('cta_label') && $section->cta_url)
-            <a href="{{ url($section->cta_url) }}"
+            <a href="{{ $officesUrl }}"
                class="hidden md:inline-flex items-center text-[#1E293B] font-medium text-[15px] hover:text-[#00346f] transition-colors pb-1 border-b-2 border-transparent hover:border-[#00346f]">
                 {{ $section->localized('cta_label') }}
                 <span class="material-symbols-outlined ml-1 text-[20px]">arrow_forward</span>
@@ -26,6 +27,7 @@
         $officesForMap = array_values(array_filter(array_map(function ($o) {
             if ($o->lat() === null || $o->lng() === null) return null;
             return [
+                'id'      => $o->id(),
                 'name'    => $o->name()->get(app()->getLocale()),
                 'address' => $o->address()->get(app()->getLocale()),
                 'lat'     => $o->lat(),
@@ -43,6 +45,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var offices = @json($officesForMap);
+        var baseUrl  = @json($officesUrl);
         var map = L.map('offices-map-home', { scrollWheelZoom: false });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -52,7 +55,16 @@
 
         var markers = offices.map(function (o) {
             var m = L.marker([o.lat, o.lng]).addTo(map);
-            m.bindPopup('<strong>' + o.name + '</strong><br>' + o.address);
+            m.bindPopup(
+                '<strong style="color:#00346f">' + o.name + '</strong>' +
+                '<br><span style="color:#64748B;font-size:13px">' + o.address + '</span>' +
+                '<br><a href="' + baseUrl + '#office-' + o.id + '" ' +
+                'style="color:#00B4D8;font-size:13px;font-weight:600;text-decoration:none">' +
+                '{{ __("messages.offices.directions") }} →</a>'
+            );
+            m.on('click', function () {
+                window.location.href = baseUrl + '#office-' + o.id;
+            });
             return m;
         });
 
@@ -129,7 +141,7 @@
     {{-- Mobile CTA --}}
     @if($section->localized('cta_label') && $section->cta_url)
         <div class="mt-10 text-center md:hidden">
-            <a href="{{ url($section->cta_url) }}" class="btn-outline w-full justify-center">
+            <a href="{{ $officesUrl }}" class="btn-outline w-full justify-center">
                 {{ $section->localized('cta_label') }}
             </a>
         </div>

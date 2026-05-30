@@ -75,7 +75,7 @@
         @foreach($offices as $i => $office)
         @php $isEven = $i % 2 === 0; @endphp
 
-        <div class="group relative grid grid-cols-1 lg:grid-cols-2 gap-0 mb-20 lg:mb-28">
+        <div id="office-{{ $office->id() }}" class="group relative grid grid-cols-1 lg:grid-cols-2 gap-0 mb-20 lg:mb-28 scroll-mt-24">
 
             {{-- Image side --}}
             <div class="{{ $isEven ? 'lg:order-1' : 'lg:order-2' }} relative overflow-hidden rounded-2xl bg-[#e7e8ef] min-h-[320px] lg:min-h-[420px]">
@@ -174,5 +174,23 @@
     </div>
 </section>
 @endif
+
+{{-- Scroll to anchor on load (from home map click) --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.hash) {
+        var el = document.querySelector(window.location.hash);
+        if (el) {
+            setTimeout(function () {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                el.classList.add('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-2xl');
+                setTimeout(function () {
+                    el.classList.remove('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-2xl');
+                }, 2500);
+            }, 300);
+        }
+    }
+});
+</script>
 
 @endsection

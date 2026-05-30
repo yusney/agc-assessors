@@ -7,6 +7,7 @@ return [
         'news'     => 'Actualitat',
         'team'     => 'Equip',
         'contact'  => 'Contacte',
+        'offices'  => 'Oficines',
         'cta'      => 'Sol·licitar consulta',
     ],
     'footer' => [
@@ -70,8 +71,7 @@ return [
         'subtitle'    => 'Professionals amb anys d\'experiència al teu servei.',
         'empty'       => 'Pròximament presentarem l\'equip.',
     ],
-    'contact' => [
-        'seo_title'       => 'Contacte – AGC Assessors',
+    'contact' => [        'seo_title'       => 'Contacte – AGC Assessors',
         'seo_description' => 'Contacta amb AGC Assessors. Primera consulta sense compromís.',
         'title'           => 'Contacte',
         'subtitle'        => 'Estem aquí per ajudar-te. Primera consulta sense compromís.',
@@ -91,5 +91,13 @@ return [
         'email_value'     => 'info@agcassessors.com',
         'hours_label'     => 'Horari',
         'hours_value'     => 'Dilluns–Divendres: 9h–18h',
+    ],
+    'offices' => [
+        'title'      => 'Les nostres oficines',
+        'subtitle'   => 'Troba l\'oficina més propera a tu i contacta amb els nostres professionals.',
+        'directions' => 'Com arribar-hi',
+        'phone'      => 'Telèfon',
+        'email'      => 'Correu electrònic',
+        'empty'      => 'Pròximament publicarem les nostres oficines.',
     ],
 ];

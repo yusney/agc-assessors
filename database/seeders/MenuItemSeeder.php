@@ -35,6 +35,11 @@ class MenuItemSeeder extends Seeder
                 'url_path' => '/contacte',
                 'sort_order' => 5,
             ],
+            [
+                'label' => ['ca' => 'Oficines', 'es' => 'Oficinas', 'en' => 'Offices'],
+                'url_path' => '/oficines',
+                'sort_order' => 6,
+            ],
         ];
 
         foreach ($items as $item) {

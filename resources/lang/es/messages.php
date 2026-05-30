@@ -7,6 +7,7 @@ return [
         'news'     => 'Actualidad',
         'team'     => 'Equipo',
         'contact'  => 'Contacto',
+        'offices'  => 'Oficinas',
         'cta'      => 'Solicitar consulta',
     ],
     'footer' => [
@@ -91,5 +92,13 @@ return [
         'email_value'     => 'info@agcassessors.com',
         'hours_label'     => 'Horario',
         'hours_value'     => 'Lunes–Viernes: 9h–18h',
+    ],
+    'offices' => [
+        'title'      => 'Nuestras oficinas',
+        'subtitle'   => 'Encuentra la oficina más cercana a ti y contacta con nuestros profesionales.',
+        'directions' => 'Cómo llegar',
+        'phone'      => 'Teléfono',
+        'email'      => 'Email',
+        'empty'      => 'Próximamente publicaremos nuestras oficinas.',
     ],
 ];

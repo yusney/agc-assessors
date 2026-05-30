@@ -7,6 +7,7 @@ return [
         'news'     => 'News',
         'team'     => 'Team',
         'contact'  => 'Contact',
+        'offices'  => 'Offices',
         'cta'      => 'Request consultation',
     ],
     'footer' => [
@@ -91,5 +92,13 @@ return [
         'email_value'     => 'info@agcassessors.com',
         'hours_label'     => 'Hours',
         'hours_value'     => 'Monday–Friday: 9am–6pm',
+    ],
+    'offices' => [
+        'title'      => 'Our offices',
+        'subtitle'   => 'Find the nearest office to you and get in touch with our professionals.',
+        'directions' => 'Get directions',
+        'phone'      => 'Phone',
+        'email'      => 'Email',
+        'empty'      => 'Our offices will be published soon.',
     ],
 ];

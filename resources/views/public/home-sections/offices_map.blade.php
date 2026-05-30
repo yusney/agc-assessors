@@ -56,11 +56,22 @@
         var markers = offices.map(function (o) {
             var m = L.marker([o.lat, o.lng]).addTo(map);
             m.bindPopup(
-                '<strong style="color:#00346f">' + o.name + '</strong>' +
-                '<br><span style="color:#64748B;font-size:13px">' + o.address + '</span>' +
-                '<br><a href="' + baseUrl + '#office-' + o.id + '" ' +
-                'style="color:#00B4D8;font-size:13px;font-weight:600;text-decoration:none">' +
-                '{{ __("messages.offices.directions") }} →</a>'
+                '<div style="min-width:200px;font-family:inherit">' +
+                '<strong style="color:#00346f;font-size:14px;display:block;margin-bottom:4px">' + o.name + '</strong>' +
+                '<span style="color:#64748B;font-size:13px;display:block;margin-bottom:10px">' + o.address + '</span>' +
+                '<div style="display:flex;gap:10px;align-items:center">' +
+                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + o.lat + ',' + o.lng + '" ' +
+                'target="_blank" rel="noopener" ' +
+                'style="color:#64748B;font-size:12px;font-weight:600;text-decoration:none;border:1px solid #E2E8F0;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
+                'onmouseover="this.style.borderColor=\'#00346f\';this.style.color=\'#00346f\'" ' +
+                'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.color=\'#64748B\'">' +
+                '{{ __("messages.offices.directions") }}</a>' +
+                '<a href="' + baseUrl + '#office-' + o.id + '" ' +
+                'style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:#00346f;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
+                'onmouseover="this.style.background=\'#00B4D8\'" ' +
+                'onmouseout="this.style.background=\'#00346f\'">' +
+                '{{ __("messages.offices.see_office") }}</a>' +
+                '</div></div>'
             );
             m.on('mouseover', function () { m.openPopup(); });
             m.on('mouseout',  function () { m.closePopup(); });

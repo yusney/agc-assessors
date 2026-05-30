@@ -75,9 +75,6 @@
             );
             m.on('mouseover', function () { m.openPopup(); });
             m.on('mouseout',  function () { m.closePopup(); });
-            m.on('click', function () {
-                window.location.href = baseUrl + '#office-' + o.id;
-            });
             return m;
         });
 

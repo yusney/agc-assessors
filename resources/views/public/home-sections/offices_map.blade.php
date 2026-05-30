@@ -74,7 +74,6 @@
                 '</div></div>'
             );
             m.on('mouseover', function () { m.openPopup(); });
-            m.on('mouseout',  function () { m.closePopup(); });
             return m;
         });
 

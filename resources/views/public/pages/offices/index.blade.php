@@ -43,6 +43,8 @@
         var markers = offices.map(function (o) {
             var m = L.marker([o.lat, o.lng]).addTo(map);
             m.bindPopup('<strong style="color:#00346f">' + o.name + '</strong><br><span style="color:#64748B;font-size:13px">' + o.address + '</span>');
+            m.on('mouseover', function () { m.openPopup(); });
+            m.on('mouseout',  function () { m.closePopup(); });
             return m;
         });
 

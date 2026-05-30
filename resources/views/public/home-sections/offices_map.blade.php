@@ -62,6 +62,8 @@
                 'style="color:#00B4D8;font-size:13px;font-weight:600;text-decoration:none">' +
                 '{{ __("messages.offices.directions") }} →</a>'
             );
+            m.on('mouseover', function () { m.openPopup(); });
+            m.on('mouseout',  function () { m.closePopup(); });
             m.on('click', function () {
                 window.location.href = baseUrl + '#office-' + o.id;
             });

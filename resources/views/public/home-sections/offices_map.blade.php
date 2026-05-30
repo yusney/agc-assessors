@@ -1,6 +1,6 @@
 @if(!empty($offices))
 @php $officesUrl = LaravelLocalization::getLocalizedURL(app()->getLocale(), '/oficines'); @endphp
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20" id="oficines">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pt-4 pb-16 md:pb-20" id="oficines">
 
     {{-- Section header: title left, optional CTA right (same pattern as news_highlight) --}}
     <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">

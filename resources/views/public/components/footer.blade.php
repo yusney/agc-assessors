@@ -40,7 +40,7 @@
                         @php $label = $link['label_' . $locale] ?? $link['label_ca'] ?? ''; @endphp
                         @if($label && !empty($link['url']))
                         <a href="{{ $link['url'] }}"
-                           class="text-[14px] text-[#0f172a] font-medium hover:text-[#00346f] transition-colors duration-300 w-fit">
+                           class="text-[15px] text-[#64748B] font-medium hover:text-[#00346f] tracking-[0.02em] transition-colors duration-300">
                             {{ $label }}
                         </a>
                         @endif

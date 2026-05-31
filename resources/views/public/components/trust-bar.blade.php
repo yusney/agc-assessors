@@ -41,7 +41,12 @@
 
             @foreach($badges as $index => $badge)
                 @php
-                    $icon        = $badge['icon'] ?? 'check_circle';
+                    $icon         = $badge['icon'] ?? 'check_circle';
+                    $imageMediaId = $badge['image_media_id'] ?? null;
+                    $imageUrl     = null;
+                    if ($imageMediaId) {
+                        $imageUrl = \Awcodes\Curator\Models\Media::find($imageMediaId)?->url;
+                    }
                     $title       = $badge['title_' . $locale] ?? $badge['title_ca'] ?? '';
                     $subtitle    = $badge['subtitle_' . $locale] ?? $badge['subtitle_ca'] ?? '';
                     $url         = $badge['url'] ?? '';
@@ -60,8 +65,12 @@
                 @endif
 
                     <div class="w-14 h-14 rounded-2xl bg-[#00346f]/8 flex items-center justify-center
-                                group-hover:bg-[#00346f]/12 transition-colors duration-300 flex-shrink-0">
-                        <span class="material-symbols-outlined text-[#00346f] text-[28px]">{{ $icon }}</span>
+                                group-hover:bg-[#00346f]/12 transition-colors duration-300 flex-shrink-0 overflow-hidden">
+                        @if($imageUrl)
+                            <img src="{{ $imageUrl }}" alt="{{ $title }}" class="w-10 h-10 object-contain">
+                        @else
+                            <span class="material-symbols-outlined text-[#00346f] text-[28px]">{{ $icon }}</span>
+                        @endif
                     </div>
                     <div>
                         <p class="text-[14px] font-semibold text-[#0f172a] leading-tight">{{ $title }}</p>

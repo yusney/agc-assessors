@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Pages;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -61,16 +62,20 @@ class TrustBarSettingsPage extends Page
             ->statePath('data')
             ->components([
                 Section::make('Badges de confianza')
-                    ->description('Se muestran en una barra horizontal justo encima del footer. Cada badge tiene un icono Material Symbols, título, subtítulo y opcionalmente una URL.')
+                    ->description('Se muestran en una barra horizontal justo encima del footer. Cada badge puede tener un icono de Material Symbols o una imagen subida desde la biblioteca de medios.')
                     ->schema([
                         Repeater::make('badges')
                             ->hiddenLabel()
                             ->schema([
                                 TextInput::make('icon')
                                     ->label('Icono (Material Symbols)')
-                                    ->required()
                                     ->placeholder('verified')
-                                    ->helperText('Nombre del icono de Material Symbols. Ej: verified, history, award_star, shield, stars')
+                                    ->helperText('Si no se sube imagen, se usa este icono. Ej: verified, shield, award_star, stars')
+                                    ->columnSpan(1),
+
+                                CuratorPicker::make('image_media_id')
+                                    ->label('O subir imagen')
+                                    ->helperText('La imagen tiene prioridad sobre el icono.')
                                     ->columnSpan(1),
 
                                 TextInput::make('title_ca')

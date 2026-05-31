@@ -29,3 +29,6 @@ Thumbs.db
 # OpenCode / Engram
 .atl/
 .engram/
+
+# pnpm
+.pnpm-store/

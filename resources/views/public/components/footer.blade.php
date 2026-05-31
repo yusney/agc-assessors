@@ -70,6 +70,9 @@
                     @endif
                     @endif
                 @endforeach
+                <a href="{{ route('newsletter.unsubscribe.form') }}" class="hover:text-white transition-colors">
+                    {{ __('messages.footer.newsletter_unsubscribe') }}
+                </a>
             </nav>
     </div>
 </div>

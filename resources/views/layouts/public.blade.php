@@ -39,6 +39,7 @@
     </main>
 
     @include('public.components.footer')
+    @include('public.components.cookie-banner')
 
     @stack('scripts')
 </body>

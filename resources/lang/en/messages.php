@@ -56,6 +56,8 @@ return [
         'empty'           => 'Content coming soon.',
         'read_more'       => 'Read more',
         'load_more'       => 'Load more',
+        'loading'         => 'Loading...',
+        'no_more'         => 'No more news',
         'read_time'       => '5 min read',
         'share'           => 'Share',
     ],

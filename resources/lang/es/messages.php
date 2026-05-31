@@ -56,6 +56,8 @@ return [
         'empty'           => 'Próximamente publicaremos contenidos.',
         'read_more'       => 'Leer más',
         'load_more'       => 'Cargar más',
+        'loading'         => 'Cargando...',
+        'no_more'         => 'No hay más noticias',
         'read_time'       => '5 min de lectura',
         'share'           => 'Compartir',
     ],

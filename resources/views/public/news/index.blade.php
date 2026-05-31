@@ -15,83 +15,97 @@
     </p>
 </section>
 
-{{-- Filters (sticky) --}}
-<div class="w-full sticky top-20 z-40 bg-[#f9f9ff]/90 backdrop-blur-sm border-b border-[#E2E8F0]"
-     x-data="{ active: 'all' }">
-    <div class="flex flex-wrap items-center gap-8 px-6 md:px-8 max-w-[1280px] mx-auto py-4">
-        @foreach(['all' => __('messages.news.filter_all'), 'fiscal' => 'Fiscal', 'laboral' => 'Laboral', 'comptable' => 'Comptable', 'mercantil' => 'Mercantil'] as $key => $label)
-        <button @click="active = '{{ $key }}'"
-                :class="active === '{{ $key }}' ? 'text-[#00346f] border-b-2 border-[#00346f] font-semibold' : 'text-[#5c5f61] hover:text-[#00346f] border-b-2 border-transparent'"
-                class="text-[15px] tracking-[0.02em] py-2 transition-all">
-            {{ $label }}
-        </button>
-        @endforeach
-    </div>
-</div>
-
 {{-- Grid --}}
-<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto pt-12 pb-24">
+<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto pt-12 pb-24"
+         x-data="infiniteScroll()"
+         x-init="init()">
     @if(empty($news))
         <p class="text-[#64748B] text-center py-16">{{ __('messages.news.empty') }}</p>
     @else
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+    <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         @foreach($news as $article)
-        <article class="flex flex-col group cursor-pointer">
-            <a href="{{ url('/actualitat/' . $article->slug()) }}"
-               class="relative w-full aspect-video overflow-hidden rounded-xl bg-[#e7e8ef] mb-6 block">
-                @if($article->coverUrl())
-                    <img src="{{ $article->coverUrl() }}"
-                         alt="{{ $article->title()->get(app()->getLocale()) }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                         loading="lazy">
-                @else
-                    <div class="w-full h-full bg-gradient-to-br from-[#e7e8ef] to-[#d9d9e1]
-                                group-hover:scale-105 transition-transform duration-700 ease-out"></div>
-                @endif
-            </a>
-            <div class="flex-grow flex flex-col">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-[#00B4D8] text-[13px] uppercase tracking-wider font-semibold font-body">
-                        {{ __('messages.nav.news') }}
-                    </span>
-                    <span class="text-[#E2E8F0]">•</span>
-                    <time class="text-[13px] text-[#5c5f61]">
-                        {{ $article->publishedAt()?->format('d M Y') }}
-                    </time>
-                </div>
-                <h3 class="font-headline text-[24px] text-[#0f172a] font-semibold leading-tight line-clamp-3 mb-3
-                           group-hover:text-[#00346f] transition-colors duration-300">
-                    <a href="{{ url('/actualitat/' . $article->slug()) }}">
-                        {{ $article->title()->get(app()->getLocale()) }}
-                    </a>
-                </h3>
-                <p class="text-[16px] text-[#424751] line-clamp-3 mb-4 flex-grow leading-relaxed">
-                    {{ $article->excerpt()->get(app()->getLocale()) }}
-                </p>
-                <div class="mt-auto">
-                    <a href="{{ url('/actualitat/' . $article->slug()) }}"
-                       class="inline-flex items-center text-[#00346f] font-semibold text-[15px]
-                              group-hover:text-[#00B4D8] transition-colors">
-                        {{ __('messages.news.read_more') }}
-                        <span class="material-symbols-outlined ml-1 text-[18px]
-                                     group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-        </article>
+            @include('public.news._article-card', ['article' => $article])
         @endforeach
     </div>
 
-    @if($total > count($news))
-    <div class="mt-16 flex justify-center">
-        <a href="{{ url('/actualitat?page=' . ($page + 1)) }}"
-           class="border border-[#00346f] text-[#00346f] hover:bg-[#00346f] hover:text-white
-                  font-medium text-[15px] py-3 px-8 rounded-full transition-colors duration-300">
-            {{ __('messages.news.load_more') }}
-        </a>
+    {{-- Loading spinner --}}
+    <div id="loading-sentinel" class="mt-16 flex justify-center items-center gap-3"
+         x-show="loading"
+         x-cloak>
+        <span class="inline-block w-6 h-6 border-2 border-[#00346f] border-t-transparent rounded-full animate-spin"></span>
+        <span class="text-[15px] text-[#64748B]">{{ __('messages.news.loading') }}</span>
+    </div>
+
+    {{-- No more results --}}
+    <div id="no-more" class="mt-16 text-center"
+         x-show="!hasMore && !loading"
+         x-cloak>
+        <span class="text-[15px] text-[#64748B]">{{ __('messages.news.no_more') }}</span>
     </div>
     @endif
-    @endif
 </section>
+
+<script>
+function infiniteScroll() {
+    return {
+        page: {{ $page }},
+        hasMore: {{ $has_more ? 'true' : 'false' }},
+        loading: false,
+        sentinel: null,
+
+        init() {
+            if (!this.hasMore) return;
+
+            this.sentinel = document.getElementById('loading-sentinel');
+            if (!this.sentinel) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && this.hasMore && !this.loading) {
+                        this.loadMore();
+                    }
+                });
+            }, {
+                rootMargin: '200px',
+            });
+
+            observer.observe(this.sentinel);
+        },
+
+        async loadMore() {
+            this.loading = true;
+            this.page++;
+
+            try {
+                const response = await fetch(`{{ url('/actualitat') }}?page=${this.page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+
+                if (data.html) {
+                    const grid = document.getElementById('news-grid');
+                    const temp = document.createElement('div');
+                    temp.innerHTML = data.html;
+                    while (temp.firstChild) {
+                        grid.appendChild(temp.firstChild);
+                    }
+                }
+
+                this.hasMore = data.has_more ?? false;
+            } catch (error) {
+                console.error('Error loading more articles:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
+</script>
 
 @endsection

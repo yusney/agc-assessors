@@ -17,10 +17,10 @@ use Filament\Schemas\Schema;
 
 class SocialMediaSettingsPage extends Page
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-share';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
-    protected static ?string $navigationLabel = 'Redes Sociales';
-    protected static ?string $title = 'Configuración de Redes Sociales';
+    protected static ?string $navigationLabel = 'Navbar';
+    protected static ?string $title = 'Configuración del Navbar';
     protected string $view = 'filament.pages.social-media-settings';
 
     /** @var array<string, mixed> */

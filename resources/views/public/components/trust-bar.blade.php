@@ -1,37 +1,85 @@
-{{-- Trust Bar — Certifications & Accreditations (static preview) --}}
+@php
+    use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+    
+    $badges = collect(SiteSetting::get('trust_bar'))
+        ?->filter(fn ($b) => !empty($b['is_active']))
+        ->values();
+
+    // Fallback: default badges until admin saves
+    if ($badges === null || $badges->isEmpty()) {
+        $badges = collect([
+            [
+                'icon'        => 'verified',
+                'title_ca'    => 'UNE 420001',
+                'title_es'    => 'UNE 420001',
+                'title_en'    => 'UNE 420001',
+                'subtitle_ca' => 'Qualitat certificada',
+                'subtitle_es' => 'Calidad certificada',
+                'subtitle_en' => 'Certified quality',
+                'url'         => '',
+            ],
+            [
+                'icon'        => 'history',
+                'title_ca'    => '+25 anys',
+                'title_es'    => '+25 años',
+                'title_en'    => '+25 years',
+                'subtitle_ca' => "d'experiència professional",
+                'subtitle_es' => 'de experiencia profesional',
+                'subtitle_en' => 'of professional experience',
+                'url'         => '',
+            ],
+        ]);
+    }
+    $locale = app()->getLocale();
+@endphp
+
+@if($badges->isNotEmpty())
 <section class="w-full bg-white border-y border-[#E2E8F0]">
     <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-8 md:py-10">
 
         <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20">
 
-            {{-- Certification 1: UNE 420001 --}}
-            <div class="flex items-center gap-4 group">
-                <div class="w-14 h-14 rounded-2xl bg-[#00346f]/8 flex items-center justify-center
-                            group-hover:bg-[#00346f]/12 transition-colors duration-300 flex-shrink-0">
-                    <span class="material-symbols-outlined text-[#00346f] text-[28px]">verified</span>
-                </div>
-                <div>
-                    <p class="text-[14px] font-semibold text-[#0f172a] leading-tight">{{ __('messages.trust.une_title') }}</p>
-                    <p class="text-[13px] text-[#64748B]">{{ __('messages.trust.une_subtitle') }}</p>
-                </div>
-            </div>
+            @foreach($badges as $index => $badge)
+                @php
+                    $icon        = $badge['icon'] ?? 'check_circle';
+                    $title       = $badge['title_' . $locale] ?? $badge['title_ca'] ?? '';
+                    $subtitle    = $badge['subtitle_' . $locale] ?? $badge['subtitle_ca'] ?? '';
+                    $url         = $badge['url'] ?? '';
+                    $hasUrl      = !empty($url);
+                @endphp
 
-            {{-- Divider --}}
-            <span class="hidden md:block w-px h-12 bg-[#E2E8F0]"></span>
+                @if($index > 0)
+                    <span class="hidden md:block w-px h-12 bg-[#E2E8F0]"></span>
+                @endif
 
-            {{-- Badge: 25+ years --}}
-            <div class="flex items-center gap-4 group">
-                <div class="w-14 h-14 rounded-2xl bg-[#00346f]/8 flex items-center justify-center
-                            group-hover:bg-[#00346f]/12 transition-colors duration-300 flex-shrink-0">
-                    <span class="material-symbols-outlined text-[#00346f] text-[28px]">history</span>
+                @if($hasUrl)
+                <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
+                   class="flex items-center gap-4 group hover:opacity-80 transition-opacity">
+                @else
+                <div class="flex items-center gap-4 group">
+                @endif
+
+                    <div class="w-14 h-14 rounded-2xl bg-[#00346f]/8 flex items-center justify-center
+                                group-hover:bg-[#00346f]/12 transition-colors duration-300 flex-shrink-0">
+                        <span class="material-symbols-outlined text-[#00346f] text-[28px]">{{ $icon }}</span>
+                    </div>
+                    <div>
+                        <p class="text-[14px] font-semibold text-[#0f172a] leading-tight">{{ $title }}</p>
+                        @if($subtitle)
+                        <p class="text-[13px] text-[#64748B]">{{ $subtitle }}</p>
+                        @endif
+                    </div>
+
+                @if($hasUrl)
+                </a>
+                @else
                 </div>
-                <div>
-                    <p class="text-[14px] font-semibold text-[#0f172a] leading-tight">{{ __('messages.trust.experience_title') }}</p>
-                    <p class="text-[13px] text-[#64748B]">{{ __('messages.trust.experience_subtitle') }}</p>
-                </div>
-            </div>
+                @endif
+
+            @endforeach
 
         </div>
 
     </div>
 </section>
+@endif

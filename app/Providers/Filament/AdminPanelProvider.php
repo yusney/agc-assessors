@@ -71,6 +71,7 @@ final class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
                 \AGC\Filament\Pages\FooterSettingsPage::class,
                 \AGC\Filament\Pages\SocialMediaSettingsPage::class,
+                \AGC\Filament\Pages\TrustBarSettingsPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

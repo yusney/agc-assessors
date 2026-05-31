@@ -2,7 +2,16 @@
         x-data="{ open: false, langOpen: false }">
     @php
         use AGC\Infrastructure\Persistence\Eloquent\Models\MenuItem;
+        use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+
         $menuItems = MenuItem::active()->ordered()->whereNull('parent_id')->with('children')->get();
+
+        $socialNetworks = collect(SiteSetting::get('social_networks', []) ?? [])
+            ->filter(fn($n) => !empty($n['is_active']) && !empty($n['url']) && !empty($n['platform']))
+            ->values();
+
+        $visibleSocials = $socialNetworks->take(3);
+        $hiddenSocials  = $socialNetworks->skip(3);
     @endphp
     <div class="flex justify-between items-center h-20 w-full px-6 md:px-8 max-w-[1280px] mx-auto">
 
@@ -52,7 +61,60 @@
         </nav>
 
         {{-- Actions --}}
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+
+            {{-- Social icons (desktop only, lg+) --}}
+            @if($socialNetworks->isNotEmpty())
+                <div class="hidden lg:flex items-center gap-3 mr-1"
+                     x-data="{ moreOpen: false }"
+                     @click.outside="moreOpen = false">
+
+                    @foreach($visibleSocials as $network)
+                        <a href="{{ $network['url'] }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300"
+                           aria-label="{{ ucfirst($network['platform']) }}">
+                            @include('public.components.social-icon', ['platform' => $network['platform']])
+                        </a>
+                    @endforeach
+
+                    @if($hiddenSocials->isNotEmpty())
+                        <div class="relative">
+                            <button @click="moreOpen = !moreOpen"
+                                    class="flex items-center justify-center w-5 h-5 text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300"
+                                    aria-label="{{ __('messages.nav.more_socials') }}">
+                                <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+                            </button>
+                            <div x-show="moreOpen"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 class="absolute right-0 top-full mt-2 w-44 bg-white rounded-xl
+                                        border border-[#E2E8F0] shadow-lg overflow-hidden z-50">
+                                @foreach($hiddenSocials as $network)
+                                    <a href="{{ $network['url'] }}"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="flex items-center gap-3 px-4 py-2.5 text-[14px]
+                                              text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
+                                        <span class="text-[#00346f]">
+                                            @include('public.components.social-icon', ['platform' => $network['platform']])
+                                        </span>
+                                        {{ ucfirst($network['platform']) }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+            {{-- Search button (desktop only) --}}
+            <button class="hidden md:flex items-center justify-center text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300 p-0.5"
+                    aria-label="{{ __('messages.nav.search') }}">
+                <span class="material-symbols-outlined text-[22px]">search</span>
+            </button>
 
             {{-- Language selector --}}
             <div class="relative hidden md:block" x-data="{ langOpen: false }" @click.outside="langOpen = false">
@@ -141,6 +203,7 @@
                     @endif
                 </li>
             @endforeach
+
             {{-- Mobile language switcher --}}
             <li class="pt-3 border-t border-[#E2E8F0] mt-3">
                 <div class="flex items-center gap-4">
@@ -153,6 +216,24 @@
                     @endforeach
                 </div>
             </li>
+
+            {{-- Mobile social icons --}}
+            @if($socialNetworks->isNotEmpty())
+                <li class="pt-3 border-t border-[#E2E8F0] mt-1">
+                    <div class="flex items-center gap-4">
+                        @foreach($socialNetworks as $network)
+                            <a href="{{ $network['url'] }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="text-[#00346f] hover:text-[#00B4D8] transition-colors"
+                               aria-label="{{ ucfirst($network['platform']) }}">
+                                @include('public.components.social-icon', ['platform' => $network['platform']])
+                            </a>
+                        @endforeach
+                    </div>
+                </li>
+            @endif
+
             <li class="pt-3">
                 <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), '/contacte') }}"
                    class="btn-primary w-full justify-center text-sm">

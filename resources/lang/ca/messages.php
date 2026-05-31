@@ -8,7 +8,9 @@ return [
         'team'     => 'Equip',
         'contact'  => 'Contacte',
         'offices'  => 'Oficines',
-        'cta'      => 'Sol·licitar consulta',
+        'cta'          => 'Sol·licitar consulta',
+        'search'       => 'Cercar',
+        'more_socials' => 'Més xarxes socials',
     ],
     'footer' => [
         'tagline' => 'Assessoria professional per a empreses i particulars a Catalunya.',

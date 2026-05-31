@@ -8,7 +8,9 @@ return [
         'team'     => 'Team',
         'contact'  => 'Contact',
         'offices'  => 'Offices',
-        'cta'      => 'Request consultation',
+        'cta'          => 'Request consultation',
+        'search'       => 'Search',
+        'more_socials' => 'More social networks',
     ],
     'footer' => [
         'tagline' => 'Professional advisory services for businesses and individuals in Catalonia.',

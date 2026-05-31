@@ -1,6 +1,11 @@
 @php
     $items      = collect($section->setting('service_items', []));
     $serviceMap = collect($services ?? [])->keyBy(fn ($s) => $s->slug());
+    $columns    = (int) $section->setting('columns', 3);
+    $gridClass  = match ($columns) {
+        4 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6',
+        default => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-6',
+    };
 @endphp
 
 @if($items->isNotEmpty() && $serviceMap->isNotEmpty())
@@ -14,7 +19,7 @@
         @endif
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+    <div class="grid {{ $gridClass }}">
         @foreach($items as $item)
             @php
                 $service = $serviceMap->get(data_get($item, 'service_slug'));

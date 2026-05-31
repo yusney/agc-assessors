@@ -241,6 +241,15 @@ class HomeSectionResource extends Resource
                                 ->hidden(fn (Get $get): bool => $get('type') !== 'services_highlight')
                                 ->description('Seleccioná qué servicios mostrar y con qué icono representarlos.')
                                 ->schema([
+                                    Select::make('settings.columns')
+                                        ->label('Columnas en desktop')
+                                        ->options([
+                                            3 => '3 columnas',
+                                            4 => '4 columnas',
+                                        ])
+                                        ->default(3)
+                                        ->native(false),
+
                                     Repeater::make('settings.service_items')
                                         ->hiddenLabel()
                                         ->schema([

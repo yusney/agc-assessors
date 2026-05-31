@@ -2,6 +2,8 @@
     $footer = \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::get('footer', []);
     $locale = app()->getLocale();
     $copyright = $footer['copyright'] ?? '© ' . date('Y') . ' AGC Assessors. Tots els drets reservats.';
+    $phone     = $footer['phone'] ?? null;
+    $emailAddr = $footer['email'] ?? null;
     $legalLinks = $footer['legal_links'] ?? [];
 @endphp
 
@@ -10,14 +12,34 @@
     <div class="max-w-[1280px] mx-auto px-6 md:px-8
                 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
-        {{-- Izquierda: logo + copyright --}}
-        <div>
+        {{-- Izquierda: logo + copyright + contacto --}}
+        <div class="space-y-4">
             <img src="{{ asset('images/logo.webp') }}"
                  alt="AGC Assessors"
-                 class="h-10 w-auto object-contain mb-3">
+                 class="h-10 w-auto object-contain mb-2">
             <p class="text-[15px] text-[#64748B] font-light">
                 {{ $copyright }}
             </p>
+
+            @if($phone || $emailAddr)
+            <div class="flex flex-wrap items-center gap-6 pt-1">
+                @if($phone)
+                <a href="tel:{{ $phone }}"
+                   class="flex items-center gap-2.5 text-[15px] text-[#64748B] hover:text-[#00346f] transition-colors duration-300 group">
+                    <span class="material-symbols-outlined text-[#00346f] text-[20px] group-hover:-translate-y-0.5 transition-transform">call</span>
+                    <span>{{ $phone }}</span>
+                </a>
+                @endif
+
+                @if($emailAddr)
+                <a href="mailto:{{ $emailAddr }}"
+                   class="flex items-center gap-2.5 text-[15px] text-[#64748B] hover:text-[#00346f] transition-colors duration-300 group">
+                    <span class="material-symbols-outlined text-[#00346f] text-[20px] group-hover:-translate-y-0.5 transition-transform">mail</span>
+                    <span>{{ $emailAddr }}</span>
+                </a>
+                @endif
+            </div>
+            @endif
         </div>
 
         {{-- Derecha: links legales + socials --}}

@@ -1,8 +1,8 @@
 @if(!empty($news))
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20" id="actualitat">
-    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-24 md:py-32" id="actualitat">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div class="max-w-2xl">
-            <h2 class="font-headline text-[36px] md:text-[48px] text-[#1E293B] mb-4 tracking-tight font-semibold leading-none">
+            <h2 class="font-headline text-[36px] md:text-[56px] text-[#0f172a] mb-4 tracking-tight font-semibold leading-none">
                 {{ $section->localized('title') }}
             </h2>
             @if($section->localized('subtitle'))
@@ -25,16 +25,16 @@
                     @if($article->coverUrl())
                         <img src="{{ $article->coverUrl() }}"
                              alt="{{ $article->title()->get(app()->getLocale()) }}"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                             class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-[#e7e8ef] to-[#d9d9e1]"></div>
                     @endif
-                    <div class="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#1E293B] text-[13px] font-medium tracking-wide px-4 py-1.5 rounded-full shadow-sm">
+                    <div class="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#0f172a] text-[13px] font-medium tracking-wide px-4 py-1.5 rounded-full shadow-sm">
                         {{ __('messages.nav.news') }}
                     </div>
                 </div>
                 <div class="p-8 flex flex-col flex-grow">
-                    <h3 class="font-headline font-semibold text-[24px] leading-tight text-[#1E293B] mb-4 group-hover:text-[#00346f] transition-colors duration-300">
+                    <h3 class="font-headline font-semibold text-[24px] leading-tight text-[#0f172a] mb-4 group-hover:text-[#00346f] transition-colors duration-300">
                         {{ $article->title()->get(app()->getLocale()) }}
                     </h3>
                     <p class="text-[16px] text-[#64748B] line-clamp-3 mb-8 flex-grow font-light leading-relaxed">

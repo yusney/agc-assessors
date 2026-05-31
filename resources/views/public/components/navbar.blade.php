@@ -20,7 +20,7 @@
            class="flex items-center">
             <img src="{{ asset('images/logo.webp') }}"
                  alt="AGC Assessors"
-                 class="h-12 w-auto object-contain">
+                 class="h-10 w-auto object-contain">
         </a>
 
         {{-- Desktop nav --}}
@@ -73,7 +73,7 @@
                         <a href="{{ $network['url'] }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300"
+                           class="text-[#00346f] hover:text-[#00B4D8] transition-all duration-300 hover:-translate-y-0.5"
                            aria-label="{{ ucfirst($network['platform']) }}">
                             @include('public.components.social-icon', ['platform' => $network['platform']])
                         </a>

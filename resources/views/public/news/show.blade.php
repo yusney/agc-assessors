@@ -17,7 +17,7 @@
 
 {{-- Reading progress bar --}}
 <div id="reading-bar"
-     class="fixed top-0 left-0 h-[3px] bg-[#00346f] z-[60] w-0"
+     class="fixed top-0 left-0 h-[3px] bg-[#00B4D8] z-[60] w-0"
      x-data
      x-init="
         let bar = $el;
@@ -50,7 +50,7 @@
                     {{ __('messages.nav.news') }}
                 </span>
             </div>
-            <h1 class="font-headline text-[36px] md:text-[52px] leading-[1.1] tracking-tight text-[#1E293B] mb-4">
+            <h1 class="font-headline text-[36px] md:text-[56px] lg:text-[64px] leading-[1.05] tracking-[-0.02em] text-[#0f172a] mb-4">
                 {{ $article->title()->get(app()->getLocale()) }}
             </h1>
             <div class="flex items-center justify-center gap-2 text-[#5c5f61] text-[13px] uppercase tracking-widest">
@@ -95,12 +95,16 @@
 
         {{-- Content --}}
         <div class="prose prose-lg max-w-none
-                    prose-headings:font-headline prose-headings:text-[#1E293B]
+                    prose-headings:font-headline prose-headings:text-[#0f172a] prose-headings:tracking-tight
+                    prose-h2:text-[32px] prose-h2:leading-[1.3] prose-h2:mt-12 prose-h2:mb-6
                     prose-p:text-[#424751] prose-p:leading-[1.8] prose-p:text-[17px]
                     prose-a:text-[#00346f] prose-a:no-underline hover:prose-a:text-[#00B4D8]
                     prose-blockquote:border-l-[3px] prose-blockquote:border-[#00346f]
-                    prose-blockquote:text-[#00346f] prose-blockquote:not-italic prose-blockquote:pl-8
-                    prose-li:text-[#424751]">
+                    prose-blockquote:pl-8 prose-blockquote:py-4
+                    prose-blockquote:text-[#00346f] prose-blockquote:not-italic
+                    prose-blockquote:font-serif prose-blockquote:text-2xl prose-blockquote:italic
+                    prose-li:text-[#424751] prose-li:text-[17px]
+                    [&>p:first-child]:text-xl [&>p:first-child]:font-medium [&>p:first-child]:text-[#0f172a] [&>p:first-child]:leading-relaxed">
             {!! $article->body()->get(app()->getLocale()) !!}
         </div>
 
@@ -124,7 +128,7 @@
         </div>
 
         {{-- Newsletter box --}}
-        <div class="mt-16 bg-[#f3f3fa] border border-[#E2E8F0]/50 rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="mt-16 bg-[#f3f3fa] border border-[#E2E8F0]/50 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-[#00346f]/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
             <div class="absolute bottom-0 left-0 w-32 h-32 bg-[#00B4D8]/5 rounded-full blur-3xl -ml-10 -mb-10"></div>
             <div class="relative z-10">

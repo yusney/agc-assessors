@@ -22,11 +22,11 @@
     --color-secondary-container:      #e0e3e5;
 
     /* === Surface === */
-    --color-surface:                  #f9f9ff;
-    --color-surface-bright:           #f9f9ff;
+    --color-surface:                  #ffffff;
+    --color-surface-bright:           #ffffff;
     --color-surface-dim:              #d9d9e1;
     --color-surface-container-lowest: #ffffff;
-    --color-surface-container-low:    #f3f3fa;
+    --color-surface-container-low:    #f8fafc;
     --color-surface-container:        #ededf5;
     --color-surface-container-high:   #e7e8ef;
     --color-surface-container-highest:#e2e2e9;
@@ -36,29 +36,32 @@
     --color-inverse-on-surface:       #f0f0f8;
 
     /* === Text === */
-    --color-text-main:        #1E293B;
+    --color-text-main:        #0f172a;
     --color-text-muted:       #64748B;
-    --color-on-surface:       #191c21;
+    --color-on-surface:       #0f172a;
     --color-on-surface-variant: #424751;
-    --color-on-background:    #191c21;
+    --color-on-background:    #0f172a;
 
     /* === Border === */
     --color-border-light:     #E2E8F0;
     --color-outline:          #737783;
-    --color-outline-variant:  #c2c6d3;
+    --color-outline-variant:  #e2e8f0;
 
     /* === Error === */
     --color-error:            #ba1a1a;
     --color-on-error:         #ffffff;
 
     /* === Spacing === */
-    --spacing-gutter:         24px;
+    --spacing-gutter:         32px;
     --spacing-margin-mobile:  16px;
-    --spacing-stack-sm:       8px;
-    --spacing-stack-md:       16px;
-    --spacing-stack-lg:       32px;
+    --spacing-stack-sm:       12px;
+    --spacing-stack-md:       24px;
+    --spacing-stack-lg:       48px;
     --spacing-container-max:  1280px;
     --spacing-reading-width:  720px;
+
+    /* === Serif === */
+    --font-serif: "Playfair Display", Georgia, serif;
 }
 
 /* === Base === */
@@ -76,6 +79,7 @@
 @layer utilities {
     .font-headline { font-family: theme(--font-headline); }
     .font-body     { font-family: theme(--font-body); }
+    .font-serif    { font-family: theme(--font-serif); }
     .max-w-reading { max-width: var(--spacing-reading-width); }
     .max-w-site    { max-width: var(--spacing-container-max); }
     .px-site       { padding-inline: var(--spacing-gutter); }
@@ -88,9 +92,9 @@
         @apply inline-flex items-center justify-center gap-2
                bg-[#00346f] text-white font-medium
                px-7 py-3 rounded-full
-               hover:bg-[#002d60] hover:-translate-y-px
+               hover:bg-[#002d60] hover:-translate-y-px hover:scale-[1.02]
                transition-all duration-300
-               shadow-[0_4px_14px_0_rgba(0,52,111,0.25)]
+               shadow-[0_4px_14px_0_rgba(0,52,111,0.2)]
                focus-visible:outline-none focus-visible:ring-2
                focus-visible:ring-[#00B4D8] focus-visible:ring-offset-2;
     }

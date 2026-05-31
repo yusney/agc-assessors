@@ -19,6 +19,26 @@ class FooterSettingsSeeder extends Seeder
             'copyright'            => '© 2025 AGC Assessors. Tots els drets reservats.',
             'institutional_logos'  => [],
             'extra_links'          => [],
+            'legal_links'          => [
+                [
+                    'label_ca' => 'Política de privacitat',
+                    'label_es' => 'Política de privacidad',
+                    'label_en' => 'Privacy Policy',
+                    'url'      => '/politica-privacitat',
+                ],
+                [
+                    'label_ca' => 'Avís legal',
+                    'label_es' => 'Aviso legal',
+                    'label_en' => 'Legal Notice',
+                    'url'      => '/avis-legal',
+                ],
+                [
+                    'label_ca' => 'Cookies',
+                    'label_es' => 'Cookies',
+                    'label_en' => 'Cookies',
+                    'url'      => '/cookies',
+                ],
+            ],
         ]);
     }
 }

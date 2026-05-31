@@ -81,6 +81,30 @@ class FooterSettingsPage extends Page
                             ->reorderable()
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Links legales')
+                    ->schema([
+                        Repeater::make('legal_links')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextInput::make('label_ca')
+                                    ->label('Texto (Catalán)')
+                                    ->required(),
+                                TextInput::make('label_es')
+                                    ->label('Texto (Español)')
+                                    ->required(),
+                                TextInput::make('label_en')
+                                    ->label('Texto (English)')
+                                    ->required(),
+                                UrlPickerField::make('url')
+                                    ->label('URL')
+                                    ->required(),
+                            ])
+                            ->addActionLabel('Añadir link legal')
+                            ->collapsible()
+                            ->reorderable()
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

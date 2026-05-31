@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Forms\Components;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
+use AGC\Infrastructure\Persistence\Eloquent\Models\PageModel;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -65,6 +66,7 @@ final class UrlPickerField extends TextInput
 
         $groups = [
             'Páginas principales' => [],
+            'Páginas'             => [],
             'Servicios'           => [],
             'Noticias'            => [],
             'Equipo'              => [],
@@ -128,6 +130,18 @@ final class UrlPickerField extends TextInput
                     ? ($n->title['ca'] ?? $n->title['es'] ?? reset($n->title))
                     : $n->title;
                 $groups['Noticias'][$url] = '  ↳ ' . $title;
+            });
+
+        // ── Published pages ─────────────────────────────────────────────
+        PageModel::where('published', true)
+            ->orderBy('slug')
+            ->get(['slug', 'title'])
+            ->each(function (PageModel $p) use (&$groups): void {
+                $url   = '/pages/' . $p->slug;
+                $title = is_array($p->title)
+                    ? ($p->title['ca'] ?? $p->title['es'] ?? reset($p->title))
+                    : $p->title;
+                $groups['Páginas'][$url] = '  ↳ ' . $title;
             });
 
         // ── Remove empty groups ──────────────────────────────────────────

@@ -9,12 +9,12 @@
     $email = $footer['email'] ?? 'agcassessors@agc.cat';
     $address = $footer['address'] ?? 'Av. Pi i Margall 114 · 08140 · Caldes de Montbui';
     $copyright = $footer['copyright'] ?? '© ' . date('Y') . ' AGC Assessors. Tots els drets reservats.';
-    $navLinks = $footer['nav_links'] ?? [];
+    $legalLinks = $footer['legal_links'] ?? [];
 @endphp
 
 {{-- Zone 1 — Main footer --}}
 <footer class="bg-[#00346f] text-white w-full">
-    <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-14 grid grid-cols-1 md:grid-cols-2 gap-10">
 
         {{-- Left: Logo + description --}}
         <div class="flex flex-col items-center md:items-start gap-4">
@@ -54,21 +54,6 @@
             @endif
         </div>
 
-        {{-- Right: Navigation links --}}
-        <div class="flex flex-col gap-3">
-            <h3 class="font-semibold text-sm uppercase tracking-widest text-blue-200 mb-1">Navegació</h3>
-            <nav class="flex flex-col gap-2" aria-label="Footer navigation">
-                @foreach($navLinks as $link)
-                    @if(!empty($link['url']))
-                    @php $label = $link['label_' . $locale] ?? $link['label_ca'] ?? $link['label'] ?? ''; @endphp
-                    @if($label)
-                    <a href="{{ $link['url'] }}" class="text-[15px] text-blue-100 hover:text-white transition-colors">{{ $label }}</a>
-                    @endif
-                    @endif
-                @endforeach
-            </nav>
-        </div>
-
     </div>
 </footer>
 
@@ -77,9 +62,14 @@
     <div class="max-w-[1280px] mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-[#94a3b8]">
         <span>{{ $copyright }}</span>
         <nav class="flex flex-wrap gap-x-6 gap-y-1" aria-label="Legal navigation">
-            <a href="{{ url('/politica-privacitat') }}" class="hover:text-white transition-colors">{{ __('messages.footer.privacy') }}</a>
-            <a href="{{ url('/avis-legal') }}" class="hover:text-white transition-colors">{{ __('messages.footer.legal') }}</a>
-            <a href="{{ url('/cookies') }}" class="hover:text-white transition-colors">{{ __('messages.footer.cookies') }}</a>
-        </nav>
+                @foreach($legalLinks as $link)
+                    @if(!empty($link['url']))
+                    @php $label = $link['label_' . $locale] ?? $link['label_ca'] ?? $link['label'] ?? ''; @endphp
+                    @if($label)
+                    <a href="{{ $link['url'] }}" class="hover:text-white transition-colors">{{ $label }}</a>
+                    @endif
+                    @endif
+                @endforeach
+            </nav>
     </div>
 </div>

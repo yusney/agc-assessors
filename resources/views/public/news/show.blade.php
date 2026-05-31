@@ -134,16 +134,79 @@
                 <p class="text-[16px] text-[#64748B] mb-8 max-w-md mx-auto font-light leading-relaxed">
                     {{ __('messages.home.newsletter_subtitle') }}
                 </p>
-                <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                    <input type="email" required
-                           placeholder="{{ __('messages.home.newsletter_placeholder') }}"
-                           class="flex-1 rounded-full border-[#c2c6d3] focus:border-[#00346f]
-                                  focus:ring-1 focus:ring-[#00346f] text-[16px] py-3 px-6
-                                  shadow-sm bg-white text-[#1E293B]">
-                    <button type="submit" class="btn-primary px-8 py-3 text-[15px]">
-                        {{ __('messages.home.newsletter_cta') }}
-                    </button>
-                </form>
+
+                <div x-data="{
+                    accepted: false,
+                    showToast: false,
+                    isSubmitting: false,
+                    async submitForm($event) {
+                        $event.preventDefault();
+                        if (!this.accepted) return;
+                        
+                        this.isSubmitting = true;
+                        const form = $event.target;
+                        const formData = new FormData(form);
+                        
+                        try {
+                            const response = await fetch(form.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            });
+                            
+                            if (response.ok || response.status === 302) {
+                                this.showToast = true;
+                                form.reset();
+                                this.accepted = false;
+                                setTimeout(() => this.showToast = false, 6000);
+                            }
+                        } catch (e) {
+                            console.error('Newsletter submission failed:', e);
+                        } finally {
+                            this.isSubmitting = false;
+                        }
+                    }
+                }">
+                    <div x-show="showToast"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-500"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-4"
+                         class="mb-6 p-5 rounded-2xl bg-green-50 border border-green-200 flex items-start gap-4 shadow-sm text-left">
+                        <span class="material-symbols-outlined text-green-600 text-[28px] flex-shrink-0">check_circle</span>
+                        <div>
+                            <p class="text-green-900 font-semibold text-[16px] leading-tight mb-1">{{ __('messages.home.newsletter_success') }}</p>
+                            <p class="text-green-700 text-[14px]">{{ __('messages.home.newsletter_legal') }}</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('newsletter.store') }}" method="POST" class="flex flex-col gap-4 max-w-md mx-auto" @submit="submitForm">
+                        @csrf
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="email" name="email" required
+                                   placeholder="{{ __('messages.home.newsletter_placeholder') }}"
+                                   class="flex-1 rounded-full border-[#c2c6d3] focus:border-[#00346f]
+                                          focus:ring-1 focus:ring-[#00346f] text-[16px] py-3 px-6
+                                          shadow-sm bg-white text-[#1E293B]">
+                            <button type="submit" class="btn-primary px-8 py-3 text-[15px]"
+                                    :disabled="!accepted || isSubmitting"
+                                    :class="(!accepted || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''">
+                                <span x-show="!isSubmitting">{{ __('messages.home.newsletter_cta') }}</span>
+                                <span x-show="isSubmitting" class="material-symbols-outlined animate-spin">progress_activity</span>
+                            </button>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" name="newsletter_privacy" id="newsletter_privacy_news" value="1"
+                                   x-model="accepted"
+                                   class="mt-0.5 w-4 h-4 rounded border-[#c2c6d3] accent-[#00346f] cursor-pointer">
+                            <label for="newsletter_privacy_news" class="text-[13px] text-[#64748B] cursor-pointer leading-relaxed">
+                                {!! __('messages.home.newsletter_privacy', ['url' => LaravelLocalization::getLocalizedURL(app()->getLocale(), '/pages/privacy-policy')]) !!}
+                            </label>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </article>

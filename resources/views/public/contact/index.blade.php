@@ -74,7 +74,8 @@
         @endif
 
         <form action="{{ route('contact.store') }}" method="POST"
-              class="bg-white rounded-[2rem] border border-[#E2E8F0] p-8 md:p-12 shadow-sm space-y-6">
+              class="bg-white rounded-[2rem] border border-[#E2E8F0] p-8 md:p-12 shadow-sm space-y-6"
+              x-data="{ accepted: false }">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -139,17 +140,20 @@
 
             <div class="flex items-start gap-3">
                 <input type="checkbox" name="privacy" id="privacy" value="1"
+                       x-model="accepted"
                        class="mt-0.5 w-4 h-4 rounded border-[#c2c6d3]
                               accent-[#00346f] cursor-pointer
                               @error('privacy') border-red-400 @enderror">
                 <label for="privacy" class="text-[15px] text-[#64748B] cursor-pointer leading-relaxed">
-                    {{ __('messages.contact.privacy') }}
+                    {!! __('messages.contact.privacy', ['url' => LaravelLocalization::getLocalizedURL(app()->getLocale(), '/pages/privacy-policy')]) !!}
                 </label>
             </div>
             @error('privacy')<p class="-mt-3 text-[13px] text-red-500">{{ $message }}</p>@enderror
 
             <div class="pt-2">
-                <button type="submit" class="btn-primary w-full justify-center text-[16px] py-4">
+                <button type="submit" class="btn-primary w-full justify-center text-[16px] py-4"
+                        :disabled="!accepted"
+                        :class="!accepted ? 'opacity-50 cursor-not-allowed' : ''">
                     {{ __('messages.contact.submit') }}
                     <span class="material-symbols-outlined text-[20px]">send</span>
                 </button>

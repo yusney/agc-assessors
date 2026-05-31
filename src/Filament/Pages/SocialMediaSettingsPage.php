@@ -30,6 +30,13 @@ class SocialMediaSettingsPage extends Page
     {
         $this->form->fill([
             'networks' => SiteSetting::get('social_networks', []) ?? [],
+            'cta'      => SiteSetting::get('navbar_cta', [
+                'label_ca' => 'Àrea de client',
+                'label_es' => 'Área de cliente',
+                'label_en' => 'Client Area',
+                'url'      => '/area-client',
+                'target'   => '_self',
+            ]),
         ]);
     }
 
@@ -76,15 +83,42 @@ class SocialMediaSettingsPage extends Page
                             ->collapsible()
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Botón CTA del navbar')
+                    ->description('Botón de llamada a la acción que aparece a la derecha del navbar. Configurá el texto en cada idioma, la URL de destino y si abre en la misma pestaña o en una nueva.')
+                    ->schema([
+                        TextInput::make('cta.label_ca')
+                            ->label('Texto (Catalán)')
+                            ->required(),
+                        TextInput::make('cta.label_es')
+                            ->label('Texto (Español)')
+                            ->required(),
+                        TextInput::make('cta.label_en')
+                            ->label('Texto (English)')
+                            ->required(),
+                        TextInput::make('cta.url')
+                            ->label('URL')
+                            ->required()
+                            ->placeholder('/area-client'),
+                        Select::make('cta.target')
+                            ->label('Abrir enlace')
+                            ->options([
+                                '_self'  => 'Misma pestaña',
+                                '_blank' => 'Nueva pestaña',
+                            ])
+                            ->default('_self')
+                            ->native(false),
+                    ]),
             ]);
     }
 
     public function save(): void
     {
         SiteSetting::set('social_networks', $this->form->getState()['networks'] ?? []);
+        SiteSetting::set('navbar_cta', $this->form->getState()['cta'] ?? []);
 
         Notification::make()
-            ->title('Redes sociales guardadas')
+            ->title('Configuración del navbar guardada')
             ->success()
             ->send();
     }

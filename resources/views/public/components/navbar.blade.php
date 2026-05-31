@@ -12,6 +12,20 @@
 
         $visibleSocials = $socialNetworks->take(3);
         $hiddenSocials  = $socialNetworks->skip(3);
+
+        $navbarCta = SiteSetting::get('navbar_cta');
+        $locale = app()->getLocale();
+
+        // If configured, use that; otherwise fallback to translation + /area-client
+        if ($navbarCta && !empty($navbarCta['url'])) {
+            $ctaLabel  = $navbarCta['label_' . $locale] ?? $navbarCta['label_ca'] ?? '';
+            $ctaUrl    = $navbarCta['url'];
+            $ctaTarget = $navbarCta['target'] ?? '_self';
+        } else {
+            $ctaLabel  = __('messages.nav.cta');
+            $ctaUrl    = LaravelLocalization::getLocalizedURL(app()->getLocale(), '/area-client');
+            $ctaTarget = '_self';
+        }
     @endphp
     <div class="flex justify-between items-center h-20 w-full px-6 md:px-8 max-w-[1280px] mx-auto">
 
@@ -144,10 +158,14 @@
                 </div>
             </div>
 
-            <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), '/contacte') }}"
+            @if($ctaLabel && $ctaUrl)
+            <a href="{{ $ctaUrl }}"
+               target="{{ $ctaTarget }}"
+               @if($ctaTarget === '_blank') rel="noopener noreferrer" @endif
                class="hidden md:inline-flex btn-primary text-sm">
-                {{ __('messages.nav.cta') }}
+                {{ $ctaLabel }}
             </a>
+            @endif
 
             {{-- Mobile burger --}}
             <button @click="open = !open"
@@ -234,12 +252,16 @@
                 </li>
             @endif
 
+            @if($ctaLabel && $ctaUrl)
             <li class="pt-3">
-                <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), '/contacte') }}"
+                <a href="{{ $ctaUrl }}"
+                   target="{{ $ctaTarget }}"
+                   @if($ctaTarget === '_blank') rel="noopener noreferrer" @endif
                    class="btn-primary w-full justify-center text-sm">
-                    {{ __('messages.nav.cta') }}
+                    {{ $ctaLabel }}
                 </a>
             </li>
+            @endif
         </ul>
     </div>
 </header>

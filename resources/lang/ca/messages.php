@@ -8,7 +8,7 @@ return [
         'team'     => 'Equip',
         'contact'  => 'Contacte',
         'offices'  => 'Oficines',
-        'cta'          => 'Sol·licitar consulta',
+        'cta'          => 'Àrea de client',
         'search'       => 'Cercar',
         'more_socials' => 'Més xarxes socials',
     ],

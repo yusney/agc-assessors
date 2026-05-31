@@ -8,7 +8,7 @@ return [
         'team'     => 'Team',
         'contact'  => 'Contact',
         'offices'  => 'Offices',
-        'cta'          => 'Request consultation',
+        'cta'          => 'Client Area',
         'search'       => 'Search',
         'more_socials' => 'More social networks',
     ],

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficesController;
 use App\Http\Controllers\Public\PageController;
@@ -42,6 +43,11 @@ Route::group(
 
         Route::get('/contacte', [ContactController::class, 'index'])->name('contact');
         Route::post('/contacte', [ContactController::class, 'store'])->name('contact.store');
+
+        Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+        Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribeForm'])->name('newsletter.unsubscribe.form');
+        Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribeByForm'])->name('newsletter.unsubscribe.process');
+        Route::get('/unsubscribe/{email}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
         Route::get(LaravelLocalization::transRoute('routes.offices'), [OfficesController::class, 'index'])->name('offices.index');
 

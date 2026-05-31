@@ -136,4 +136,10 @@ return [
         'marketing_text'   => 'S\'utilitzen per mostrar publicitat rellevant segons els teus interessos i mesurar l\'eficàcia de les campanyes publicitàries.',
         'learn_more'       => 'Política de cookies',
     ],
+    'trust' => [
+        'une_title'          => 'UNE 420001',
+        'une_subtitle'       => 'Qualitat certificada',
+        'experience_title'   => '+25 anys',
+        'experience_subtitle'=> 'd\'experiència professional',
+    ],
 ];

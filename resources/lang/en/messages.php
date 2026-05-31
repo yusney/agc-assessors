@@ -137,4 +137,10 @@ return [
         'marketing_text'   => 'Used to display relevant advertising based on your interests and measure the effectiveness of advertising campaigns.',
         'learn_more'       => 'Cookie policy',
     ],
+    'trust' => [
+        'une_title'          => 'UNE 420001',
+        'une_subtitle'       => 'Certified quality',
+        'experience_title'   => '+25 years',
+        'experience_subtitle'=> 'of professional experience',
+    ],
 ];

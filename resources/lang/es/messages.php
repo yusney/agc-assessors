@@ -137,4 +137,10 @@ return [
         'marketing_text'   => 'Se utilizan para mostrar publicidad relevante según tus intereses y medir la eficacia de las campañas publicitarias.',
         'learn_more'       => 'Política de cookies',
     ],
+    'trust' => [
+        'une_title'          => 'UNE 420001',
+        'une_subtitle'       => 'Calidad certificada',
+        'experience_title'   => '+25 años',
+        'experience_subtitle'=> 'de experiencia profesional',
+    ],
 ];

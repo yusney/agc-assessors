@@ -38,6 +38,8 @@
         @yield('content')
     </main>
 
+    @include('public.components.trust-bar')
+
     @include('public.components.footer')
     @include('public.components.cookie-banner')
 

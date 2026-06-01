@@ -17,9 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
             'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
-            'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LocaleViewPath::class,
+            'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
             'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
-            'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

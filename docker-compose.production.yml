@@ -6,9 +6,9 @@
 
 services:
   php:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile.production
+    # Imagen pre-compilada por GitHub Actions CI → GitHub Container Registry (GHCR)
+    # Actualizarse automáticamente con cada push a main
+    image: ghcr.io/yusney/agc-assessors:latest
     restart: unless-stopped
     ports:
       - "8080:8080"

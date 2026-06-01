@@ -6,53 +6,66 @@
 @section('content')
 
 {{-- HERO SECTION --}}
-<section class="relative w-full min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden bg-[#00346f]">
-    @if($service->coverUrl())
-    <div class="absolute inset-0 z-0">
-        <img src="{{ $service->coverUrl() }}"
-             alt="{{ $service->name()->get(app()->getLocale()) }}"
-             class="w-full h-full object-cover opacity-30 mix-blend-overlay">
-        <div class="absolute inset-0 bg-gradient-to-r from-[#00346f]/90 to-[#00346f]/60"></div>
-    </div>
-    @endif
-
-    <div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 relative z-10 py-20">
+<section class="w-full bg-[#f9f9ff] border-b border-[#E2E8F0]">
+    <div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-24">
         {{-- Breadcrumb --}}
         <a href="{{ route('services.index') }}"
-           class="inline-flex items-center text-white/70 hover:text-white text-[14px]
-                  transition-colors group mb-8">
+           class="inline-flex items-center text-[#64748B] hover:text-[#00346f] text-[14px]
+                  transition-colors group mb-10">
             <span class="material-symbols-outlined text-[18px] mr-1.5
                          group-hover:-translate-x-1 transition-transform">arrow_back</span>
             {{ __('messages.services.back') }}
         </a>
 
-        <div class="max-w-[700px]">
-            <span class="inline-block bg-[#00B4D8]/20 text-white px-3 py-1.5 rounded-lg mb-6
-                         text-[13px] font-medium tracking-wider uppercase">
-                {{ __('messages.services.title') }}
-            </span>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {{-- Text --}}
+            <div class="order-2 lg:order-1">
+                <span class="inline-block text-[#00346f] text-[13px] font-semibold uppercase tracking-[0.22em] mb-5">
+                    {{ __('messages.services.title') }}
+                </span>
 
-            <h1 class="font-headline text-[40px] md:text-[56px] lg:text-[64px] text-white
-                       mb-6 leading-[1.05] tracking-tight font-bold">
-                {{ $service->name()->get(app()->getLocale()) }}
-            </h1>
+                <h1 class="font-headline text-[36px] md:text-[48px] lg:text-[56px] text-[#1E293B]
+                           mb-6 leading-[1.05] tracking-tight font-bold">
+                    {{ $service->name()->get(app()->getLocale()) }}
+                </h1>
 
-            @php
-                $desc = $service->description()->get(app()->getLocale());
-                $excerpt = Str::limit(strip_tags($desc), 180);
-            @endphp
+                @php
+                    $desc = $service->description()->get(app()->getLocale());
+                    $excerpt = Str::limit(strip_tags($desc), 200);
+                @endphp
 
-            @if($excerpt)
-            <p class="text-white/80 text-[18px] md:text-[20px] leading-relaxed font-light max-w-[540px]">
-                {{ $excerpt }}
-            </p>
+                @if($excerpt)
+                <p class="text-[#64748B] text-[18px] md:text-[20px] leading-relaxed font-light max-w-[480px] mb-8">
+                    {{ $excerpt }}
+                </p>
+                @endif
+
+                <a href="#content" class="inline-flex items-center gap-2 text-[#00346f] font-medium text-[15px]
+                   hover:gap-3 transition-all">
+                    {{ __('messages.services.cta') }}
+                    <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+                </a>
+            </div>
+
+            {{-- Image --}}
+            @if($service->coverUrl())
+            <div class="order-1 lg:order-2">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-[#00346f]/5 rounded-[2rem] rotate-2 scale-105"></div>
+                    <div class="relative rounded-[2rem] overflow-hidden shadow-xl border border-[#E2E8F0]">
+                        <img src="{{ $service->coverUrl() }}"
+                             alt="{{ $service->name()->get(app()->getLocale()) }}"
+                             class="w-full aspect-[4/3] object-cover">
+                    </div>
+                </div>
+            </div>
             @endif
         </div>
     </div>
 </section>
 
 {{-- CONTENT SECTION --}}
-<section class="w-full bg-white">
+<section class="w-full bg-white" id="content">
     <article class="max-w-[720px] mx-auto px-6 md:px-8 py-16 md:py-24">
 
         {{-- Rich description --}}
@@ -80,32 +93,24 @@
 </section>
 
 {{-- CTA SECTION --}}
-<section class="w-full bg-[#00346f] relative overflow-hidden">
-    {{-- Decorative elements --}}
-    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-[#00B4D8] opacity-20 rounded-full blur-[100px]"></div>
-    <div class="absolute -left-20 -top-20 w-80 h-80 bg-[#004a99] opacity-40 rounded-full blur-[100px]"></div>
-
-    <div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-20 md:py-24 relative z-10">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-10">
-            <div class="max-w-[600px] text-center md:text-left">
-                <h2 class="font-headline text-[32px] md:text-[40px] text-white mb-4
-                           leading-tight font-semibold">
-                    {{ __('messages.services.contact_cta') }}
-                </h2>
-                <p class="text-white/70 text-[18px] leading-relaxed font-light">
-                    {{ __('messages.home.hero_subtitle') }}
-                </p>
-            </div>
-            <div class="shrink-0">
-                <a href="{{ route('contact') }}"
-                   class="inline-flex items-center gap-2 bg-[#00B4D8] text-white
-                          px-8 py-4 rounded-xl font-semibold text-[16px]
-                          hover:bg-white hover:text-[#00346f]
-                          transition-all duration-300 shadow-xl">
-                    {{ __('messages.services.contact_cta') }}
-                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                </a>
-            </div>
+<section class="w-full bg-white border-t border-[#E2E8F0]">
+    <div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-20 md:py-24">
+        <div class="max-w-[800px] mx-auto text-center">
+            <h2 class="font-headline text-[32px] md:text-[40px] text-[#1E293B] mb-4
+                       leading-tight font-semibold tracking-tight">
+                {{ __('messages.services.contact_cta') }}
+            </h2>
+            <p class="text-[#64748B] text-[18px] leading-relaxed font-light mb-10 max-w-[560px] mx-auto">
+                {{ __('messages.home.hero_subtitle') }}
+            </p>
+            <a href="{{ route('contact') }}"
+               class="inline-flex items-center gap-2 bg-[#00346f] text-white
+                      px-10 py-4 rounded-xl font-semibold text-[16px]
+                      hover:bg-[#004a99]
+                      transition-all duration-300 shadow-lg shadow-[#00346f]/10">
+                {{ __('messages.services.contact_cta') }}
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
         </div>
     </div>
 </section>

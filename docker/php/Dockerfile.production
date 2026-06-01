@@ -6,6 +6,9 @@
 
 FROM serversideup/php:8.4-fpm-nginx
 
+LABEL org.opencontainers.image.source="https://github.com/yusney/agc-assessors"
+LABEL org.opencontainers.image.description="AGC Assessors - Laravel production image"
+
 USER root
 
 # 1. Extensiones PHP necesarias para producción

@@ -42,9 +42,9 @@
             {{ __('messages.services.back') }}
         </a>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="grid grid-cols-1 {{ $service->coverUrl() ? 'lg:grid-cols-2' : '' }} gap-12 lg:gap-20 items-center">
             {{-- Text --}}
-            <div class="order-2 lg:order-1">
+            <div class="order-2 lg:order-1 {{ $service->coverUrl() ? '' : 'lg:col-span-2 max-w-[720px] mx-auto text-center' }}">
                 <span class="inline-block text-[#00346f] text-[13px] font-semibold uppercase tracking-[0.22em] mb-5
                              animate-fade-in-up delay-100">
                     {{ __('messages.services.title') }}

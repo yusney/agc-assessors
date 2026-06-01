@@ -1,0 +1,34 @@
+# =============================================================================
+# AGC Assessors - Docker Compose (Producción)
+# Stack mínimo: PHP 8.4 + Nginx + PostgreSQL externo (gestionado por Dokploy)
+# Sin Redis, sin Queue Worker, sin Scheduler
+# =============================================================================
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.production
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PHP_MEMORY_LIMIT: "512M"
+      PHP_UPLOAD_MAX_FILE_SIZE: "64M"
+      PHP_POST_MAX_SIZE: "64M"
+      PHP_MAX_EXECUTION_TIME: "300"
+      PHP_OPCACHE_ENABLE: "1"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      # Solo persistimos storage (CVs, uploads, logs) y cache fuera del contenedor
+      - agc-storage:/var/www/html/storage
+      - agc-cache:/var/www/html/bootstrap/cache
+
+volumes:
+  agc-storage:
+  agc-cache:

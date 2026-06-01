@@ -1,0 +1,67 @@
+# =============================================================================
+# AGC Assessors - .dockerignore
+# Evita copiar archivos innecesarios a la imagen Docker
+# =============================================================================
+
+# Variables de entorno (Dokploy las inyecta)
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencias (se instalan DENTRO del contenedor)
+node_modules
+vendor
+
+# Tests
+phpunit.xml
+phpunit.xml.dist
+pest.xml
+tests/
+testsuite/
+
+# Caches locales
+.phpunit.cache
+.phpunit.result.cache
+.php-cs-fixer.cache
+psalm.xml
+phpstan.neon
+phpstan.neon.dist
+
+# IDEs / Editores
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Docker local (no producción)
+docker-compose.yml
+docker-compose.*.yml
+.devcontainer/
+
+# Logs y archivos temporales
+*.log
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*
+
+# Documentación (no necesaria en runtime)
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+*.md
+
+# Otros
+.github
+openspec/

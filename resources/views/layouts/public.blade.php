@@ -10,7 +10,7 @@
     @hasSection('seo_canonical')
         <link rel="canonical" href="@yield('seo_canonical')">
     @else
-        <link rel="canonical" href="{{ url()->current() }}">
+        <link rel="canonical" href="{{ $canonicalUrl ?? url()->current() }}">
     @endif
     <meta property="og:title" content="@yield('seo_title', config('app.name'))">
     <meta property="og:description" content="@yield('seo_description', '')">

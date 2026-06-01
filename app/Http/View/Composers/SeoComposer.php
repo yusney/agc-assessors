@@ -19,16 +19,91 @@ final class SeoComposer
             $schemas[] = $organization;
         }
 
+        $localBusiness = $this->getLocalBusinessSchema();
+        if ($localBusiness !== []) {
+            $schemas[] = $localBusiness;
+        }
+
         $website = $this->getWebsiteSchema();
         if ($website !== []) {
             $schemas[] = $website;
         }
 
+        $breadcrumbs = $view->getData()['breadcrumbs'] ?? [];
+        if ($breadcrumbs !== []) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema($breadcrumbs);
+            if ($breadcrumbSchema !== []) {
+                $schemas[] = $breadcrumbSchema;
+            }
+        }
+
         $view->with('schemas', $schemas);
         $view->with('ogImage', $this->getOgImage());
+        $view->with('canonicalUrl', $this->getCanonicalUrl());
+    }
+
+    private function getCanonicalUrl(): string
+    {
+        return LaravelLocalization::getLocalizedURL(
+            app()->getLocale(),
+            url()->current(),
+            [],
+            true
+        );
     }
 
     public function getOrganizationSchema(): array
+    {
+        /** @var array<string,mixed>|null $contact */
+        $contact = SiteSetting::get('contact');
+
+        $name  = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
+        $url   = config('app.url', 'https://agcassessors.com');
+        $logo  = $this->getLogoUrl();
+        $phone = is_array($contact) ? ($contact['phone'] ?? null) : null;
+        $email = is_array($contact) ? ($contact['email'] ?? null) : null;
+
+        if (empty($name) || empty($url)) {
+            return [];
+        }
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type'    => 'AccountingService',
+            'name'     => $name,
+            'url'      => $url,
+        ];
+
+        if ($logo) {
+            $schema['logo'] = $logo;
+        }
+
+        if ($phone) {
+            $schema['telephone'] = $phone;
+        }
+
+        if ($email) {
+            $schema['email'] = $email;
+        }
+
+        /** @var array<int,array<string,mixed>>|null $offices */
+        $offices = SiteSetting::get('organization_addresses');
+        if (is_array($offices) && $offices !== []) {
+            $schema['address'] = array_map(
+                static fn (array $o): array => [
+                    '@type'           => 'PostalAddress',
+                    'streetAddress'   => $o['street'] ?? '',
+                    'addressLocality' => $o['city']   ?? '',
+                    'addressCountry'  => $o['country'] ?? 'ES',
+                ],
+                $offices
+            );
+        }
+
+        return $schema;
+    }
+
+    public function getLocalBusinessSchema(): array
     {
         /** @var array<string,mixed>|null $contact */
         $contact = SiteSetting::get('contact');

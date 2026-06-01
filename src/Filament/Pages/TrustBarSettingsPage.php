@@ -6,16 +6,16 @@ namespace AGC\Filament\Pages;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
-use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
-class TrustBarSettingsPage extends Page
+final class TrustBarSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
@@ -26,33 +26,39 @@ class TrustBarSettingsPage extends Page
     /** @var array<string, mixed> */
     public ?array $data = [];
 
+    private const DEFAULT_BADGES = [
+        [
+            'sort_order'     => 1,
+            'icon'           => 'verified',
+            'image_media_id' => null,
+            'url'            => '',
+            'is_active'      => true,
+            'title_ca'       => 'UNE 420001',
+            'subtitle_ca'    => 'Qualitat certificada',
+            'title_es'       => 'UNE 420001',
+            'subtitle_es'    => 'Calidad certificada',
+            'title_en'       => 'UNE 420001',
+            'subtitle_en'    => 'Certified quality',
+        ],
+        [
+            'sort_order'     => 2,
+            'icon'           => 'history',
+            'image_media_id' => null,
+            'url'            => '',
+            'is_active'      => true,
+            'title_ca'       => '+25 anys',
+            'subtitle_ca'    => "d'experiència professional",
+            'title_es'       => '+25 años',
+            'subtitle_es'    => 'de experiencia profesional',
+            'title_en'       => '+25 years',
+            'subtitle_en'    => 'of professional experience',
+        ],
+    ];
+
     public function mount(): void
     {
         $this->form->fill([
-            'badges' => SiteSetting::get('trust_bar', [
-                [
-                    'icon'            => 'verified',
-                    'title_ca'        => 'UNE 420001',
-                    'title_es'        => 'UNE 420001',
-                    'title_en'        => 'UNE 420001',
-                    'subtitle_ca'     => 'Qualitat certificada',
-                    'subtitle_es'     => 'Calidad certificada',
-                    'subtitle_en'     => 'Certified quality',
-                    'url'             => '',
-                    'is_active'       => true,
-                ],
-                [
-                    'icon'            => 'history',
-                    'title_ca'        => '+25 anys',
-                    'title_es'        => '+25 años',
-                    'title_en'        => '+25 years',
-                    'subtitle_ca'     => 'd\'experiència professional',
-                    'subtitle_es'     => 'de experiencia profesional',
-                    'subtitle_en'     => 'of professional experience',
-                    'url'             => '',
-                    'is_active'       => true,
-                ],
-            ]),
+            'badges' => SiteSetting::get('trust_bar', self::DEFAULT_BADGES),
         ]);
     }
 
@@ -62,61 +68,99 @@ class TrustBarSettingsPage extends Page
             ->statePath('data')
             ->components([
                 Section::make('Badges de confianza')
-                    ->description('Se muestran en una barra horizontal justo encima del footer. Cada badge puede tener un icono de Material Symbols o una imagen subida desde la biblioteca de medios.')
+                    ->description('Se muestran en una barra horizontal justo encima del footer. Arrastrá para reordenar, o usá el número de orden.')
                     ->schema([
                         Repeater::make('badges')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icono (Material Symbols)')
-                                    ->placeholder('verified')
-                                    ->helperText('Si no se sube imagen, se usa este icono. Ej: verified, shield, award_star, stars')
-                                    ->columnSpan(1),
 
-                                CuratorPicker::make('image_media_id')
-                                    ->label('O subir imagen')
-                                    ->helperText('La imagen tiene prioridad sobre el icono.')
-                                    ->columnSpan(1),
+                                // ── Fila 1: Orden · Icono · Imagen · Visible ──────────────────
+                                Section::make('Configuración')
+                                    ->compact()
+                                    ->schema([
+                                        TextInput::make('sort_order')
+                                            ->label('Orden')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->required()
+                                            ->columnSpan(1),
 
-                                TextInput::make('title_ca')
-                                    ->label('Título (Catalán)')
-                                    ->required()
-                                    ->columnSpan(1),
-                                TextInput::make('title_es')
-                                    ->label('Título (Español)')
-                                    ->required()
-                                    ->columnSpan(1),
-                                TextInput::make('title_en')
-                                    ->label('Título (English)')
-                                    ->required()
-                                    ->columnSpan(1),
+                                        TextInput::make('icon')
+                                            ->label('Icono Material Symbols')
+                                            ->placeholder('verified')
+                                            ->helperText('Ej: verified, shield, award_star, history')
+                                            ->columnSpan(2),
 
-                                TextInput::make('subtitle_ca')
-                                    ->label('Subtítulo (Catalán)')
-                                    ->columnSpan(1),
-                                TextInput::make('subtitle_es')
-                                    ->label('Subtítulo (Español)')
-                                    ->columnSpan(1),
-                                TextInput::make('subtitle_en')
-                                    ->label('Subtítulo (English)')
-                                    ->columnSpan(1),
+                                        CuratorPicker::make('image_media_id')
+                                            ->label('Imagen (anula el icono)')
+                                            ->columnSpan(2),
 
-                                TextInput::make('url')
-                                    ->label('URL (opcional)')
-                                    ->url()
-                                    ->placeholder('https://www.une420001.com/')
-                                    ->helperText('Si se completa, el badge será un enlace clickeable.')
-                                    ->columnSpan(2),
+                                        TextInput::make('url')
+                                            ->label('Enlace (opcional)')
+                                            ->url()
+                                            ->placeholder('https://...')
+                                            ->helperText('Si se completa, el badge es clickeable.')
+                                            ->columnSpan(2),
 
-                                Toggle::make('is_active')
-                                    ->label('Visible')
-                                    ->default(true)
-                                    ->columnSpan(1),
+                                        Toggle::make('is_active')
+                                            ->label('Visible')
+                                            ->default(true)
+                                            ->columnSpan(1),
+                                    ])
+                                    ->columns(8)
+                                    ->columnSpanFull(),
+
+                                // ── Fila 2: Textos por idioma en tabs ────────────────────────
+                                Tabs::make('Textos por idioma')
+                                    ->tabs([
+                                        Tabs\Tab::make('🇪🇸 Català')
+                                            ->schema([
+                                                TextInput::make('title_ca')
+                                                    ->label('Títol principal')
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                                TextInput::make('subtitle_ca')
+                                                    ->label('Subtítol')
+                                                    ->columnSpan(1),
+                                            ])
+                                            ->columns(2),
+
+                                        Tabs\Tab::make('🇪🇸 Español')
+                                            ->schema([
+                                                TextInput::make('title_es')
+                                                    ->label('Título principal')
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                                TextInput::make('subtitle_es')
+                                                    ->label('Subtítulo')
+                                                    ->columnSpan(1),
+                                            ])
+                                            ->columns(2),
+
+                                        Tabs\Tab::make('🇬🇧 English')
+                                            ->schema([
+                                                TextInput::make('title_en')
+                                                    ->label('Main title')
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                                TextInput::make('subtitle_en')
+                                                    ->label('Subtitle')
+                                                    ->columnSpan(1),
+                                            ])
+                                            ->columns(2),
+                                    ])
+                                    ->columnSpanFull(),
+
                             ])
-                            ->columns(3)
+                            ->columns(1)
                             ->addActionLabel('Añadir badge')
-                            ->reorderable()
+                            ->reorderable('sort_order')
                             ->collapsible()
+                            ->itemLabel(fn (array $state): ?string =>
+                                ($state['title_ca'] ?? null)
+                                    ? ($state['title_ca'] . ($state['subtitle_ca'] ? ' — ' . $state['subtitle_ca'] : ''))
+                                    : 'Badge sin título'
+                            )
                             ->columnSpanFull(),
                     ]),
             ]);
@@ -124,20 +168,17 @@ class TrustBarSettingsPage extends Page
 
     public function save(): void
     {
-        SiteSetting::set('trust_bar', $this->form->getState()['badges'] ?? []);
+        $badges = $this->form->getState()['badges'] ?? [];
+
+        usort($badges, fn (array $a, array $b): int =>
+            ($a['sort_order'] ?? 0) <=> ($b['sort_order'] ?? 0)
+        );
+
+        SiteSetting::set('trust_bar', $badges);
 
         Notification::make()
             ->title('Configuración de la trust bar guardada')
             ->success()
             ->send();
-    }
-
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('save')
-                ->label('Guardar')
-                ->submit('save'),
-        ];
     }
 }

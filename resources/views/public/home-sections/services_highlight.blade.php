@@ -10,7 +10,7 @@
 
 @if($items->isNotEmpty() && $serviceMap->isNotEmpty())
 <section
-    class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-24 md:py-32 bg-white rounded-[2rem]"
+    class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20 bg-white rounded-[2rem]"
     x-data="{
         modalOpen: false,
         modalName: '',
@@ -20,7 +20,7 @@
         modalUrl: ''
     }"
 >
-    <div class="text-center mb-20">
+    <div class="text-center mb-12">
         <h2 class="font-headline text-[36px] md:text-[48px] text-[#0f172a] mb-6 tracking-tight font-semibold">
             {{ $section->localized('title') }}
         </h2>

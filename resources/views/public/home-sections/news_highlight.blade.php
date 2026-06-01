@@ -1,6 +1,6 @@
 @if(!empty($news))
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-24 md:py-32" id="actualitat">
-    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20" id="actualitat">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
         <div class="max-w-2xl">
             <h2 class="font-headline text-[36px] md:text-[56px] text-[#0f172a] mb-4 tracking-tight font-semibold leading-none">
                 {{ $section->localized('title') }}

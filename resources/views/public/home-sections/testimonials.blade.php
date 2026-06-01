@@ -7,7 +7,7 @@
 @endphp
 
 @if($items->isNotEmpty())
-<section class="w-full py-16 md:py-24 bg-[#F8FAFC]">
+<section class="w-full py-14 md:py-20 bg-[#F8FAFC]">
     <div class="max-w-[1280px] mx-auto px-6 md:px-8">
 
         {{-- Section header --}}

@@ -1,4 +1,4 @@
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-20">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-12 md:py-16">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
         {{-- Col izquierda: eyebrow + título --}}

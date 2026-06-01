@@ -37,7 +37,7 @@
     $slidesJson  = json_encode($slides, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
 @endphp
 
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pt-20 pb-16 md:pt-32 md:pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center relative">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pt-16 pb-10 md:pt-24 md:pb-14 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center relative">
 
     {{-- ── Text content (left column) ────────────────────────── --}}
     <div class="lg:col-span-6 space-y-8 relative z-10">

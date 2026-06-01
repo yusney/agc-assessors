@@ -1,7 +1,7 @@
 @php $stats = collect($section->setting('stats', [])); @endphp
 
 @if($stats->isNotEmpty())
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-10 md:py-12" aria-labelledby="stats-heading">
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-8 md:py-10" aria-labelledby="stats-heading">
     <h2 id="stats-heading" class="sr-only">{{ __('messages.stats.title') }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white rounded-[2rem] border border-[#E2E8F0]/50 p-8 md:p-10 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.05)]">
         @foreach($stats as $stat)

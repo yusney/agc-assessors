@@ -31,51 +31,177 @@
 
         {{-- Brand --}}
         <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), '/') }}"
-           class="flex items-center">
+           class="flex items-center flex-shrink-0 mr-6">
             <img src="{{ asset('images/logo.webp') }}"
                  alt="AGC Assessors"
                  class="h-10 w-auto object-contain">
         </a>
 
-        {{-- Desktop nav --}}
-        <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            @foreach($menuItems as $item)
-                @if($item->children->isNotEmpty())
-                    <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
-                        <button @click="dropdownOpen = !dropdownOpen"
-                                class="flex items-center gap-1 nav-link">
-                            {{ $item->getTranslation('label', app()->getLocale()) }}
-                            <span class="material-symbols-outlined text-[16px]"
-                                  :class="dropdownOpen ? 'rotate-180' : ''"
-                                  style="transition: transform .2s">expand_more</span>
-                        </button>
-                        <div x-show="dropdownOpen"
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="opacity-0 scale-95"
-                             x-transition:enter-end="opacity-100 scale-100"
-                             class="absolute left-0 top-full mt-2 w-48 bg-white rounded-xl
-                                    border border-[#E2E8F0] shadow-lg overflow-hidden z-50">
-                            @foreach($item->children as $child)
-                                <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
-                                   target="{{ $child->target }}"
-                                   class="block px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
-                                    {{ $child->getTranslation('label', app()->getLocale()) }}
-                                </a>
-                            @endforeach
-                        </div>
+        {{-- Desktop nav with overflow --}}
+        <nav class="hidden md:flex items-center flex-1 min-w-0 mx-4" aria-label="Main navigation"
+             x-data="{
+                visibleCount: {{ $menuItems->count() }},
+                moreOpen: false,
+                calculateVisible() {
+                    const container = this.$refs.navContainer;
+                    const items = container.querySelectorAll('.nav-item');
+                    const moreBtn = this.$el.querySelector('[x-ref=moreButton]');
+                    
+                    if (!items.length) return;
+                    
+                    // Phase 1: show all items, hide more button, measure
+                    items.forEach(item => item.style.display = '');
+                    if (moreBtn) moreBtn.style.display = 'none';
+                    container.offsetHeight; // force reflow
+                    
+                    const containerWidth = container.offsetWidth;
+                    
+                    let totalWidth = 0;
+                    let count = 0;
+                    
+                    for (let i = 0; i < items.length; i++) {
+                        if (totalWidth + items[i].offsetWidth <= containerWidth) {
+                            totalWidth += items[i].offsetWidth;
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    // If all items fit, done
+                    if (count >= items.length) {
+                        this.visibleCount = items.length;
+                        return;
+                    }
+                    
+                    // Phase 2: need more button — reserve its space and recalculate
+                    if (moreBtn) {
+                        moreBtn.style.display = '';
+                        container.offsetHeight; // force reflow
+                        const moreWidth = moreBtn.offsetWidth;
+                        
+                        totalWidth = 0;
+                        count = 0;
+                        for (let i = 0; i < items.length; i++) {
+                            if (totalWidth + items[i].offsetWidth + moreWidth <= containerWidth) {
+                                totalWidth += items[i].offsetWidth;
+                                count++;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    
+                    this.visibleCount = count;
+                    
+                    // Apply visibility
+                    items.forEach((item, i) => {
+                        item.style.display = i < this.visibleCount ? '' : 'none';
+                    });
+                }
+             }"
+             x-init="$nextTick(() => {
+                 calculateVisible();
+                 if (document.fonts) document.fonts.ready.then(() => calculateVisible());
+                 setTimeout(() => calculateVisible(), 500);
+             })"
+             @resize.window.debounce="calculateVisible()">
+            
+            <div class="flex items-center min-w-0 w-full" x-ref="navContainer">
+                @foreach($menuItems as $index => $item)
+                    <div class="nav-item flex-shrink-0"
+                         data-index="{{ $index }}">
+                        @if($item->children->isNotEmpty())
+                            <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
+                                <button @click="dropdownOpen = !dropdownOpen"
+                                        class="flex items-center gap-1 nav-link whitespace-nowrap px-4">
+                                    {{ $item->getTranslation('label', app()->getLocale()) }}
+                                    <span class="material-symbols-outlined text-[16px]"
+                                          :class="dropdownOpen ? 'rotate-180' : ''"
+                                          style="transition: transform .2s">expand_more</span>
+                                </button>
+                                <div x-show="dropdownOpen"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="absolute left-0 top-full mt-2 w-48 bg-white rounded-xl
+                                            border border-[#E2E8F0] shadow-lg overflow-hidden z-50">
+                                    @foreach($item->children as $child)
+                                        <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
+                                           target="{{ $child->target }}"
+                                           class="block px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
+                                            {{ $child->getTranslation('label', app()->getLocale()) }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                               <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
+                               target="{{ $item->target }}"
+                               class="nav-link px-4 whitespace-nowrap">
+                                {{ $item->getTranslation('label', app()->getLocale()) }}
+                            </a>
+                        @endif
                     </div>
-                @else
-                    <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
-                       target="{{ $item->target }}"
-                       class="nav-link">
-                        {{ $item->getTranslation('label', app()->getLocale()) }}
-                    </a>
-                @endif
-            @endforeach
+                @endforeach
+                
+                {{-- More button --}}
+                <div class="relative flex-shrink-0 px-2" 
+                     x-ref="moreButton"
+                     x-data="{ moreOpen: false }"
+                     @click.outside="moreOpen = false">
+                    <button @click="moreOpen = !moreOpen"
+                            class="flex items-center gap-1 nav-link"
+                            aria-label="{{ __('messages.nav.more_options') }}">
+                        <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+                    </button>
+                    <div x-show="moreOpen"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl
+                                border border-[#E2E8F0] shadow-lg overflow-hidden z-50 py-2"
+                         style="display: none;">
+                        @foreach($menuItems as $index => $item)
+                            <template x-if="{{ $index }} >= visibleCount">
+                                @if($item->children->isNotEmpty())
+                                    <div class="relative" x-data="{ subOpen: false }">
+                                        <button @click="subOpen = !subOpen"
+                                                class="flex items-center justify-between w-full px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
+                                            <span>{{ $item->getTranslation('label', app()->getLocale()) }}</span>
+                                            <span class="material-symbols-outlined text-[16px]" x-show="!subOpen">chevron_right</span>
+                                            <span class="material-symbols-outlined text-[16px]" x-show="subOpen">expand_more</span>
+                                        </button>
+                                        <div x-show="subOpen"
+                                             x-transition:enter="transition ease-out duration-100"
+                                             x-transition:enter-start="opacity-0 -translate-y-1"
+                                             x-transition:enter-end="opacity-100 translate-y-0"
+                                             class="bg-[#f9f9ff] py-1">
+                                            @foreach($item->children as $child)
+                                                <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
+                                                   target="{{ $child->target }}"
+                                                   class="block px-8 py-2 text-[13px] text-[#1E293B] hover:text-[#00346f] transition-colors">
+                                                    {{ $child->getTranslation('label', app()->getLocale()) }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
+                                       target="{{ $item->target }}"
+                                       class="block px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
+                                        {{ $item->getTranslation('label', app()->getLocale()) }}
+                                    </a>
+                                @endif
+                            </template>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </nav>
 
         {{-- Actions --}}
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3" id="navbar-actions">
 
             {{-- Social icons (desktop only, lg+) --}}
             @if($socialNetworks->isNotEmpty())

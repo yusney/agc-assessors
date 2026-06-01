@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+[x-cloak] { display: none !important; }
+
 @theme {
     /* === Fonts === */
     --font-headline: "Outfit", sans-serif;

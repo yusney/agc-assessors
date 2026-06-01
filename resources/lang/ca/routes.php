@@ -2,5 +2,5 @@
 
 return [
     'offices' => 'oficines',
-    'careers' => 'treballa-amb-nosaltres',
+    'careers' => 'work-with-us',
 ];

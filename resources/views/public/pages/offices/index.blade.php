@@ -5,30 +5,47 @@
 
 @section('content')
 
-{{-- Hero --}}
-<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto pt-14 pb-10">
-    <div class="max-w-2xl">
-        <span class="inline-block text-[12px] font-semibold tracking-[0.15em] uppercase text-[#00B4D8] mb-4">
-            AGC Assessors
-        </span>
-        <h1 class="font-headline text-[48px] md:text-[60px] font-semibold text-[#00346f] leading-[1.05] tracking-tight mb-5">
-            {{ __('messages.offices.title') }}
-        </h1>
-        <p class="text-[18px] text-[#424751] leading-relaxed font-light max-w-xl">
-            {{ __('messages.offices.subtitle') }}
-        </p>
+{{-- Hero with Map Background --}}
+<section class="relative w-full overflow-hidden bg-[#f9f9ff]">
+    {{-- Map background --}}
+    <div class="absolute inset-0 z-0 opacity-20">
+        <svg viewBox="0 0 400 400" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00346f" stroke-width="0.5" opacity="0.3"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            {{-- Simplified Catalonia outline --}}
+            <path d="M180,80 L220,85 L260,90 L280,120 L290,160 L285,200 L270,240 L250,270 L220,280 L190,275 L160,260 L140,230 L130,190 L135,150 L150,110 L165,90 Z"
+                  fill="#00346f" opacity="0.1" stroke="#00346f" stroke-width="1"/>
+        </svg>
+    </div>
+
+    <div class="relative z-10 w-full max-w-[1280px] mx-auto px-6 md:px-8 pt-20 pb-16 md:pt-28 md:pb-20">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-5">
+                AGC Assessors
+            </span>
+            <h1 class="font-headline text-[40px] md:text-[56px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-5">
+                {{ __('messages.offices.title') }}
+            </h1>
+            <p class="text-[18px] text-[#64748B] leading-relaxed font-light max-w-xl mx-auto">
+                {{ __('messages.offices.subtitle') }}
+            </p>
+        </div>
     </div>
 </section>
 
-{{-- Map --}}
-<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto mb-20">
-    @if(!empty($officesGeoJson))
+{{-- Map Section --}}
+@if(!empty($officesGeoJson))
+<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto mb-16 -mt-8 relative z-20">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <div id="offices-map-page"
-         class="w-full rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm"
-         style="min-height: 420px;"></div>
+         class="w-full rounded-[2rem] overflow-hidden border border-[#E2E8F0] shadow-lg"
+         style="min-height: 380px;"></div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -52,10 +69,6 @@
                 'style="color:#64748B;font-size:12px;font-weight:600;text-decoration:none;border:1px solid #E2E8F0;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
                 'onmouseover="this.style.borderColor=\'#00346f\';this.style.color=\'#00346f\'" ' +
                 'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.color=\'#64748B\'">{{ __("messages.offices.directions") }}</a>' +
-                '<a href="#office-' + o.id + '" ' +
-                'style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:#00346f;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
-                'onmouseover="this.style.background=\'#00B4D8\'" ' +
-                'onmouseout="this.style.background=\'#00346f\'">{{ __("messages.offices.see_office") }}</a>' +
                 '</div></div>'
             );
             m.on('mouseover', function () { m.openPopup(); });
@@ -71,98 +84,77 @@
         }
     });
     </script>
-    @endif
 </section>
+@endif
 
-{{-- Offices — alternating layout --}}
+{{-- Divider --}}
 @if(!empty($offices))
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pb-28">
-
-    {{-- Divider with count --}}
-    <div class="flex items-center gap-4 mb-16">
+<div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 mb-12">
+    <div class="flex items-center gap-4">
         <div class="h-px flex-1 bg-[#E2E8F0]"></div>
         <span class="text-[13px] font-semibold tracking-[0.12em] uppercase text-[#64748B]">
             {{ count($offices) }} {{ __('messages.offices.offices_count') }}
         </span>
         <div class="h-px flex-1 bg-[#E2E8F0]"></div>
     </div>
+</div>
 
-    <div class="flex flex-col gap-0">
-        @foreach($offices as $i => $office)
-        @php $isEven = $i % 2 === 0; @endphp
-
-        <div id="office-{{ $office->id() }}" class="group relative grid grid-cols-1 lg:grid-cols-2 gap-0 mb-20 lg:mb-28 scroll-mt-24">
-
-            {{-- Image side --}}
-            <div class="{{ $isEven ? 'lg:order-1' : 'lg:order-2' }} relative overflow-hidden rounded-2xl bg-[#e7e8ef] min-h-[320px] lg:min-h-[420px]">
+{{-- Offices Grid --}}
+<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pb-28">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @foreach($offices as $office)
+        <div id="office-{{ $office->id() }}" class="group bg-white rounded-[1.5rem] border border-[#E2E8F0] overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+            {{-- Image --}}
+            <div class="relative h-[220px] overflow-hidden">
                 @if($office->coverUrl())
                     <img src="{{ $office->coverUrl() }}"
                          alt="{{ $office->name()->get(app()->getLocale()) }}"
-                         class="w-full h-full object-cover absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 @else
-                    {{-- Placeholder with city initial --}}
-                    <div class="absolute inset-0 bg-gradient-to-br from-[#00346f]/10 to-[#00B4D8]/20 flex items-center justify-center">
-                        <span class="font-headline text-[120px] font-bold text-[#00346f]/10 select-none leading-none">
+                    <div class="w-full h-full bg-gradient-to-br from-[#00346f]/10 to-[#00B4D8]/20 flex items-center justify-center">
+                        <span class="font-headline text-[80px] font-bold text-[#00346f]/10 select-none">
                             {{ mb_substr($office->city()->get(app()->getLocale()), 0, 1) }}
                         </span>
                     </div>
                 @endif
                 {{-- City badge --}}
-                <div class="absolute bottom-5 {{ $isEven ? 'left-5' : 'right-5' }} bg-white/95 backdrop-blur-md px-4 py-2 rounded-full shadow-sm">
-                    <span class="text-[13px] font-semibold text-[#00346f] tracking-wide">
+                <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm">
+                    <span class="text-[13px] font-semibold text-[#00346f]">
                         {{ $office->city()->get(app()->getLocale()) }}
                     </span>
                 </div>
             </div>
 
-            {{-- Content side --}}
-            <div class="{{ $isEven ? 'lg:order-2 lg:pl-16' : 'lg:order-1 lg:pr-16' }} flex flex-col justify-center pt-8 lg:pt-0">
-
-                {{-- Office number --}}
-                <span class="text-[11px] font-bold tracking-[0.2em] uppercase text-[#00B4D8] mb-3">
-                    {{ str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) }}
-                </span>
-
-                {{-- Name --}}
-                <h2 class="font-headline text-[32px] md:text-[40px] font-semibold text-[#1E293B] leading-tight tracking-tight mb-4">
+            {{-- Content --}}
+            <div class="p-6">
+                <h3 class="font-headline text-[20px] font-semibold text-[#1E293B] mb-3 leading-tight">
                     {{ $office->name()->get(app()->getLocale()) }}
-                </h2>
+                </h3>
 
-                {{-- Accent line --}}
-                <div class="w-12 h-[3px] bg-[#00B4D8] mb-6 rounded-full"></div>
-
-                {{-- Description --}}
-                @if($office->description()->get(app()->getLocale()))
-                    <p class="text-[16px] text-[#424751] leading-relaxed font-light mb-8">
-                        {{ $office->description()->get(app()->getLocale()) }}
-                    </p>
-                @endif
-
-                {{-- Contact details --}}
-                <div class="flex flex-col gap-3 mb-8">
-                    <div class="flex items-start gap-3">
+                {{-- Contact info --}}
+                <div class="flex flex-col gap-2.5 mb-6">
+                    <div class="flex items-start gap-2.5">
                         <span class="material-symbols-outlined text-[18px] text-[#00B4D8] mt-0.5 flex-shrink-0">location_on</span>
-                        <span class="text-[15px] text-[#424751] leading-snug">
-                            {{ $office->address()->get(app()->getLocale()) }},
-                            {{ $office->city()->get(app()->getLocale()) }}
+                        <span class="text-[14px] text-[#424751] leading-snug">
+                            {{ $office->address()->get(app()->getLocale()) }}
                         </span>
                     </div>
 
                     @if($office->phone())
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5">
                         <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0">call</span>
                         <a href="tel:{{ $office->phone() }}"
-                           class="text-[15px] text-[#424751] hover:text-[#00346f] transition-colors font-medium">
+                           class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors">
                             {{ $office->phone() }}
                         </a>
                     </div>
                     @endif
 
                     @if($office->email())
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5">
                         <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0">mail</span>
                         <a href="mailto:{{ $office->email() }}"
-                           class="text-[15px] text-[#424751] hover:text-[#00346f] transition-colors">
+                           class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors">
                             {{ $office->email() }}
                         </a>
                     </div>
@@ -180,28 +172,22 @@
                 @endif
             </div>
         </div>
-
-        {{-- Separator between offices (not after last) --}}
-        @if(!$loop->last)
-        <div class="h-px bg-[#E2E8F0] mb-20 lg:mb-28"></div>
-        @endif
-
         @endforeach
     </div>
 </section>
 @endif
 
-{{-- Scroll to anchor on load (from home map click) --}}
+{{-- Scroll to anchor on load --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     if (window.location.hash) {
         var el = document.querySelector(window.location.hash);
         if (el) {
             setTimeout(function () {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                el.classList.add('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-2xl');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-[1.5rem]');
                 setTimeout(function () {
-                    el.classList.remove('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-2xl');
+                    el.classList.remove('ring-2', 'ring-[#00B4D8]', 'ring-offset-4', 'rounded-[1.5rem]');
                 }, 2500);
             }, 300);
         }

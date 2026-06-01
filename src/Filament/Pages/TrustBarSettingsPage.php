@@ -154,7 +154,7 @@ final class TrustBarSettingsPage extends Page
                             ])
                             ->columns(1)
                             ->addActionLabel('Añadir badge')
-                            ->reorderable('sort_order')
+                            ->reorderable()
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string =>
                                 ($state['title_ca'] ?? null)

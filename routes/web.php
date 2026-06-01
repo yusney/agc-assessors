@@ -8,6 +8,7 @@ use App\Http\Controllers\Public\OfficesController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\ServicesController;
 use App\Http\Controllers\Public\TeamController;
+use App\Http\Controllers\Public\WorkWithUsController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -50,6 +51,9 @@ Route::group(
         Route::get('/unsubscribe/{email}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
         Route::get(LaravelLocalization::transRoute('routes.offices'), [OfficesController::class, 'index'])->name('offices.index');
+
+        Route::get(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'index'])->name('careers.index');
+        Route::post(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'store'])->name('careers.store')->middleware('throttle:3,60');
 
         Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
     }

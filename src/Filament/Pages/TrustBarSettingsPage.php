@@ -74,85 +74,90 @@ final class TrustBarSettingsPage extends Page
                             ->hiddenLabel()
                             ->schema([
 
-                                // ── Fila 1: Orden · Icono · Imagen · Visible ──────────────────
-                                Section::make('Configuración')
+                                // ── Columna izquierda: config + idiomas ───────────────────────
+                                Section::make()
                                     ->compact()
                                     ->schema([
-                                        TextInput::make('sort_order')
-                                            ->label('Orden')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->required()
-                                            ->columnSpan(1),
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextInput::make('sort_order')
+                                                    ->label('Orden')
+                                                    ->numeric()
+                                                    ->default(0)
+                                                    ->required()
+                                                    ->columnSpan(1),
 
+                                                TextInput::make('url')
+                                                    ->label('Enlace (opcional)')
+                                                    ->url()
+                                                    ->placeholder('https://...')
+                                                    ->helperText('Si se completa, el badge es clickeable.')
+                                                    ->columnSpan(1),
+
+                                                Toggle::make('is_active')
+                                                    ->label('Visible')
+                                                    ->default(true)
+                                                    ->columnSpan(1),
+                                            ]),
+
+                                        Tabs::make('Textos por idioma')
+                                            ->tabs([
+                                                Tabs\Tab::make('🏳️ Català')
+                                                    ->schema([
+                                                        TextInput::make('title_ca')
+                                                            ->label('Títol principal')
+                                                            ->required()
+                                                            ->columnSpan(1),
+                                                        TextInput::make('subtitle_ca')
+                                                            ->label('Subtítol')
+                                                            ->columnSpan(1),
+                                                    ])
+                                                    ->columns(2),
+                                                Tabs\Tab::make('🇪🇸 Español')
+                                                    ->schema([
+                                                        TextInput::make('title_es')
+                                                            ->label('Título principal')
+                                                            ->required()
+                                                            ->columnSpan(1),
+                                                        TextInput::make('subtitle_es')
+                                                            ->label('Subtítulo')
+                                                            ->columnSpan(1),
+                                                    ])
+                                                    ->columns(2),
+                                                Tabs\Tab::make('🇬🇧 English')
+                                                    ->schema([
+                                                        TextInput::make('title_en')
+                                                            ->label('Main title')
+                                                            ->required()
+                                                            ->columnSpan(1),
+                                                        TextInput::make('subtitle_en')
+                                                            ->label('Subtitle')
+                                                            ->columnSpan(1),
+                                                    ])
+                                                    ->columns(2),
+                                            ]),
+                                    ])
+                                    ->columnSpan(2),
+
+                                // ── Columna derecha: icono + imagen ───────────────────────────
+                                Section::make('Visual')
+                                    ->compact()
+                                    ->schema([
                                         TextInput::make('icon')
-                                            ->label('Icono Material Symbols')
+                                            ->label('Icono (Material Symbols)')
                                             ->placeholder('verified')
-                                            ->helperText('Ej: verified, shield, award_star, history')
-                                            ->columnSpan(2),
+                                            ->helperText('Ej: verified, shield, award_star')
+                                            ->columnSpanFull(),
 
                                         CuratorPicker::make('image_media_id')
                                             ->label('Imagen (anula el icono)')
-                                            ->columnSpan(2),
-
-                                        TextInput::make('url')
-                                            ->label('Enlace (opcional)')
-                                            ->url()
-                                            ->placeholder('https://...')
-                                            ->helperText('Si se completa, el badge es clickeable.')
-                                            ->columnSpan(2),
-
-                                        Toggle::make('is_active')
-                                            ->label('Visible')
-                                            ->default(true)
-                                            ->columnSpan(1),
+                                            ->helperText('Si subís imagen, el icono se ignora.')
+                                            ->columnSpanFull(),
                                     ])
-                                    ->columns(8)
-                                    ->columnSpanFull(),
-
-                                // ── Fila 2: Textos por idioma en tabs ────────────────────────
-                                Tabs::make('Textos por idioma')
-                                    ->tabs([
-                                        Tabs\Tab::make('🇪🇸 Català')
-                                            ->schema([
-                                                TextInput::make('title_ca')
-                                                    ->label('Títol principal')
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                TextInput::make('subtitle_ca')
-                                                    ->label('Subtítol')
-                                                    ->columnSpan(1),
-                                            ])
-                                            ->columns(2),
-
-                                        Tabs\Tab::make('🇪🇸 Español')
-                                            ->schema([
-                                                TextInput::make('title_es')
-                                                    ->label('Título principal')
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                TextInput::make('subtitle_es')
-                                                    ->label('Subtítulo')
-                                                    ->columnSpan(1),
-                                            ])
-                                            ->columns(2),
-
-                                        Tabs\Tab::make('🇬🇧 English')
-                                            ->schema([
-                                                TextInput::make('title_en')
-                                                    ->label('Main title')
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                TextInput::make('subtitle_en')
-                                                    ->label('Subtitle')
-                                                    ->columnSpan(1),
-                                            ])
-                                            ->columns(2),
-                                    ])
-                                    ->columnSpanFull(),
+                                    ->columnSpan(1),
 
                             ])
-                            ->columns(1)
+                            ->columns(3)
                             ->addActionLabel('Añadir badge')
                             ->reorderable()
                             ->collapsible()

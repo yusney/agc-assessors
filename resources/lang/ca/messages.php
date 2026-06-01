@@ -142,4 +142,7 @@ return [
         'experience_title'   => '+25 anys',
         'experience_subtitle'=> 'd\'experiència professional',
     ],
+    'stats' => [
+        'title' => 'AGC Assessors en xifres',
+    ],
 ];

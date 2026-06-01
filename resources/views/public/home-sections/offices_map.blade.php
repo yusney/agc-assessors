@@ -37,11 +37,14 @@
     @endphp
 
     @if(!empty($officesForMap))
+    @push('head')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    @endpush
 
     <div id="offices-map-home" class="w-full rounded-2xl overflow-hidden mb-10" style="min-height: 400px;"></div>
 
+    @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var offices = @json($officesForMap);
@@ -87,6 +90,7 @@
         }
     });
     </script>
+    @endpush
     @endif
 
     {{-- Office card grid (max $limit offices) --}}

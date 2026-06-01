@@ -143,4 +143,7 @@ return [
         'experience_title'   => '+25 years',
         'experience_subtitle'=> 'of professional experience',
     ],
+    'stats' => [
+        'title' => 'AGC Assessors by the numbers',
+    ],
 ];

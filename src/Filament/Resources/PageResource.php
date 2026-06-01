@@ -82,8 +82,25 @@ class PageResource extends Resource
                             Section::make('SEO')
                                 ->collapsible()
                                 ->schema([
-                                    TextInput::make('seo_title.ca')->label('Título SEO (ca)')->maxLength(70),
-                                    Textarea::make('seo_description.ca')->label('Descripción SEO (ca)')->maxLength(160)->rows(2),
+                                    Tabs::make('SEO por idioma')
+                                        ->tabs([
+                                            Tabs\Tab::make('Català')
+                                                ->schema([
+                                                    TextInput::make('seo_title.ca')->label('Título SEO (ca)')->maxLength(70),
+                                                    Textarea::make('seo_description.ca')->label('Descripción SEO (ca)')->maxLength(160)->rows(2),
+                                                ]),
+                                            Tabs\Tab::make('Español')
+                                                ->schema([
+                                                    TextInput::make('seo_title.es')->label('Título SEO (es)')->maxLength(70),
+                                                    Textarea::make('seo_description.es')->label('Descripción SEO (es)')->maxLength(160)->rows(2),
+                                                ]),
+                                            Tabs\Tab::make('English')
+                                                ->schema([
+                                                    TextInput::make('seo_title.en')->label('Título SEO (en)')->maxLength(70),
+                                                    Textarea::make('seo_description.en')->label('Descripción SEO (en)')->maxLength(160)->rows(2),
+                                                ]),
+                                        ])
+                                        ->columnSpanFull(),
                                     TextInput::make('seo_canonical')->label('URL canónica')->maxLength(500),
                                 ]),
                         ]),

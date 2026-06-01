@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
 class FooterSettingsPage extends Page
@@ -37,15 +38,28 @@ class FooterSettingsPage extends Page
             ->components([
                 Section::make('Información del footer')
                     ->schema([
-                        TextInput::make('description.ca')
-                            ->label('Descripción (Catalán)')
-                            ->helperText('Texto bajo el logo en la versión catalana'),
-                        TextInput::make('description.es')
-                            ->label('Descripción (Español)')
-                            ->helperText('Texto bajo el logo en la versión española'),
-                        TextInput::make('description.en')
-                            ->label('Descripción (English)')
-                            ->helperText('Texto bajo el logo en la versión inglesa'),
+                        Tabs::make('Descripción por idioma')
+                            ->tabs([
+                                Tabs\Tab::make('Català')
+                                    ->schema([
+                                        TextInput::make('description.ca')
+                                            ->label('Descripción (Catalán)')
+                                            ->helperText('Texto bajo el logo en la versión catalana'),
+                                    ]),
+                                Tabs\Tab::make('Español')
+                                    ->schema([
+                                        TextInput::make('description.es')
+                                            ->label('Descripción (Español)')
+                                            ->helperText('Texto bajo el logo en la versión española'),
+                                    ]),
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        TextInput::make('description.en')
+                                            ->label('Descripción (English)')
+                                            ->helperText('Texto bajo el logo en la versión inglesa'),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                         TextInput::make('phone')
                             ->label('Teléfono'),
                         TextInput::make('email')
@@ -63,15 +77,28 @@ class FooterSettingsPage extends Page
                         Repeater::make('nav_links')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('label_ca')
-                                    ->label('Texto (Catalán)')
-                                    ->required(),
-                                TextInput::make('label_es')
-                                    ->label('Texto (Español)')
-                                    ->required(),
-                                TextInput::make('label_en')
-                                    ->label('Texto (English)')
-                                    ->required(),
+                                Tabs::make('Texto por idioma')
+                                    ->tabs([
+                                        Tabs\Tab::make('Català')
+                                            ->schema([
+                                                TextInput::make('label_ca')
+                                                    ->label('Texto (Catalán)')
+                                                    ->required(),
+                                            ]),
+                                        Tabs\Tab::make('Español')
+                                            ->schema([
+                                                TextInput::make('label_es')
+                                                    ->label('Texto (Español)')
+                                                    ->required(),
+                                            ]),
+                                        Tabs\Tab::make('English')
+                                            ->schema([
+                                                TextInput::make('label_en')
+                                                    ->label('Texto (English)')
+                                                    ->required(),
+                                            ]),
+                                    ])
+                                    ->columnSpanFull(),
                                 UrlPickerField::make('url')
                                     ->label('URL')
                                     ->required(),
@@ -87,15 +114,28 @@ class FooterSettingsPage extends Page
                         Repeater::make('legal_links')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('label_ca')
-                                    ->label('Texto (Catalán)')
-                                    ->required(),
-                                TextInput::make('label_es')
-                                    ->label('Texto (Español)')
-                                    ->required(),
-                                TextInput::make('label_en')
-                                    ->label('Texto (English)')
-                                    ->required(),
+                                Tabs::make('Texto por idioma')
+                                    ->tabs([
+                                        Tabs\Tab::make('Català')
+                                            ->schema([
+                                                TextInput::make('label_ca')
+                                                    ->label('Texto (Catalán)')
+                                                    ->required(),
+                                            ]),
+                                        Tabs\Tab::make('Español')
+                                            ->schema([
+                                                TextInput::make('label_es')
+                                                    ->label('Texto (Español)')
+                                                    ->required(),
+                                            ]),
+                                        Tabs\Tab::make('English')
+                                            ->schema([
+                                                TextInput::make('label_en')
+                                                    ->label('Texto (English)')
+                                                    ->required(),
+                                            ]),
+                                    ])
+                                    ->columnSpanFull(),
                                 UrlPickerField::make('url')
                                     ->label('URL')
                                     ->required(),

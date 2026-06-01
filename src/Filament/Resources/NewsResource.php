@@ -91,8 +91,25 @@ class NewsResource extends Resource
                         ]),
 
                     Section::make('SEO')->collapsible()->collapsed()->schema([
-                        TextInput::make('seo_title.ca')->label('Título SEO (ca)')->maxLength(70),
-                        Textarea::make('seo_description.ca')->label('Descripción SEO (ca)')->maxLength(160)->rows(2),
+                        Tabs::make('SEO por idioma')
+                            ->tabs([
+                                Tabs\Tab::make('Català')
+                                    ->schema([
+                                        TextInput::make('seo_title.ca')->label('Título SEO (ca)')->maxLength(70),
+                                        Textarea::make('seo_description.ca')->label('Descripción SEO (ca)')->maxLength(160)->rows(2),
+                                    ]),
+                                Tabs\Tab::make('Español')
+                                    ->schema([
+                                        TextInput::make('seo_title.es')->label('Título SEO (es)')->maxLength(70),
+                                        Textarea::make('seo_description.es')->label('Descripción SEO (es)')->maxLength(160)->rows(2),
+                                    ]),
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        TextInput::make('seo_title.en')->label('Título SEO (en)')->maxLength(70),
+                                        Textarea::make('seo_description.en')->label('Descripción SEO (en)')->maxLength(160)->rows(2),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                         TextInput::make('seo_canonical')->label('URL canónica')->maxLength(500),
                     ]),
 
@@ -107,7 +124,8 @@ class NewsResource extends Resource
             ->columns([
                 CuratorColumn::make('cover_media_id')
                     ->label('Portada')
-                    ->size(72),                Tables\Columns\TextColumn::make('slug')->searchable()->sortable(),
+                    ->size(72),
+                Tables\Columns\TextColumn::make('slug')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('title.ca')->label('Título (ca)')->limit(50),
                 Tables\Columns\IconColumn::make('published')->label('Publicada')->boolean(),
                 Tables\Columns\TextColumn::make('published_at')->label('Publicado')->dateTime()->sortable(),

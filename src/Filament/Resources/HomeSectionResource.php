@@ -65,13 +65,73 @@ class HomeSectionResource extends Resource
                                         ->columnSpanFull(),
                                 ]),
 
-                            // ── Imagen principal (solo hero) ─────────────
+                            // ── Imagen principal / Hero Slider ─────────────
                             Section::make('Imagen principal')
                                 ->hidden(fn (Get $get): bool => $get('type') !== 'hero')
                                 ->schema([
+                                    // Repeater for hero slides
+                                    Repeater::make('settings.hero_slides')
+                                        ->label('Diapositivas del hero')
+                                        ->helperText('Agregá una o más imágenes. Se mostrarán como slider con transiciones.')
+                                        ->schema([
+                                            CuratorPicker::make('media_id')
+                                                ->label('Imagen (biblioteca)')
+                                                ->buttonLabel('Seleccionar imagen')
+                                                ->constrained()
+                                                ->nullable()
+                                                ->columnSpanFull(),
+                                            TextInput::make('image_url')
+                                                ->label('URL alternativa')
+                                                ->helperText('Si no hay imagen en biblioteca, se usa esta URL.')
+                                                ->url()
+                                                ->maxLength(1000)
+                                                ->columnSpanFull(),
+                                            TextInput::make('image_alt')
+                                                ->label('Texto alternativo (alt)')
+                                                ->helperText('Describe brevemente lo que se ve en la imagen (personas, acción, lugar). Ej: "Equipo de AGC revisando documentos fiscales en oficina". No uses "imagen de...", sé directo.')
+                                                ->maxLength(255)
+                                                ->columnSpanFull(),
+                                        ])
+                                        ->collapsible()
+                                        ->reorderable()
+                                        ->addActionLabel('Añadir diapositiva')
+                                        ->columnSpanFull(),
+
+                                    // Transition settings
+                                    Grid::make(3)->schema([
+                                        Select::make('settings.hero_transition')
+                                            ->label('Transición')
+                                            ->options([
+                                                'fade'  => 'Fade (desvanecimiento)',
+                                                'slide' => 'Slide (deslizamiento)',
+                                                'zoom'  => 'Zoom (acercamiento)',
+                                            ])
+                                            ->default('fade')
+                                            ->native(false)
+                                            ->columnSpan(1),
+
+                                        TextInput::make('settings.hero_interval')
+                                            ->label('Intervalo (segundos)')
+                                            ->numeric()
+                                            ->default(5)
+                                            ->minValue(1)
+                                            ->maxValue(60)
+                                            ->columnSpan(1),
+
+                                        Toggle::make('settings.hero_autoplay')
+                                            ->label('Auto-play')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpan(1),
+                                    ]),
+
+                                    // Fallback: single-image fields (backward compatibility)
+                                    // Hidden when hero_slides has items
                                     CuratorPicker::make('main_image_media_id')
-                                        ->label('Imagen (biblioteca de medios)')
+                                        ->label('Imagen principal (modo simple)')
+                                        ->hidden(fn (Get $get): bool => !empty($get('settings.hero_slides')))
                                         ->hiddenLabel()
+                                        ->buttonLabel('Seleccionar imagen')
                                         ->constrained()
                                         ->nullable()
                                         ->columnSpanFull(),
@@ -84,8 +144,10 @@ class HomeSectionResource extends Resource
                                         TextInput::make('settings.image_alt')
                                             ->label('Texto alternativo (alt)')
                                             ->maxLength(255),
-                                    ]),
-                                ]),
+                                    ])
+                                    ->hidden(fn (Get $get): bool => !empty($get('settings.hero_slides'))),
+                                ])
+                                ->columnSpanFull(),
 
                             // ── Botones (hero, news_highlight, contact_cta) ─
                             Section::make('Botones')
@@ -151,11 +213,21 @@ class HomeSectionResource extends Resource
                                                 ->label('Valor (número o texto)')
                                                 ->required()
                                                 ->maxLength(50),
-                                            Grid::make(3)->schema([
-                                                TextInput::make('label.ca')->label('Etiqueta (ca)')->required(),
-                                                TextInput::make('label.es')->label('Etiqueta (es)'),
-                                                TextInput::make('label.en')->label('Etiqueta (en)'),
-                                            ]),
+                                            Tabs::make('Etiqueta por idioma')
+                                                ->tabs([
+                                                    Tabs\Tab::make('Català')
+                                                        ->schema([
+                                                            TextInput::make('label.ca')->label('Etiqueta (ca)')->required(),
+                                                        ]),
+                                                    Tabs\Tab::make('Español')
+                                                        ->schema([
+                                                            TextInput::make('label.es')->label('Etiqueta (es)'),
+                                                        ]),
+                                                    Tabs\Tab::make('English')
+                                                        ->schema([
+                                                            TextInput::make('label.en')->label('Etiqueta (en)'),
+                                                        ]),
+                                                ]),
                                         ])
                                         ->addActionLabel('Añadir estadística')
                                         ->columnSpanFull(),

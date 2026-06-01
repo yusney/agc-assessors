@@ -103,7 +103,7 @@ final class TrustBarSettingsPage extends Page
 
                                         Tabs::make('Textos por idioma')
                                             ->tabs([
-                                                Tabs\Tab::make('🏳️ Català')
+                                                Tabs\Tab::make('Català')
                                                     ->schema([
                                                         TextInput::make('title_ca')
                                                             ->label('Títol principal')
@@ -114,7 +114,7 @@ final class TrustBarSettingsPage extends Page
                                                             ->columnSpan(1),
                                                     ])
                                                     ->columns(2),
-                                                Tabs\Tab::make('🇪🇸 Español')
+                                                Tabs\Tab::make('Español')
                                                     ->schema([
                                                         TextInput::make('title_es')
                                                             ->label('Título principal')
@@ -125,7 +125,7 @@ final class TrustBarSettingsPage extends Page
                                                             ->columnSpan(1),
                                                     ])
                                                     ->columns(2),
-                                                Tabs\Tab::make('🇬🇧 English')
+                                                Tabs\Tab::make('English')
                                                     ->schema([
                                                         TextInput::make('title_en')
                                                             ->label('Main title')

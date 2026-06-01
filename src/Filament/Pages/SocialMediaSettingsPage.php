@@ -13,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
 class SocialMediaSettingsPage extends Page
@@ -48,15 +49,28 @@ class SocialMediaSettingsPage extends Page
                 Section::make('Botón CTA del navbar')
                     ->description('Botón de llamada a la acción que aparece a la derecha del navbar. Configurá el texto en cada idioma, la URL de destino y si abre en la misma pestaña o en una nueva.')
                     ->schema([
-                        TextInput::make('cta.label_ca')
-                            ->label('Texto (Catalán)')
-                            ->required(),
-                        TextInput::make('cta.label_es')
-                            ->label('Texto (Español)')
-                            ->required(),
-                        TextInput::make('cta.label_en')
-                            ->label('Texto (English)')
-                            ->required(),
+                        Tabs::make('Texto por idioma')
+                            ->tabs([
+                                Tabs\Tab::make('Català')
+                                    ->schema([
+                                        TextInput::make('cta.label_ca')
+                                            ->label('Texto (Catalán)')
+                                            ->required(),
+                                    ]),
+                                Tabs\Tab::make('Español')
+                                    ->schema([
+                                        TextInput::make('cta.label_es')
+                                            ->label('Texto (Español)')
+                                            ->required(),
+                                    ]),
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        TextInput::make('cta.label_en')
+                                            ->label('Texto (English)')
+                                            ->required(),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                         TextInput::make('cta.url')
                             ->label('URL')
                             ->required()

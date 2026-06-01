@@ -17,17 +17,7 @@
 </section>
 
 {{-- Grid --}}
-<section
-    class="w-full px-6 md:px-8 max-w-[1280px] mx-auto pb-32"
-    x-data="{
-        modalOpen: false,
-        modalName: '',
-        modalDescription: '',
-        modalIcon: 'star',
-        modalCoverUrl: '',
-        modalUrl: ''
-    }"
->
+<section class="w-full px-6 md:px-8 max-w-[1280px] mx-auto pb-32">
     @if(empty($services))
         <p class="text-[#64748B] text-center py-16">{{ __('messages.services.empty') }}</p>
     @else
@@ -46,18 +36,10 @@
             $coverUrl    = $service->coverUrl() ?? '';
             $url         = route('services.show', $service->slug());
         @endphp
-        <div
+        <a href="{{ $url }}"
             class="group flex flex-col rounded-[1.5rem] border border-[#E2E8F0]
                    bg-white hover:bg-[#f3f3fa] hover:border-[#00346f]/20
-                   p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
-            @click="
-                modalOpen = true;
-                modalName = '{{ $name }}';
-                modalDescription = '{{ $description }}';
-                modalIcon = '{{ $icon }}';
-                modalCoverUrl = '{{ $coverUrl }}';
-                modalUrl = '{{ $url }}'
-            "
+                   p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
             @if($service->coverUrl())
                 <div class="mb-6 w-full aspect-video rounded-xl overflow-hidden">
@@ -89,13 +71,11 @@
                 <span class="material-symbols-outlined ml-1.5 text-[18px]
                              group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </div>
-        </div>
+        </a>
         @endforeach
     </div>
 
     @endif
-
-    @include('public.components.service-modal')
 </section>
 
 @endsection

@@ -66,7 +66,7 @@ return [
         'seo_description' => 'All AGC advisory services: tax, labour, accounting, corporate and more.',
         'title'           => 'Services',
         'subtitle'        => 'Professional solutions for every business need.',
-        'cta'             => 'Request information',
+        'cta'             => 'Learn more',
         'empty'           => 'Services coming soon.',
         'back'            => 'Back to services',
         'contact_cta'     => 'Request this service',

@@ -66,7 +66,7 @@ return [
         'seo_description' => 'Tots els serveis d\'assessoria de AGC: fiscal, laboral, comptable, mercantil i més.',
         'title'           => 'Serveis',
         'subtitle'        => 'Solucions professionals per a cada necessitat del teu negoci.',
-        'cta'             => 'Sol·licitar informació',
+        'cta'             => 'Saber més',
         'empty'           => 'Pròximament publicarem els serveis.',
         'back'            => 'Tornar als serveis',
         'contact_cta'     => 'Sol·licitar aquest servei',

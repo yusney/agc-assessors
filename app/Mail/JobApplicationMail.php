@@ -6,19 +6,14 @@ namespace App\Mail;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\JobApplication;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-final class JobApplicationMail extends Mailable implements ShouldQueue
+final class JobApplicationMail extends Mailable
 {
-    use Queueable;
-    use SerializesModels;
 
     /** @param array<string, mixed> $settings */
     public function __construct(

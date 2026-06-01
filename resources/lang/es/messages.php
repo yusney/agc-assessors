@@ -66,7 +66,7 @@ return [
         'seo_description' => 'Todos los servicios de asesoría de AGC: fiscal, laboral, contable, mercantil y más.',
         'title'           => 'Servicios',
         'subtitle'        => 'Soluciones profesionales para cada necesidad de tu negocio.',
-        'cta'             => 'Solicitar información',
+        'cta'             => 'Saber más',
         'empty'           => 'Próximamente publicaremos los servicios.',
         'back'            => 'Volver a servicios',
         'contact_cta'     => 'Solicitar este servicio',

@@ -37,27 +37,16 @@
     @endphp
 
     @if(!empty($officesForMap))
-    @push('head')
-    <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style" crossorigin="" onload="this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""></noscript>
-    @endpush
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <div id="offices-map-home" class="w-full rounded-2xl overflow-hidden mb-10" style="min-height: 400px;"></div>
 
-    @push('scripts')
-    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
-    (function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var offices = @json($officesForMap);
         var baseUrl  = @json($officesUrl);
-        var mapContainer = document.getElementById('offices-map-home');
-        var mapInitialized = false;
-
-        function initMap() {
-            if (mapInitialized || typeof L === 'undefined') return;
-            mapInitialized = true;
-
-            var map = L.map('offices-map-home', { scrollWheelZoom: false });
+        var map = L.map('offices-map-home', { scrollWheelZoom: false });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -96,23 +85,8 @@
         } else {
             map.setView([41.3879, 2.16992], 7);
         }
-        }
-
-        if ('IntersectionObserver' in window) {
-            var observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        initMap();
-                        observer.disconnect();
-                    }
-                });
-            }, { rootMargin: '100px' });
-            observer.observe(mapContainer);
-        } else {
-            document.addEventListener('DOMContentLoaded', initMap);
-        }
-    })();
-    @endpush
+    });
+    </script>
     @endif
 
     {{-- Office card grid (max $limit offices) --}}

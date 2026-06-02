@@ -250,6 +250,40 @@ Este entorno está **optimizado para desarrollo**. Para producción:
 5. Configurar un disk de almacenamiento de producción (S3, etc.)
 6. Usar Redis para cache/sessions en producción
 7. Configurar certificados SSL en Nginx
+8. **Montar volúmenes persistentes** para `storage/` y `bootstrap/cache/` (ver abajo)
+
+### Volúmenes obligatorios en producción
+
+En producción con Docker, **dos volúmenes son obligatorios**:
+
+| Volumen | Mount Path | Propósito |
+|---------|-----------|-----------|
+| `agc-storage` | `/var/www/html/storage` | Persiste imágenes subidas, logs, cache de archivos, sessions de archivo |
+| `agc-cache` | `/var/www/html/bootstrap/cache` | Persiste caché compilada de Laravel (rutas, config, views) |
+
+> **Sin `agc-storage`**: las imágenes subidas por el panel de admin (Filament/Curator) se pierden en cada redeploy porque el contenedor se destruye y se recrea desde la imagen.
+
+### Symlink público automático (`public/storage`)
+
+La imagen de producción (`docker/php/Dockerfile.production`) incluye un **startup script** (`docker/php/entrypoint.d/99-storage-link.sh`) que se ejecuta automáticamente al arrancar el contenedor.
+
+Este script:
+1. Verifica si existe el symlink `public/storage → storage/app/public`
+2. Si no existe o está roto, lo recrea
+3. Luego deja que S6 Overlay arranque Nginx + PHP-FPM
+
+**¿Por qué no se hace en el Dockerfile?**
+
+Si creamos `public/storage` durante `docker build`, al arrancar el contenedor el volumen `agc-storage` se monta **sobre** `/var/www/html/storage` y reemplaza el directorio destino del symlink. El symlink queda roto apuntando a un directorio que ya no existe. Por eso se debe crear **en runtime** (cuando el contenedor ya arrancó y los volúmenes están montados), no en build time.
+
+**Verificar que funciona:**
+```bash
+docker exec -it nombre-contenedor ls -la /var/www/html/public/storage
+# → lrwxrwxrwx ... storage -> /var/www/html/storage/app/public
+
+docker logs nombre-contenedor | grep -i "symlink"
+# → 🔗 Created symlink: /var/www/html/public/storage -> /var/www/html/storage/app/public
+```
 
 ## Licencia
 

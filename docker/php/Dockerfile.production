@@ -49,4 +49,9 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
+# 7. Startup script: recrea el symlink public/storage en cada arranque.
+#    La imagen base serversideup/php ejecuta automáticamente todos los
+#    scripts .sh de /etc/entrypoint.d/ al arrancar el contenedor.
+COPY --chmod=755 docker/php/entrypoint.d/ /etc/entrypoint.d/
+
 USER www-data

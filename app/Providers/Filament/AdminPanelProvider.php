@@ -15,6 +15,7 @@ use AGC\Filament\Resources\OfficeResource;
 use AGC\Filament\Resources\PageResource;
 use AGC\Filament\Resources\ServiceResource;
 use AGC\Filament\Resources\TeamMemberResource;
+use AGC\Filament\Resources\UserResource;
 use Awcodes\Curator\CuratorPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -68,6 +69,7 @@ final class AdminPanelProvider extends PanelProvider
                 TeamMemberResource::class,
                 MenuItemResource::class,
                 OfficeResource::class,
+                UserResource::class,
             ])
             ->plugins([
                 CuratorPlugin::make()

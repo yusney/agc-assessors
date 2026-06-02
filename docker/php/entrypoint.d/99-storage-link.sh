@@ -14,4 +14,11 @@ if [ ! -L "$STORAGE_LINK" ] || [ ! -e "$STORAGE_LINK" ]; then
     echo "🔗 Created symlink: $STORAGE_LINK -> $STORAGE_TARGET"
 fi
 
+# Generar permisos de Filament Shield si no existen.
+# Esto es crítico para producción donde los permisos deben existir
+# antes de que los seeders asignen roles a los usuarios.
+cd /var/www/html
+php artisan shield:generate --all --panel=admin --ignore-existing-policies --quiet || true
+
+echo "✅ Entrypoint complete."
 exit 0

@@ -42,6 +42,13 @@ final class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions between runs (important for tests).
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
+        // Defensive check: permissions must exist before we can assign them.
+        if (Permission::count() === 0) {
+            throw new \RuntimeException(
+                'No permissions found. Run "php artisan shield:generate --all --panel=admin" before seeding roles.'
+            );
+        }
+
         $this->seedSuperAdmin();
         $this->seedManager();
         $this->seedEditor();

@@ -108,6 +108,10 @@ return [
     |
     */
 
+    // KNOWN LIMITATION: Shield v4 generates permission keys in PascalCase:Resource format
+    // (e.g., "Create:EloquentOffice", "Delete:Role"). This format cannot be changed
+    // to snake_case without forking the Shield package. All seeders and policy checks
+    // in this application reference PascalCase keys intentionally (e.g., "Delete:Role").
     'permissions' => [
         'separator' => ':',
         'case' => 'pascal',
@@ -155,7 +159,7 @@ return [
     */
 
     'localization' => [
-        'enabled' => false,
+        'enabled' => true,
         'key' => 'filament-shield::filament-shield.resource_permission_prefixes_labels',
     ],
 

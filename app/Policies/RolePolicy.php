@@ -34,6 +34,12 @@ class RolePolicy
 
     public function delete(AuthUser $authUser, Role $role): bool
     {
+        // The super_admin role is a protected system role and must never be deleted.
+        // Deleting it would lock all users out of the admin panel permanently.
+        if ($role->name === config('filament-shield.super_admin.name', 'super_admin')) {
+            return false;
+        }
+
         return $authUser->can('Delete:Role');
     }
 

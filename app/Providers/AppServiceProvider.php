@@ -28,6 +28,16 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.public', SeoComposer::class);
 
+        // Super-admin bypass: any user bearing the 'super_admin' role is granted
+        // every authorization check unconditionally before policies are evaluated.
+        Gate::before(function ($user, string $ability): ?bool {
+            if (method_exists($user, 'hasRole') && $user->hasRole('super_admin')) {
+                return true;
+            }
+
+            return null; // Delegate to policies / permissions for all other users.
+        });
+
         Gate::guessPolicyNamesUsing(static fn (string $modelClass): ?string => static::guessPolicyName($modelClass));
     }
 

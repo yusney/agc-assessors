@@ -24,7 +24,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
-    entrypoint: ["/bin/sh", "-c", "cd /var/www/html && php artisan storage:link --force && php artisan view:clear && php artisan cache:clear && /init"]
     volumes:
       # Solo persistimos storage (CVs, uploads, logs) y cache fuera del contenedor
       - agc-storage:/var/www/html/storage

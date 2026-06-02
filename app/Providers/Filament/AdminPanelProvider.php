@@ -4,7 +4,19 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use AGC\Filament\Pages\FooterSettingsPage;
+use AGC\Filament\Pages\SocialMediaSettingsPage;
+use AGC\Filament\Pages\TrustBarSettingsPage;
+use AGC\Filament\Pages\WorkWithUsSettingsPage;
+use AGC\Filament\Resources\HomeSectionResource;
+use AGC\Filament\Resources\MenuItemResource;
+use AGC\Filament\Resources\NewsResource;
+use AGC\Filament\Resources\OfficeResource;
+use AGC\Filament\Resources\PageResource;
+use AGC\Filament\Resources\ServiceResource;
+use AGC\Filament\Resources\TeamMemberResource;
 use Awcodes\Curator\CuratorPlugin;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,8 +32,8 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Support\Facades\App;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
@@ -49,13 +61,13 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->resources([
-                \AGC\Filament\Resources\HomeSectionResource::class,
-                \AGC\Filament\Resources\PageResource::class,
-                \AGC\Filament\Resources\NewsResource::class,
-                \AGC\Filament\Resources\ServiceResource::class,
-                \AGC\Filament\Resources\TeamMemberResource::class,
-                \AGC\Filament\Resources\MenuItemResource::class,
-                \AGC\Filament\Resources\OfficeResource::class,
+                HomeSectionResource::class,
+                PageResource::class,
+                NewsResource::class,
+                ServiceResource::class,
+                TeamMemberResource::class,
+                MenuItemResource::class,
+                OfficeResource::class,
             ])
             ->plugins([
                 CuratorPlugin::make()
@@ -65,14 +77,15 @@ final class AdminPanelProvider extends PanelProvider
                     ->navigationGroup('Contenido')
                     ->navigationSort(10)
                     ->registerNavigation(true),
+                FilamentShieldPlugin::make(),
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
-                \AGC\Filament\Pages\FooterSettingsPage::class,
-                \AGC\Filament\Pages\SocialMediaSettingsPage::class,
-                \AGC\Filament\Pages\TrustBarSettingsPage::class,
-                \AGC\Filament\Pages\WorkWithUsSettingsPage::class,
+                FooterSettingsPage::class,
+                SocialMediaSettingsPage::class,
+                TrustBarSettingsPage::class,
+                WorkWithUsSettingsPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

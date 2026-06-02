@@ -23,15 +23,15 @@ final class OfficesControllerTest extends TestCase
     public function test_offices_index_passes_offices_to_view(): void
     {
         EloquentOffice::create([
-            'name'      => ['ca' => 'Oficina A', 'es' => 'Oficina A', 'en' => 'Office A'],
-            'address'   => ['ca' => 'Carrer A 1', 'es' => 'Calle A 1', 'en' => 'A Street 1'],
-            'city'      => ['ca' => 'Barcelona', 'es' => 'Barcelona', 'en' => 'Barcelona'],
+            'name' => ['ca' => 'Oficina A', 'es' => 'Oficina A', 'en' => 'Office A'],
+            'address' => ['ca' => 'Carrer A 1', 'es' => 'Calle A 1', 'en' => 'A Street 1'],
+            'city' => ['ca' => 'Barcelona', 'es' => 'Barcelona', 'en' => 'Barcelona'],
             'is_active' => true,
         ]);
         EloquentOffice::create([
-            'name'      => ['ca' => 'Oficina B', 'es' => 'Oficina B', 'en' => 'Office B'],
-            'address'   => ['ca' => 'Carrer B 2', 'es' => 'Calle B 2', 'en' => 'B Street 2'],
-            'city'      => ['ca' => 'Girona', 'es' => 'Gerona', 'en' => 'Girona'],
+            'name' => ['ca' => 'Oficina B', 'es' => 'Oficina B', 'en' => 'Office B'],
+            'address' => ['ca' => 'Carrer B 2', 'es' => 'Calle B 2', 'en' => 'B Street 2'],
+            'city' => ['ca' => 'Girona', 'es' => 'Gerona', 'en' => 'Girona'],
             'is_active' => true,
         ]);
 
@@ -45,15 +45,15 @@ final class OfficesControllerTest extends TestCase
     public function test_inactive_offices_not_shown(): void
     {
         EloquentOffice::create([
-            'name'      => ['ca' => 'Activa', 'es' => 'Activa', 'en' => 'Active'],
-            'address'   => ['ca' => 'Carrer X', 'es' => 'Calle X', 'en' => 'X Street'],
-            'city'      => ['ca' => 'Barcelona', 'es' => 'Barcelona', 'en' => 'Barcelona'],
+            'name' => ['ca' => 'Activa', 'es' => 'Activa', 'en' => 'Active'],
+            'address' => ['ca' => 'Carrer X', 'es' => 'Calle X', 'en' => 'X Street'],
+            'city' => ['ca' => 'Barcelona', 'es' => 'Barcelona', 'en' => 'Barcelona'],
             'is_active' => true,
         ]);
         EloquentOffice::create([
-            'name'      => ['ca' => 'Inactiva', 'es' => 'Inactiva', 'en' => 'Inactive'],
-            'address'   => ['ca' => 'Carrer Y', 'es' => 'Calle Y', 'en' => 'Y Street'],
-            'city'      => ['ca' => 'Tarragona', 'es' => 'Tarragona', 'en' => 'Tarragona'],
+            'name' => ['ca' => 'Inactiva', 'es' => 'Inactiva', 'en' => 'Inactive'],
+            'address' => ['ca' => 'Carrer Y', 'es' => 'Calle Y', 'en' => 'Y Street'],
+            'city' => ['ca' => 'Tarragona', 'es' => 'Tarragona', 'en' => 'Tarragona'],
             'is_active' => false,
         ]);
 
@@ -66,11 +66,11 @@ final class OfficesControllerTest extends TestCase
     public function test_view_receives_offices_geo_json(): void
     {
         EloquentOffice::create([
-            'name'      => ['ca' => 'Geo Oficina'],
-            'address'   => ['ca' => 'Carrer Geo 1'],
-            'city'      => ['ca' => 'Barcelona'],
-            'lat'       => 41.3879,
-            'lng'       => 2.16992,
+            'name' => ['ca' => 'Geo Oficina'],
+            'address' => ['ca' => 'Carrer Geo 1'],
+            'city' => ['ca' => 'Barcelona'],
+            'lat' => 41.3879,
+            'lng' => 2.16992,
             'is_active' => true,
         ]);
 

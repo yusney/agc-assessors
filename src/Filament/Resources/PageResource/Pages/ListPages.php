@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Resources\PageResource\Pages;
 
 use AGC\Filament\Resources\PageResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPages extends ListRecords
@@ -13,6 +14,6 @@ class ListPages extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [\Filament\Actions\CreateAction::make()];
+        return [CreateAction::make()];
     }
 }

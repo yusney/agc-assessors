@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Resources\MenuItemResource\Pages;
 
 use AGC\Filament\Resources\MenuItemResource;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditMenuItem extends EditRecord
@@ -13,6 +14,6 @@ class EditMenuItem extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [\Filament\Actions\DeleteAction::make()];
+        return [DeleteAction::make()];
     }
 }

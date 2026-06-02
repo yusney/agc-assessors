@@ -33,16 +33,16 @@ final class NewsController extends Controller
             ])->render();
 
             return response()->json([
-                'html'     => $html,
+                'html' => $html,
                 'has_more' => $hasMore,
-                'page'     => $page,
+                'page' => $page,
             ]);
         }
 
         return view('public.news.index', [
-            'news'     => $articles,
-            'total'    => $total,
-            'page'     => $page,
+            'news' => $articles,
+            'total' => $total,
+            'page' => $page,
             'has_more' => $hasMore,
         ]);
     }

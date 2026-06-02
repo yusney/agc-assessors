@@ -20,14 +20,48 @@ final class TeamMember
         private ?string $photoUrl = null,
     ) {}
 
-    public function id(): ?int { return $this->id; }
-    public function name(): string { return $this->name; }
-    public function role(): TranslatableString { return $this->role; }
-    public function bio(): TranslatableString { return $this->bio; }
-    public function email(): string { return $this->email; }
-    public function sortOrder(): int { return $this->sortOrder; }
-    public function isActive(): bool { return $this->active; }
-    public function photoUrl(): ?string { return $this->photoUrl; }
+    public function id(): ?int
+    {
+        return $this->id;
+    }
 
-    public function reorder(int $position): void { $this->sortOrder = $position; }
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function role(): TranslatableString
+    {
+        return $this->role;
+    }
+
+    public function bio(): TranslatableString
+    {
+        return $this->bio;
+    }
+
+    public function email(): string
+    {
+        return $this->email;
+    }
+
+    public function sortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function photoUrl(): ?string
+    {
+        return $this->photoUrl;
+    }
+
+    public function reorder(int $position): void
+    {
+        $this->sortOrder = $position;
+    }
 }

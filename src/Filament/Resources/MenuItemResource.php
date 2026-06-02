@@ -7,6 +7,8 @@ namespace AGC\Filament\Resources;
 use AGC\Filament\Forms\Components\UrlPickerField;
 use AGC\Filament\Resources\MenuItemResource\Pages;
 use AGC\Infrastructure\Persistence\Eloquent\Models\MenuItem;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -15,16 +17,17 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class MenuItemResource extends Resource
 {
     protected static ?string $model = MenuItem::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+
     protected static ?int $navigationSort = 10;
 
     public static function getModelLabel(): string
@@ -62,7 +65,7 @@ class MenuItemResource extends Resource
                                 Select::make('target')
                                     ->label('Objetivo')
                                     ->options([
-                                        '_self'  => 'Misma ventana',
+                                        '_self' => 'Misma ventana',
                                         '_blank' => 'Nueva ventana',
                                     ])
                                     ->default('_self')
@@ -155,9 +158,9 @@ class MenuItemResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListMenuItems::route('/'),
+            'index' => Pages\ListMenuItems::route('/'),
             'create' => Pages\CreateMenuItem::route('/create'),
-            'edit'   => Pages\EditMenuItem::route('/{record}/edit'),
+            'edit' => Pages\EditMenuItem::route('/{record}/edit'),
         ];
     }
 }

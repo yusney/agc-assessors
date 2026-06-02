@@ -49,9 +49,9 @@ class HomeSection extends Model implements HasMedia
 
     protected $casts = [
         'carousel_items' => 'array',
-        'settings'       => 'array',
-        'sort_order'     => 'integer',
-        'is_active'      => 'boolean',
+        'settings' => 'array',
+        'sort_order' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function scopeActive(Builder $query): Builder

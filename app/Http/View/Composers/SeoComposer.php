@@ -57,9 +57,9 @@ final class SeoComposer
         /** @var array<string,mixed>|null $contact */
         $contact = SiteSetting::get('contact');
 
-        $name  = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
-        $url   = config('app.url', 'https://agcassessors.com');
-        $logo  = $this->getLogoUrl();
+        $name = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
+        $url = config('app.url', 'https://agcassessors.com');
+        $logo = $this->getLogoUrl();
         $phone = is_array($contact) ? ($contact['phone'] ?? null) : null;
         $email = is_array($contact) ? ($contact['email'] ?? null) : null;
 
@@ -69,9 +69,9 @@ final class SeoComposer
 
         $schema = [
             '@context' => 'https://schema.org',
-            '@type'    => 'AccountingService',
-            'name'     => $name,
-            'url'      => $url,
+            '@type' => 'AccountingService',
+            'name' => $name,
+            'url' => $url,
         ];
 
         if ($logo) {
@@ -91,10 +91,10 @@ final class SeoComposer
         if (is_array($offices) && $offices !== []) {
             $schema['address'] = array_map(
                 static fn (array $o): array => [
-                    '@type'           => 'PostalAddress',
-                    'streetAddress'   => $o['street'] ?? '',
-                    'addressLocality' => $o['city']   ?? '',
-                    'addressCountry'  => $o['country'] ?? 'ES',
+                    '@type' => 'PostalAddress',
+                    'streetAddress' => $o['street'] ?? '',
+                    'addressLocality' => $o['city'] ?? '',
+                    'addressCountry' => $o['country'] ?? 'ES',
                 ],
                 $offices
             );
@@ -108,9 +108,9 @@ final class SeoComposer
         /** @var array<string,mixed>|null $contact */
         $contact = SiteSetting::get('contact');
 
-        $name  = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
-        $url   = config('app.url', 'https://agcassessors.com');
-        $logo  = $this->getLogoUrl();
+        $name = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
+        $url = config('app.url', 'https://agcassessors.com');
+        $logo = $this->getLogoUrl();
         $phone = is_array($contact) ? ($contact['phone'] ?? null) : null;
         $email = is_array($contact) ? ($contact['email'] ?? null) : null;
 
@@ -120,9 +120,9 @@ final class SeoComposer
 
         $schema = [
             '@context' => 'https://schema.org',
-            '@type'    => 'AccountingService',
-            'name'     => $name,
-            'url'      => $url,
+            '@type' => 'AccountingService',
+            'name' => $name,
+            'url' => $url,
         ];
 
         if ($logo) {
@@ -142,10 +142,10 @@ final class SeoComposer
         if (is_array($offices) && $offices !== []) {
             $schema['address'] = array_map(
                 static fn (array $o): array => [
-                    '@type'           => 'PostalAddress',
-                    'streetAddress'   => $o['street'] ?? '',
-                    'addressLocality' => $o['city']   ?? '',
-                    'addressCountry'  => $o['country'] ?? 'ES',
+                    '@type' => 'PostalAddress',
+                    'streetAddress' => $o['street'] ?? '',
+                    'addressLocality' => $o['city'] ?? '',
+                    'addressCountry' => $o['country'] ?? 'ES',
                 ],
                 $offices
             );
@@ -156,7 +156,7 @@ final class SeoComposer
 
     public function getWebsiteSchema(): array
     {
-        $url  = config('app.url', 'https://agcassessors.com');
+        $url = config('app.url', 'https://agcassessors.com');
         $name = SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
 
         if (empty($url)) {
@@ -164,16 +164,16 @@ final class SeoComposer
         }
 
         return [
-            '@context'        => 'https://schema.org',
-            '@type'           => 'WebSite',
-            'url'             => $url,
-            'name'            => $name,
-            'inLanguage'      => app()->getLocale(),
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'url' => $url,
+            'name' => $name,
+            'inLanguage' => app()->getLocale(),
             'potentialAction' => [
-                '@type'       => 'SearchAction',
-                'target'      => [
-                    '@type'       => 'EntryPoint',
-                    'urlTemplate' => $url . '/' . app()->getLocale() . '?q={search_term_string}',
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => $url.'/'.app()->getLocale().'?q={search_term_string}',
                 ],
                 'query-input' => 'required name=search_term_string',
             ],
@@ -189,16 +189,16 @@ final class SeoComposer
         $listItems = [];
         foreach ($items as $position => $item) {
             $listItems[] = [
-                '@type'    => 'ListItem',
+                '@type' => 'ListItem',
                 'position' => $position + 1,
-                'name'     => $item['name'],
-                'item'     => $item['url'] ?? null,
+                'name' => $item['name'],
+                'item' => $item['url'] ?? null,
             ];
         }
 
         return [
-            '@context'        => 'https://schema.org',
-            '@type'           => 'BreadcrumbList',
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
             'itemListElement' => $listItems,
         ];
     }

@@ -9,8 +9,8 @@ use AGC\Filament\Resources\UserResource\Pages\EditUser;
 use AGC\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Actions\DeleteAction;
@@ -75,7 +75,7 @@ class UserResource extends Resource
                     CheckboxList::make('roles')
                         ->label('Roles')
                         ->relationship('roles', 'name')
-                        ->options(fn (): array => Role::pluck('name', 'name')->toArray())
+                        ->options(fn (): array => Role::pluck('name', 'id')->toArray())
                         ->helperText('Selecciona los roles que tendrá este usuario.')
                         ->columns(2),
                 ]),

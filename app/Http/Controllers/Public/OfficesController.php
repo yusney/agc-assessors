@@ -26,17 +26,17 @@ final class OfficesController extends Controller
                     }
 
                     return [
-                        'name'    => $office->name()->get(app()->getLocale()),
+                        'name' => $office->name()->get(app()->getLocale()),
                         'address' => $office->address()->get(app()->getLocale()),
-                        'lat'     => $office->lat(),
-                        'lng'     => $office->lng(),
+                        'lat' => $office->lat(),
+                        'lng' => $office->lng(),
                     ];
                 }, $offices),
             )
         );
 
         return view('public.pages.offices.index', [
-            'offices'        => $offices,
+            'offices' => $offices,
             'officesGeoJson' => $officesGeoJson,
         ]);
     }

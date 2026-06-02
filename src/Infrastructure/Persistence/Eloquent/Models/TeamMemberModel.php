@@ -21,7 +21,7 @@ class TeamMemberModel extends Model
     ];
 
     protected $casts = [
-        'active'     => 'boolean',
+        'active' => 'boolean',
         'sort_order' => 'integer',
     ];
 }

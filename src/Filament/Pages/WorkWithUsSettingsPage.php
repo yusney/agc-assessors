@@ -8,8 +8,8 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -19,9 +19,13 @@ use Filament\Schemas\Schema;
 final class WorkWithUsSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+
     protected static ?string $navigationLabel = 'Trabaja con nosotros';
+
     protected static ?string $title = 'Configuración — Trabaja con nosotros';
+
     protected string $view = 'filament.pages.work-with-us-settings';
 
     /** @var array<string, mixed> */

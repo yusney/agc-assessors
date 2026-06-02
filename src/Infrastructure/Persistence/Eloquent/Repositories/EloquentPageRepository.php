@@ -16,12 +16,14 @@ final class EloquentPageRepository implements PageRepository
     public function findById(int $id): ?Page
     {
         $model = PageModel::find($id);
+
         return $model ? $this->toDomain($model) : null;
     }
 
     public function findBySlug(Slug $slug): ?Page
     {
         $model = PageModel::where('slug', $slug->value())->first();
+
         return $model ? $this->toDomain($model) : null;
     }
 
@@ -37,13 +39,13 @@ final class EloquentPageRepository implements PageRepository
     public function save(Page $page): void
     {
         $data = [
-            'slug'            => $page->slug()->value(),
-            'title'           => $page->title()->toArray(),
-            'content'         => $page->content()->toArray(),
-            'seo_title'       => $page->seo()->title()->toArray(),
+            'slug' => $page->slug()->value(),
+            'title' => $page->title()->toArray(),
+            'content' => $page->content()->toArray(),
+            'seo_title' => $page->seo()->title()->toArray(),
             'seo_description' => $page->seo()->description()->toArray(),
-            'seo_canonical'   => $page->seo()->canonicalUrl(),
-            'published'       => $page->isPublished(),
+            'seo_canonical' => $page->seo()->canonicalUrl(),
+            'published' => $page->isPublished(),
         ];
 
         if ($page->id()) {

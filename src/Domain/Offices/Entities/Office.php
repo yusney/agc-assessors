@@ -22,15 +22,58 @@ final class Office
         private readonly bool $isActive,
     ) {}
 
-    public function id(): int { return $this->id; }
-    public function name(): TranslatableString { return $this->name; }
-    public function address(): TranslatableString { return $this->address; }
-    public function city(): TranslatableString { return $this->city; }
-    public function description(): TranslatableString { return $this->description; }
-    public function phone(): ?string { return $this->phone; }
-    public function email(): ?string { return $this->email; }
-    public function lat(): ?float { return $this->lat; }
-    public function lng(): ?float { return $this->lng; }
-    public function coverUrl(): ?string { return $this->coverUrl; }
-    public function isActive(): bool { return $this->isActive; }
+    public function id(): int
+    {
+        return $this->id;
+    }
+
+    public function name(): TranslatableString
+    {
+        return $this->name;
+    }
+
+    public function address(): TranslatableString
+    {
+        return $this->address;
+    }
+
+    public function city(): TranslatableString
+    {
+        return $this->city;
+    }
+
+    public function description(): TranslatableString
+    {
+        return $this->description;
+    }
+
+    public function phone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function email(): ?string
+    {
+        return $this->email;
+    }
+
+    public function lat(): ?float
+    {
+        return $this->lat;
+    }
+
+    public function lng(): ?float
+    {
+        return $this->lng;
+    }
+
+    public function coverUrl(): ?string
+    {
+        return $this->coverUrl;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
 }

@@ -22,12 +22,12 @@ class EloquentOffice extends Model
     ];
 
     protected $casts = [
-        'lat'            => 'float',
-        'lng'            => 'float',
-        'is_active'      => 'boolean',
-        'name'           => 'array',
-        'address'        => 'array',
-        'city'           => 'array',
-        'description'    => 'array',
+        'lat' => 'float',
+        'lng' => 'float',
+        'is_active' => 'boolean',
+        'name' => 'array',
+        'address' => 'array',
+        'city' => 'array',
+        'description' => 'array',
     ];
 }

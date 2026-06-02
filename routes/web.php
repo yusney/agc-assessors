@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
-use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\OfficesController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\ServicesController;
@@ -25,7 +25,8 @@ Route::get('/switch-locale/{locale}', function (string $locale) {
         app()->setLocale($locale);
     }
     $previous = url()->previous('/');
-    $target   = LaravelLocalization::getLocalizedURL($locale, $previous);
+    $target = LaravelLocalization::getLocalizedURL($locale, $previous);
+
     return redirect($target);
 })->name('locale.switch');
 

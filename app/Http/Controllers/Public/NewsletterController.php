@@ -6,23 +6,24 @@ namespace App\Http\Controllers\Public;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\NewsletterSubscriberModel;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 final class NewsletterController extends Controller
 {
-    public function store(Request $request): RedirectResponse | \Illuminate\Http\JsonResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
-            'email'              => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
             'newsletter_privacy' => ['accepted'],
         ]);
 
         $subscriber = NewsletterSubscriberModel::firstOrCreate(
             ['email' => $data['email']],
             [
-                'is_active'     => true,
+                'is_active' => true,
                 'subscribed_at' => now(),
             ],
         );

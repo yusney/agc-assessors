@@ -25,8 +25,11 @@ use Filament\Tables\Table;
 final class OfficeResource extends Resource
 {
     protected static ?string $model = EloquentOffice::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
+
     protected static ?int $navigationSort = 5;
 
     public static function getModelLabel(): string
@@ -103,9 +106,9 @@ final class OfficeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListOffices::route('/'),
+            'index' => ListOffices::route('/'),
             'create' => CreateOffice::route('/create'),
-            'edit'   => EditOffice::route('/{record}/edit'),
+            'edit' => EditOffice::route('/{record}/edit'),
         ];
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Resources\OfficeResource\Pages;
 
 use AGC\Filament\Resources\OfficeResource;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditOffice extends EditRecord
@@ -13,6 +14,6 @@ class EditOffice extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [\Filament\Actions\DeleteAction::make()];
+        return [DeleteAction::make()];
     }
 }

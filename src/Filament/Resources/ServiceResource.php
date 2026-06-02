@@ -4,29 +4,34 @@ declare(strict_types=1);
 
 namespace AGC\Filament\Resources;
 
-use AGC\Filament\Forms\Components\UrlPickerField;
+use AGC\Filament\Resources\ServiceResource\Pages\CreateService;
+use AGC\Filament\Resources\ServiceResource\Pages\EditService;
+use AGC\Filament\Resources\ServiceResource\Pages\ListServices;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Awcodes\Curator\Components\Tables\CuratorColumn;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class ServiceResource extends Resource
 {
     protected static ?string $model = ServiceModel::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
+
     protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
@@ -135,9 +140,9 @@ class ServiceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => \AGC\Filament\Resources\ServiceResource\Pages\ListServices::route('/'),
-            'create' => \AGC\Filament\Resources\ServiceResource\Pages\CreateService::route('/create'),
-            'edit'   => \AGC\Filament\Resources\ServiceResource\Pages\EditService::route('/{record}/edit'),
+            'index' => ListServices::route('/'),
+            'create' => CreateService::route('/create'),
+            'edit' => EditService::route('/{record}/edit'),
         ];
     }
 }

@@ -19,9 +19,13 @@ use Filament\Schemas\Schema;
 final class TrustBarSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+
     protected static ?string $navigationLabel = 'Trust Bar';
+
     protected static ?string $title = 'Configuración de la Trust Bar';
+
     protected string $view = 'filament.pages.trust-bar-settings';
 
     /** @var array<string, mixed> */
@@ -29,30 +33,30 @@ final class TrustBarSettingsPage extends Page
 
     private const DEFAULT_BADGES = [
         [
-            'sort_order'     => 1,
-            'icon'           => 'verified',
+            'sort_order' => 1,
+            'icon' => 'verified',
             'image_media_id' => null,
-            'url'            => '',
-            'is_active'      => true,
-            'title_ca'       => 'UNE 420001',
-            'subtitle_ca'    => 'Qualitat certificada',
-            'title_es'       => 'UNE 420001',
-            'subtitle_es'    => 'Calidad certificada',
-            'title_en'       => 'UNE 420001',
-            'subtitle_en'    => 'Certified quality',
+            'url' => '',
+            'is_active' => true,
+            'title_ca' => 'UNE 420001',
+            'subtitle_ca' => 'Qualitat certificada',
+            'title_es' => 'UNE 420001',
+            'subtitle_es' => 'Calidad certificada',
+            'title_en' => 'UNE 420001',
+            'subtitle_en' => 'Certified quality',
         ],
         [
-            'sort_order'     => 2,
-            'icon'           => 'history',
+            'sort_order' => 2,
+            'icon' => 'history',
             'image_media_id' => null,
-            'url'            => '',
-            'is_active'      => true,
-            'title_ca'       => '+25 anys',
-            'subtitle_ca'    => "d'experiència professional",
-            'title_es'       => '+25 años',
-            'subtitle_es'    => 'de experiencia profesional',
-            'title_en'       => '+25 years',
-            'subtitle_en'    => 'of professional experience',
+            'url' => '',
+            'is_active' => true,
+            'title_ca' => '+25 anys',
+            'subtitle_ca' => "d'experiència professional",
+            'title_es' => '+25 años',
+            'subtitle_es' => 'de experiencia profesional',
+            'title_en' => '+25 years',
+            'subtitle_en' => 'of professional experience',
         ],
     ];
 
@@ -162,9 +166,8 @@ final class TrustBarSettingsPage extends Page
                             ->addActionLabel('Añadir badge')
                             ->reorderable()
                             ->collapsible()
-                            ->itemLabel(fn (array $state): ?string =>
-                                ($state['title_ca'] ?? null)
-                                    ? ($state['title_ca'] . ($state['subtitle_ca'] ? ' — ' . $state['subtitle_ca'] : ''))
+                            ->itemLabel(fn (array $state): ?string => ($state['title_ca'] ?? null)
+                                    ? ($state['title_ca'].($state['subtitle_ca'] ? ' — '.$state['subtitle_ca'] : ''))
                                     : 'Badge sin título'
                             )
                             ->columnSpanFull(),
@@ -176,8 +179,7 @@ final class TrustBarSettingsPage extends Page
     {
         $badges = $this->form->getState()['badges'] ?? [];
 
-        usort($badges, fn (array $a, array $b): int =>
-            ($a['sort_order'] ?? 0) <=> ($b['sort_order'] ?? 0)
+        usort($badges, fn (array $a, array $b): int => ($a['sort_order'] ?? 0) <=> ($b['sort_order'] ?? 0)
         );
 
         SiteSetting::set('trust_bar', $badges);

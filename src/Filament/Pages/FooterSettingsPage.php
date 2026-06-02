@@ -18,9 +18,13 @@ use Filament\Schemas\Schema;
 class FooterSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-adjustments-horizontal';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+
     protected static ?string $navigationLabel = 'Footer';
+
     protected static ?string $title = 'Configuración del Footer';
+
     protected string $view = 'filament.pages.footer-settings';
 
     /** @var array<string, mixed>|null */
@@ -69,7 +73,7 @@ class FooterSettingsPage extends Page
                             ->label('Dirección'),
                         TextInput::make('copyright')
                             ->label('Texto copyright')
-                            ->default('© ' . date('Y') . ' AGC Assessors. Tots els drets reservats.'),
+                            ->default('© '.date('Y').' AGC Assessors. Tots els drets reservats.'),
                     ]),
 
                 Section::make('Links de navegación')

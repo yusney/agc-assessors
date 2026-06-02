@@ -20,9 +20,9 @@ final class ContactController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'    => ['required', 'string', 'max:120'],
-            'email'   => ['required', 'email'],
-            'phone'   => ['nullable', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email'],
+            'phone' => ['nullable', 'string', 'max:30'],
             'subject' => ['required', 'string', 'max:200'],
             'message' => ['required', 'string', 'max:2000'],
             'privacy' => ['accepted'],

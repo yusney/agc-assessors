@@ -15,6 +15,7 @@ final class EloquentTeamMemberRepository implements TeamMemberRepository
     public function findById(int $id): ?TeamMember
     {
         $model = TeamMemberModel::find($id);
+
         return $model ? $this->toDomain($model) : null;
     }
 
@@ -30,12 +31,12 @@ final class EloquentTeamMemberRepository implements TeamMemberRepository
     public function save(TeamMember $member): void
     {
         $data = [
-            'name'       => $member->name(),
-            'email'      => $member->email(),
-            'role'       => $member->role()->toArray(),
-            'bio'        => $member->bio()->toArray(),
+            'name' => $member->name(),
+            'email' => $member->email(),
+            'role' => $member->role()->toArray(),
+            'bio' => $member->bio()->toArray(),
             'sort_order' => $member->sortOrder(),
-            'active'     => $member->isActive(),
+            'active' => $member->isActive(),
         ];
 
         if ($member->id()) {

@@ -27,10 +27,10 @@ final class HomeController extends Controller
             ->max(fn (HomeSection $section): int => (int) $section->setting('limit', 3));
 
         return view('public.pages.home', [
-            'sections'   => $sections,
-            'services'   => $this->services->findAllActive(),
-            'news'       => $this->news->findPublished(limit: max(3, $newsLimit)),
-            'offices'    => $this->officeRepository->findAllActive(),
+            'sections' => $sections,
+            'services' => $this->services->findAllActive(),
+            'news' => $this->news->findPublished(limit: max(3, $newsLimit)),
+            'offices' => $this->officeRepository->findAllActive(),
             'mapsApiKey' => config('services.google_maps.key', ''),
         ]);
     }

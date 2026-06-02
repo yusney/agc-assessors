@@ -4,30 +4,35 @@ declare(strict_types=1);
 
 namespace AGC\Filament\Resources;
 
-use AGC\Filament\Forms\Components\UrlPickerField;
+use AGC\Filament\Resources\NewsResource\Pages\CreateNews;
+use AGC\Filament\Resources\NewsResource\Pages\EditNews;
+use AGC\Filament\Resources\NewsResource\Pages\ListNews;
 use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Awcodes\Curator\Components\Tables\CuratorColumn;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class NewsResource extends Resource
 {
     protected static ?string $model = NewsModel::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
+
     protected static ?int $navigationSort = 2;
 
     public static function getModelLabel(): string
@@ -143,9 +148,9 @@ class NewsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => \AGC\Filament\Resources\NewsResource\Pages\ListNews::route('/'),
-            'create' => \AGC\Filament\Resources\NewsResource\Pages\CreateNews::route('/create'),
-            'edit'   => \AGC\Filament\Resources\NewsResource\Pages\EditNews::route('/{record}/edit'),
+            'index' => ListNews::route('/'),
+            'create' => CreateNews::route('/create'),
+            'edit' => EditNews::route('/{record}/edit'),
         ];
     }
 }

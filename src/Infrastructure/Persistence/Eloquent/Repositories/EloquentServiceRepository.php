@@ -17,12 +17,14 @@ final class EloquentServiceRepository implements ServiceRepository
     public function findById(int $id): ?Service
     {
         $model = ServiceModel::find($id);
+
         return $model ? $this->toDomain($model) : null;
     }
 
     public function findBySlug(Slug $slug): ?Service
     {
         $model = ServiceModel::where('slug', $slug->value())->first();
+
         return $model ? $this->toDomain($model) : null;
     }
 
@@ -38,14 +40,14 @@ final class EloquentServiceRepository implements ServiceRepository
     public function save(Service $service): void
     {
         $data = [
-            'slug'            => $service->slug()->value(),
-            'name'            => $service->name()->toArray(),
-            'description'     => $service->description()->toArray(),
-            'seo_title'       => $service->seo()->title()->toArray(),
+            'slug' => $service->slug()->value(),
+            'name' => $service->name()->toArray(),
+            'description' => $service->description()->toArray(),
+            'seo_title' => $service->seo()->title()->toArray(),
             'seo_description' => $service->seo()->description()->toArray(),
-            'seo_canonical'   => $service->seo()->canonicalUrl(),
-            'sort_order'      => $service->sortOrder(),
-            'active'          => $service->isActive(),
+            'seo_canonical' => $service->seo()->canonicalUrl(),
+            'sort_order' => $service->sortOrder(),
+            'active' => $service->isActive(),
         ];
 
         if ($service->id()) {

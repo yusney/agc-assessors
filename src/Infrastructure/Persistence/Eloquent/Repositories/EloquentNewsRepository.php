@@ -17,12 +17,14 @@ final class EloquentNewsRepository implements NewsRepository
     public function findById(int $id): ?NewsArticle
     {
         $model = NewsModel::find($id);
+
         return $model ? $this->toDomain($model) : null;
     }
 
     public function findBySlug(Slug $slug): ?NewsArticle
     {
         $model = NewsModel::where('slug', $slug->value())->first();
+
         return $model ? $this->toDomain($model) : null;
     }
 
@@ -35,7 +37,9 @@ final class EloquentNewsRepository implements NewsRepository
             ->get()
             ->map(fn ($m) => $this->toDomain($m))
             ->all();
-    }    public function countPublished(): int
+    }
+
+    public function countPublished(): int
     {
         return NewsModel::where('published', true)->count();
     }
@@ -43,15 +47,15 @@ final class EloquentNewsRepository implements NewsRepository
     public function save(NewsArticle $article): void
     {
         $data = [
-            'slug'            => $article->slug()->value(),
-            'title'           => $article->title()->toArray(),
-            'excerpt'         => $article->excerpt()->toArray(),
-            'body'            => $article->body()->toArray(),
-            'seo_title'       => $article->seo()->title()->toArray(),
+            'slug' => $article->slug()->value(),
+            'title' => $article->title()->toArray(),
+            'excerpt' => $article->excerpt()->toArray(),
+            'body' => $article->body()->toArray(),
+            'seo_title' => $article->seo()->title()->toArray(),
             'seo_description' => $article->seo()->description()->toArray(),
-            'seo_canonical'   => $article->seo()->canonicalUrl(),
-            'published'       => $article->isPublished(),
-            'published_at'    => $article->publishedAt()?->format('Y-m-d H:i:s'),
+            'seo_canonical' => $article->seo()->canonicalUrl(),
+            'published' => $article->isPublished(),
+            'published_at' => $article->publishedAt()?->format('Y-m-d H:i:s'),
         ];
 
         if ($article->id()) {

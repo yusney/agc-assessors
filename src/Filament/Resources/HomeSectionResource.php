@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace AGC\Filament\Resources;
 
 use AGC\Filament\Forms\Components\UrlPickerField;
+use AGC\Filament\Resources\HomeSectionResource\Pages\CreateHomeSection;
+use AGC\Filament\Resources\HomeSectionResource\Pages\EditHomeSection;
+use AGC\Filament\Resources\HomeSectionResource\Pages\ListHomeSections;
 use AGC\Infrastructure\Persistence\Eloquent\Models\HomeSection;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
@@ -15,11 +18,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,8 +30,11 @@ use Filament\Tables\Table;
 class HomeSectionResource extends Resource
 {
     protected static ?string $model = HomeSection::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
+
     protected static ?int $navigationSort = 1;
 
     public static function getModelLabel(): string
@@ -102,9 +108,9 @@ class HomeSectionResource extends Resource
                                         Select::make('settings.hero_transition')
                                             ->label('Transición')
                                             ->options([
-                                                'fade'  => 'Fade (desvanecimiento)',
+                                                'fade' => 'Fade (desvanecimiento)',
                                                 'slide' => 'Slide (deslizamiento)',
-                                                'zoom'  => 'Zoom (acercamiento)',
+                                                'zoom' => 'Zoom (acercamiento)',
                                             ])
                                             ->default('fade')
                                             ->native(false)
@@ -129,7 +135,7 @@ class HomeSectionResource extends Resource
                                     // Hidden when hero_slides has items
                                     CuratorPicker::make('main_image_media_id')
                                         ->label('Imagen principal (modo simple)')
-                                        ->hidden(fn (Get $get): bool => !empty($get('settings.hero_slides')))
+                                        ->hidden(fn (Get $get): bool => ! empty($get('settings.hero_slides')))
                                         ->hiddenLabel()
                                         ->buttonLabel('Seleccionar imagen')
                                         ->constrained()
@@ -145,7 +151,7 @@ class HomeSectionResource extends Resource
                                             ->label('Texto alternativo (alt)')
                                             ->maxLength(255),
                                     ])
-                                    ->hidden(fn (Get $get): bool => !empty($get('settings.hero_slides'))),
+                                        ->hidden(fn (Get $get): bool => ! empty($get('settings.hero_slides'))),
                                 ])
                                 ->columnSpanFull(),
 
@@ -172,7 +178,7 @@ class HomeSectionResource extends Resource
                             Section::make('Diapositivas del carrusel')
                                 ->hidden(fn (Get $get): bool => $get('type') !== 'carousel')
                                 ->schema([
-                                     Repeater::make('carousel_items')
+                                    Repeater::make('carousel_items')
                                         ->hiddenLabel()
                                         ->schema([
                                             CuratorPicker::make('media_id')
@@ -372,15 +378,15 @@ class HomeSectionResource extends Resource
                                         ->required()
                                         ->live()
                                         ->options([
-                                            'hero'               => '🦸 Hero',
-                                            'intro'              => '📝 Introducción',
+                                            'hero' => '🦸 Hero',
+                                            'intro' => '📝 Introducción',
                                             'services_highlight' => '⭐ Servicios destacados',
-                                            'stats'              => '📊 Estadísticas',
-                                            'testimonials'       => '💬 Testimonios',
-                                            'carousel'           => '🎠 Carrusel',
-                                            'news_highlight'     => '📰 Noticias destacadas',
-                                            'contact_cta'        => '📬 Llamada a contacto',
-                                            'offices_map'        => '🗺️ Mapa de oficinas',
+                                            'stats' => '📊 Estadísticas',
+                                            'testimonials' => '💬 Testimonios',
+                                            'carousel' => '🎠 Carrusel',
+                                            'news_highlight' => '📰 Noticias destacadas',
+                                            'contact_cta' => '📬 Llamada a contacto',
+                                            'offices_map' => '🗺️ Mapa de oficinas',
                                         ]),
                                     TextInput::make('sort_order')->label('Orden')->numeric()->default(0),
                                     Toggle::make('is_active')->label('Activa')->default(true)->inline(false),
@@ -404,15 +410,15 @@ class HomeSectionResource extends Resource
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')->label('Activa'),
                 Tables\Filters\SelectFilter::make('type')->options([
-                    'hero'               => 'Hero',
-                                    'intro'              => 'Introducción',
-                                    'services_highlight' => 'Servicios destacados',
-                                    'stats'              => 'Estadísticas',
-                                    'testimonials'       => 'Testimonios',
-                                    'carousel'           => 'Carrusel',
-                                    'news_highlight'     => 'Noticias destacadas',
-                                    'contact_cta'        => 'Llamada a contacto',
-                                    'offices_map'        => 'Mapa de oficinas',
+                    'hero' => 'Hero',
+                    'intro' => 'Introducción',
+                    'services_highlight' => 'Servicios destacados',
+                    'stats' => 'Estadísticas',
+                    'testimonials' => 'Testimonios',
+                    'carousel' => 'Carrusel',
+                    'news_highlight' => 'Noticias destacadas',
+                    'contact_cta' => 'Llamada a contacto',
+                    'offices_map' => 'Mapa de oficinas',
                 ]),
             ])
             ->reorderable('sort_order')
@@ -426,9 +432,9 @@ class HomeSectionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => \AGC\Filament\Resources\HomeSectionResource\Pages\ListHomeSections::route('/'),
-            'create' => \AGC\Filament\Resources\HomeSectionResource\Pages\CreateHomeSection::route('/create'),
-            'edit'   => \AGC\Filament\Resources\HomeSectionResource\Pages\EditHomeSection::route('/{record}/edit'),
+            'index' => ListHomeSections::route('/'),
+            'create' => CreateHomeSection::route('/create'),
+            'edit' => EditHomeSection::route('/{record}/edit'),
         ];
     }
 
@@ -500,50 +506,50 @@ class HomeSectionResource extends Resource
     {
         $icons = [
             // Derecho / asesoría
-            'balance'            => 'Balanza',
-            'gavel'              => 'Mazo / judicial',
-            'policy'             => 'Política / normativa',
-            'description'        => 'Documento',
-            'contract'           => 'Contrato',
-            'cases'              => 'Maletín de casos',
-            'assignment'         => 'Asignación',
-            'article'            => 'Artículo',
+            'balance' => 'Balanza',
+            'gavel' => 'Mazo / judicial',
+            'policy' => 'Política / normativa',
+            'description' => 'Documento',
+            'contract' => 'Contrato',
+            'cases' => 'Maletín de casos',
+            'assignment' => 'Asignación',
+            'article' => 'Artículo',
             // Finanzas / contabilidad
-            'account_balance'    => 'Banco / contabilidad',
-            'monitoring'         => 'Monitoreo / analítica',
-            'trending_up'        => 'Tendencia al alza',
-            'savings'            => 'Ahorros',
-            'payments'           => 'Pagos',
-            'currency_exchange'  => 'Cambio de divisa',
-            'calculate'          => 'Calculadora',
-            'receipt_long'       => 'Recibo / factura',
-            'attach_money'       => 'Dinero',
+            'account_balance' => 'Banco / contabilidad',
+            'monitoring' => 'Monitoreo / analítica',
+            'trending_up' => 'Tendencia al alza',
+            'savings' => 'Ahorros',
+            'payments' => 'Pagos',
+            'currency_exchange' => 'Cambio de divisa',
+            'calculate' => 'Calculadora',
+            'receipt_long' => 'Recibo / factura',
+            'attach_money' => 'Dinero',
             // Laboral / RRHH
-            'work'               => 'Trabajo',
-            'work_outline'       => 'Trabajo (outline)',
-            'badge'              => 'Identificación',
-            'groups'             => 'Equipo / grupos',
+            'work' => 'Trabajo',
+            'work_outline' => 'Trabajo (outline)',
+            'badge' => 'Identificación',
+            'groups' => 'Equipo / grupos',
             'supervisor_account' => 'Supervisor',
-            'manage_accounts'    => 'Gestión de cuentas',
-            'handshake'          => 'Acuerdo / colaboración',
-            'engineering'        => 'Ingeniería / técnico',
+            'manage_accounts' => 'Gestión de cuentas',
+            'handshake' => 'Acuerdo / colaboración',
+            'engineering' => 'Ingeniería / técnico',
             // Empresa / general
-            'business'           => 'Empresa',
-            'business_center'    => 'Centro de negocios',
-            'real_estate_agent'  => 'Inmobiliaria',
-            'support'            => 'Soporte',
-            'security'           => 'Seguridad',
-            'verified'           => 'Verificado',
-            'shield'             => 'Protección',
-            'star'               => 'Estrella / destacado',
+            'business' => 'Empresa',
+            'business_center' => 'Centro de negocios',
+            'real_estate_agent' => 'Inmobiliaria',
+            'support' => 'Soporte',
+            'security' => 'Seguridad',
+            'verified' => 'Verificado',
+            'shield' => 'Protección',
+            'star' => 'Estrella / destacado',
         ];
 
         return collect($icons)
             ->mapWithKeys(fn (string $label, string $name): array => [
                 $name => '<span class="flex items-center gap-2">'
-                    . '<span class="material-symbols-outlined" style="font-size:20px;line-height:1;vertical-align:middle">' . $name . '</span>'
-                    . '<span>' . $label . '</span>'
-                    . '</span>',
+                    .'<span class="material-symbols-outlined" style="font-size:20px;line-height:1;vertical-align:middle">'.$name.'</span>'
+                    .'<span>'.$label.'</span>'
+                    .'</span>',
             ])
             ->all();
     }

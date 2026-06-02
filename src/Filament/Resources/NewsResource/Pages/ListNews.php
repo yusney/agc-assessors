@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Resources\NewsResource\Pages;
 
 use AGC\Filament\Resources\NewsResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListNews extends ListRecords
@@ -13,6 +14,6 @@ class ListNews extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [\Filament\Actions\CreateAction::make()];
+        return [CreateAction::make()];
     }
 }

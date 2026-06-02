@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 
 final class JobApplicationMail extends Mailable
 {
-
     /** @param array<string, mixed> $settings */
     public function __construct(
         public readonly JobApplication $application,
@@ -24,8 +23,8 @@ final class JobApplicationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Nueva candidatura: ' . $this->application->name . ' ' . $this->application->last_name
-                . ' — ' . $this->application->department,
+            subject: 'Nueva candidatura: '.$this->application->name.' '.$this->application->last_name
+                .' — '.$this->application->department,
             to: [$this->resolveDestinationEmail()],
         );
     }
@@ -45,13 +44,13 @@ final class JobApplicationMail extends Mailable
             return [];
         }
 
-        if (!Storage::disk('private')->exists($this->application->cv_path)) {
+        if (! Storage::disk('private')->exists($this->application->cv_path)) {
             return [];
         }
 
         return [
             Attachment::fromStorageDisk('private', $this->application->cv_path)
-                ->as('CV_' . $this->application->name . '_' . $this->application->last_name . '.' . pathinfo($this->application->cv_path, PATHINFO_EXTENSION))
+                ->as('CV_'.$this->application->name.'_'.$this->application->last_name.'.'.pathinfo($this->application->cv_path, PATHINFO_EXTENSION))
                 ->withMime($this->guessMime()),
         ];
     }
@@ -59,7 +58,7 @@ final class JobApplicationMail extends Mailable
     private function resolveDestinationEmail(): string
     {
         $settings = $this->settings ?: (SiteSetting::get('careers_page', []) ?? []);
-        $email    = $settings['form_destination_email'] ?? null;
+        $email = $settings['form_destination_email'] ?? null;
 
         if (is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $email;
@@ -73,8 +72,8 @@ final class JobApplicationMail extends Mailable
         $ext = strtolower(pathinfo((string) $this->application->cv_path, PATHINFO_EXTENSION));
 
         return match ($ext) {
-            'pdf'  => 'application/pdf',
-            'doc'  => 'application/msword',
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             default => 'application/octet-stream',
         };

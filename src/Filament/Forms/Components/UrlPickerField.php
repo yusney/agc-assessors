@@ -8,6 +8,7 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
 use AGC\Infrastructure\Persistence\Eloquent\Models\PageModel;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,7 @@ final class UrlPickerField extends TextInput
                     ->iconButton()
                     ->tooltip('Seleccionar ruta de la aplicación')
                     ->form([
-                        \Filament\Forms\Components\Select::make('selected_route')
+                        Select::make('selected_route')
                             ->label('Página o sección')
                             ->options(fn () => self::buildRouteOptions())
                             ->searchable()
@@ -66,11 +67,11 @@ final class UrlPickerField extends TextInput
 
         $groups = [
             'Páginas principales' => [],
-            'Páginas'             => [],
-            'Servicios'           => [],
-            'Noticias'            => [],
-            'Equipo'              => [],
-            'Otras rutas'         => [],
+            'Páginas' => [],
+            'Servicios' => [],
+            'Noticias' => [],
+            'Equipo' => [],
+            'Otras rutas' => [],
         ];
 
         // ── Static routes (no required params) ──────────────────────────
@@ -95,16 +96,15 @@ final class UrlPickerField extends TextInput
                 continue;
             }
 
-            $url   = '/' . ltrim($route->uri(), '/');
+            $url = '/'.ltrim($route->uri(), '/');
             $label = $url;
 
             match (true) {
-                str_starts_with($name, 'services') => $groups['Servicios'][$url]            = $label,
-                str_starts_with($name, 'news')     => $groups['Noticias'][$url]             = $label,
-                str_starts_with($name, 'team')     => $groups['Equipo'][$url]               = $label,
-                in_array($name, ['home', 'contact', 'pages.show'])
-                                                   => $groups['Páginas principals'][$url]   = $label,
-                default                            => $groups['Otras rutas'][$url]          = $label,
+                str_starts_with($name, 'services') => $groups['Servicios'][$url] = $label,
+                str_starts_with($name, 'news') => $groups['Noticias'][$url] = $label,
+                str_starts_with($name, 'team') => $groups['Equipo'][$url] = $label,
+                in_array($name, ['home', 'contact', 'pages.show']) => $groups['Páginas principals'][$url] = $label,
+                default => $groups['Otras rutas'][$url] = $label,
             };
         }
 
@@ -113,11 +113,11 @@ final class UrlPickerField extends TextInput
             ->orderBy('sort_order')
             ->get(['slug', 'name'])
             ->each(function (ServiceModel $s) use (&$groups): void {
-                $url   = '/serveis/' . $s->slug;
-                $name  = is_array($s->name)
+                $url = '/serveis/'.$s->slug;
+                $name = is_array($s->name)
                     ? ($s->name['ca'] ?? $s->name['es'] ?? reset($s->name))
                     : $s->name;
-                $groups['Servicios'][$url] = '  ↳ ' . $name;
+                $groups['Servicios'][$url] = '  ↳ '.$name;
             });
 
         // ── Published news ───────────────────────────────────────────────
@@ -125,11 +125,11 @@ final class UrlPickerField extends TextInput
             ->orderByDesc('published_at')
             ->get(['slug', 'title'])
             ->each(function (NewsModel $n) use (&$groups): void {
-                $url   = '/actualitat/' . $n->slug;
+                $url = '/actualitat/'.$n->slug;
                 $title = is_array($n->title)
                     ? ($n->title['ca'] ?? $n->title['es'] ?? reset($n->title))
                     : $n->title;
-                $groups['Noticias'][$url] = '  ↳ ' . $title;
+                $groups['Noticias'][$url] = '  ↳ '.$title;
             });
 
         // ── Published pages ─────────────────────────────────────────────
@@ -137,11 +137,11 @@ final class UrlPickerField extends TextInput
             ->orderBy('slug')
             ->get(['slug', 'title'])
             ->each(function (PageModel $p) use (&$groups): void {
-                $url   = '/pages/' . $p->slug;
+                $url = '/pages/'.$p->slug;
                 $title = is_array($p->title)
                     ? ($p->title['ca'] ?? $p->title['es'] ?? reset($p->title))
                     : $p->title;
-                $groups['Páginas'][$url] = '  ↳ ' . $title;
+                $groups['Páginas'][$url] = '  ↳ '.$title;
             });
 
         // ── Remove empty groups ──────────────────────────────────────────

@@ -19,9 +19,13 @@ use Filament\Schemas\Schema;
 class SocialMediaSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+
     protected static ?string $navigationLabel = 'Navbar';
+
     protected static ?string $title = 'Configuración del Navbar';
+
     protected string $view = 'filament.pages.social-media-settings';
 
     /** @var array<string, mixed> */
@@ -31,12 +35,12 @@ class SocialMediaSettingsPage extends Page
     {
         $this->form->fill([
             'networks' => SiteSetting::get('social_networks', []) ?? [],
-            'cta'      => SiteSetting::get('navbar_cta', [
+            'cta' => SiteSetting::get('navbar_cta', [
                 'label_ca' => 'Àrea de client',
                 'label_es' => 'Área de cliente',
                 'label_en' => 'Client Area',
-                'url'      => '/area-client',
-                'target'   => '_self',
+                'url' => '/area-client',
+                'target' => '_self',
             ]),
         ]);
     }
@@ -78,7 +82,7 @@ class SocialMediaSettingsPage extends Page
                         Select::make('cta.target')
                             ->label('Abrir enlace')
                             ->options([
-                                '_self'  => 'Misma pestaña',
+                                '_self' => 'Misma pestaña',
                                 '_blank' => 'Nueva pestaña',
                             ])
                             ->default('_self')
@@ -95,13 +99,13 @@ class SocialMediaSettingsPage extends Page
                                     ->label('Red social')
                                     ->required()
                                     ->options([
-                                        'linkedin'  => 'LinkedIn',
-                                        'twitter'   => 'X (Twitter)',
+                                        'linkedin' => 'LinkedIn',
+                                        'twitter' => 'X (Twitter)',
                                         'instagram' => 'Instagram',
-                                        'facebook'  => 'Facebook',
-                                        'youtube'   => 'YouTube',
-                                        'tiktok'    => 'TikTok',
-                                        'whatsapp'  => 'WhatsApp',
+                                        'facebook' => 'Facebook',
+                                        'youtube' => 'YouTube',
+                                        'tiktok' => 'TikTok',
+                                        'whatsapp' => 'WhatsApp',
                                     ])
                                     ->columnSpan(1),
 

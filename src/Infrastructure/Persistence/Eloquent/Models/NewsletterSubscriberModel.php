@@ -21,15 +21,15 @@ class NewsletterSubscriberModel extends Model
     ];
 
     protected $casts = [
-        'is_active'       => 'boolean',
-        'subscribed_at'   => 'datetime',
+        'is_active' => 'boolean',
+        'subscribed_at' => 'datetime',
         'unsubscribed_at' => 'datetime',
     ];
 
     public function subscribe(): void
     {
         $this->update([
-            'is_active'     => true,
+            'is_active' => true,
             'subscribed_at' => now(),
             'unsubscribed_at' => null,
         ]);
@@ -38,7 +38,7 @@ class NewsletterSubscriberModel extends Model
     public function unsubscribe(): void
     {
         $this->update([
-            'is_active'       => false,
+            'is_active' => false,
             'unsubscribed_at' => now(),
         ]);
     }

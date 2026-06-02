@@ -24,7 +24,7 @@ class NewsModel extends Model
     ];
 
     protected $casts = [
-        'published'    => 'boolean',
+        'published' => 'boolean',
         'published_at' => 'datetime',
     ];
 }

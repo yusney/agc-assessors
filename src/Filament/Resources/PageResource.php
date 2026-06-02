@@ -4,28 +4,32 @@ declare(strict_types=1);
 
 namespace AGC\Filament\Resources;
 
-use AGC\Filament\Forms\Components\UrlPickerField;
+use AGC\Filament\Resources\PageResource\Pages\CreatePage;
+use AGC\Filament\Resources\PageResource\Pages\EditPage;
+use AGC\Filament\Resources\PageResource\Pages\ListPages;
 use AGC\Infrastructure\Persistence\Eloquent\Models\PageModel;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class PageResource extends Resource
 {
     protected static ?string $model = PageModel::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
+
     protected static ?int $navigationSort = 1;
 
     public static function getModelLabel(): string
@@ -130,9 +134,9 @@ class PageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => \AGC\Filament\Resources\PageResource\Pages\ListPages::route('/'),
-            'create' => \AGC\Filament\Resources\PageResource\Pages\CreatePage::route('/create'),
-            'edit'   => \AGC\Filament\Resources\PageResource\Pages\EditPage::route('/{record}/edit'),
+            'index' => ListPages::route('/'),
+            'create' => CreatePage::route('/create'),
+            'edit' => EditPage::route('/{record}/edit'),
         ];
     }
 }

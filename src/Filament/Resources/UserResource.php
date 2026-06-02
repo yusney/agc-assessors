@@ -10,6 +10,7 @@ use AGC\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -67,6 +68,11 @@ class UserResource extends Resource
                         ->maxLength(255)
                         ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
                         ->dehydrated(fn ($state) => filled($state)),
+
+                    Toggle::make('email_verified')
+                        ->label('Email verificado')
+                        ->helperText('Marcar si el usuario no necesita verificar su email.')
+                        ->default(false),
                 ])
                 ->columns(2),
 

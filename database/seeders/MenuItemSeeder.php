@@ -43,10 +43,13 @@ class MenuItemSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            MenuItem::create(array_merge($item, [
-                'is_active' => true,
-                'target' => '_self',
-            ]));
+            MenuItem::updateOrCreate(
+                ['url_path' => $item['url_path']],
+                array_merge($item, [
+                    'is_active' => true,
+                    'target' => '_self',
+                ])
+            );
         }
     }
 }

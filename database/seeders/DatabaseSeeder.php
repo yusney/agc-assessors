@@ -16,12 +16,6 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             RolesAndPermissionsSeeder::class,
-            HomeSectionSeeder::class,
-            ServiceSeeder::class,
-            NewsSeeder::class,
-            TeamMemberSeeder::class,
-            MenuItemSeeder::class,
-            FooterSettingsSeeder::class,
         ]);
     }
 }

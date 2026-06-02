@@ -33,10 +33,13 @@ if [ "$PERM_COUNT" = "0" ] || [ -z "$PERM_COUNT" ]; then
     echo "⚠️ WARNING: No permissions found. Admin may not be able to login."
 fi
 
+# 5. Seed auth data (idempotent — safe to run on every boot)
+php artisan db:seed --class=DatabaseSeeder --force 2>/dev/null || true
+echo "🔐 Auth seed complete."
+
 # NOTE: Content seeding (menu items, pages, services, news, team members)
-# is a ONE-TIME setup operation. Do NOT run DatabaseSeeder here.
-# Run it manually or via a Dokploy post-deploy hook during initial deploy:
-#   docker compose exec php php artisan db:seed --class=DatabaseSeeder
+# is a ONE-TIME setup operation. Run it manually once after first deploy:
+#   docker compose exec php php artisan db:seed --class=InitialContentSeeder
 
 echo "✅ Entrypoint complete."
 exit 0

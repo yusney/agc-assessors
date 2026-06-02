@@ -60,6 +60,11 @@ final class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::hex('#00346f'),
             ])
+            ->navigationGroups([
+                'Contenido',
+                'Configuración',
+                'Sistema',
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->resources([
                 HomeSectionResource::class,
@@ -79,7 +84,9 @@ final class AdminPanelProvider extends PanelProvider
                     ->navigationGroup('Contenido')
                     ->navigationSort(10)
                     ->registerNavigation(true),
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Sistema')
+                    ->navigationSort(2),
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

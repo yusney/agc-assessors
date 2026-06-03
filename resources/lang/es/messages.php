@@ -60,6 +60,8 @@ return [
         'no_more' => 'No hay más noticias',
         'read_time' => '5 min de lectura',
         'share' => 'Compartir',
+        'copy_link' => 'Copiar enlace',
+        'link_copied' => '¡Enlace copiado!',
     ],
     'services' => [
         'seo_title' => 'Servicios – AGC Assessors',
@@ -136,6 +138,19 @@ return [
         'marketing_title' => 'Cookies de marketing',
         'marketing_text' => 'Se utilizan para mostrar publicidad relevante según tus intereses y medir la eficacia de las campañas publicitarias.',
         'learn_more' => 'Política de cookies',
+    ],
+    'search' => [
+        'title'            => 'Búsqueda',
+        'placeholder'      => 'Buscar...',
+        'results_for'      => 'Resultados para',
+        'results_count'    => ':count resultado|:count resultados',
+        'no_results'       => 'No encontramos nada',
+        'no_results_subtitle' => 'Prueba con otras palabras o',
+        'contact_link'     => 'contáctanos directamente',
+        'source_news'      => 'Actualidad',
+        'source_service'   => 'Servicio',
+        'source_page'      => 'Página',
+        'min_chars'        => 'Escribe al menos 3 caracteres para buscar',
     ],
     'trust' => [
         'une_title' => 'UNE 420001',

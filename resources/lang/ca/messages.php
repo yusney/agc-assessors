@@ -60,6 +60,8 @@ return [
         'no_more' => 'No hi ha més notícies',
         'read_time' => '5 min de lectura',
         'share' => 'Compartir',
+        'copy_link' => 'Copiar enllaç',
+        'link_copied' => 'Enllaç copiat!',
     ],
     'services' => [
         'seo_title' => 'Serveis – AGC Assessors',
@@ -135,6 +137,19 @@ return [
         'marketing_title' => 'Cookies de màrqueting',
         'marketing_text' => 'S\'utilitzen per mostrar publicitat rellevant segons els teus interessos i mesurar l\'eficàcia de les campanyes publicitàries.',
         'learn_more' => 'Política de cookies',
+    ],
+    'search' => [
+        'title'            => 'Cerca',
+        'placeholder'      => 'Cercar...',
+        'results_for'      => 'Resultats per a',
+        'results_count'    => ':count resultat|:count resultats',
+        'no_results'       => 'No hem trobat res',
+        'no_results_subtitle' => 'Prova amb altres paraules o',
+        'contact_link'     => 'contacta\'ns directament',
+        'source_news'      => 'Actualitat',
+        'source_service'   => 'Servei',
+        'source_page'      => 'Pàgina',
+        'min_chars'        => 'Escriu almenys 3 caràcters per cercar',
     ],
     'trust' => [
         'une_title' => 'UNE 420001',

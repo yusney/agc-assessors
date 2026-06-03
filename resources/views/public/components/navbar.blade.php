@@ -250,11 +250,49 @@
                 </div>
             @endif
 
-            {{-- Search button (desktop only) --}}
-            <button class="hidden md:flex items-center justify-center text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300 p-0.5"
-                    aria-label="{{ __('messages.nav.search') }}">
-                <span class="material-symbols-outlined text-[22px]">search</span>
-            </button>
+            {{-- Search (desktop) --}}
+            <div class="relative hidden md:flex items-center"
+                 x-data="{ searchOpen: false, searchQuery: '' }"
+                 @click.outside="searchOpen = false"
+                 @keydown.escape.window="searchOpen = false">
+                <button @click="searchOpen = !searchOpen; $nextTick(() => { if(searchOpen) $refs.searchInput.focus() })"
+                        class="flex items-center justify-center text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300 p-0.5"
+                        :aria-expanded="searchOpen"
+                        aria-label="{{ __('messages.nav.search') }}">
+                    <span class="material-symbols-outlined text-[22px]" x-show="!searchOpen">search</span>
+                    <span class="material-symbols-outlined text-[22px]" x-show="searchOpen" x-cloak>close</span>
+                </button>
+
+                <div x-show="searchOpen"
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-1"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-1"
+                     class="absolute top-full right-0 mt-3 z-50">
+                    <div class="bg-white rounded-2xl shadow-lg border border-[#E2E8F0] p-3">
+                        <form action="{{ route('search') }}" method="GET" class="flex items-center gap-2">
+                            <input
+                                x-ref="searchInput"
+                                type="text"
+                                name="q"
+                                x-model="searchQuery"
+                                placeholder="{{ __('messages.search.placeholder') }}"
+                                class="w-64 px-4 py-2 rounded-xl border border-[#00346f]/30 bg-[#f9f9ff] text-[#1E293B]
+                                       text-[14px] placeholder-[#94A3B8] focus:outline-none focus:border-[#00346f]
+                                       focus:ring-2 focus:ring-[#00346f]/10 transition-all"
+                            >
+                            <button type="submit"
+                                    class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#00346f]
+                                           text-white hover:bg-[#00B4D8] transition-colors flex-shrink-0">
+                                <span class="material-symbols-outlined text-[18px]">search</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             {{-- Language selector --}}
             <div class="relative hidden md:block" x-data="{ langOpen: false }" @click.outside="langOpen = false">
@@ -347,6 +385,15 @@
                     @endif
                 </li>
             @endforeach
+
+            {{-- Mobile search --}}
+            <li class="pt-2">
+                <a href="{{ route('search') }}"
+                   class="flex items-center gap-2 py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">search</span>
+                    {{ __('messages.nav.search') }}
+                </a>
+            </li>
 
             {{-- Mobile language switcher --}}
             <li class="pt-3 border-t border-[#E2E8F0] mt-3">

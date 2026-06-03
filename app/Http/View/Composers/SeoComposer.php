@@ -173,7 +173,7 @@ final class SeoComposer
                 '@type' => 'SearchAction',
                 'target' => [
                     '@type' => 'EntryPoint',
-                    'urlTemplate' => $url.'/'.app()->getLocale().'?q={search_term_string}',
+                    'urlTemplate' => rtrim(route('search'), '/') . '?q={search_term_string}',
                 ],
                 'query-input' => 'required name=search_term_string',
             ],

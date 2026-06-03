@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\OfficesController;
@@ -34,6 +35,8 @@ Route::group(
     ['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']],
     function () {
         Route::get('/', HomeController::class)->name('home');
+
+        Route::get('/search', SearchController::class)->name('search');
 
         Route::get('/actualitat', [NewsController::class, 'index'])->name('news.index');
         Route::get('/actualitat/{slug}', [NewsController::class, 'show'])->name('news.show');

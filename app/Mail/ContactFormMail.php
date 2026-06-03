@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
@@ -18,9 +19,13 @@ final class ContactFormMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new Address(
+                config('mail.from.address', 'noreply@donduque.dev'),
+                'AGC Assessors'
+            ),
             subject: 'Consulta web: ' . $this->data['subject'] . ' — ' . $this->data['name'],
             replyTo: [
-                new \Illuminate\Mail\Mailables\Address(
+                new Address(
                     $this->data['email'],
                     $this->data['name']
                 ),

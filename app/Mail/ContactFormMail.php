@@ -18,8 +18,13 @@ final class ContactFormMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[AGC Web] ' . $this->data['subject'],
-            replyTo: [$this->data['email']],
+            subject: 'Consulta web: ' . $this->data['subject'] . ' — ' . $this->data['name'],
+            replyTo: [
+                new \Illuminate\Mail\Mailables\Address(
+                    $this->data['email'],
+                    $this->data['name']
+                ),
+            ],
         );
     }
 

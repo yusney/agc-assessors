@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Public;
 
+use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use App\Http\Controllers\Controller;
+use App\Mail\ContactFormMail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -28,8 +30,10 @@ final class ContactController extends Controller
             'privacy' => ['accepted'],
         ]);
 
-        // TODO: dispatch a ContactFormSubmitted event / mail
-        // Mail::to(config('mail.to.address'))->send(new ContactFormMail($data));
+        $settings = SiteSetting::get('contact_settings', []);
+        $destination = $settings['contact_destination_email'] ?? config('mail.from.address');
+
+        Mail::to($destination)->send(new ContactFormMail($data));
 
         return redirect()->route('contact')->with('success', true);
     }

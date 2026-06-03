@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use AGC\Filament\Pages\FooterSettingsPage;
+use AGC\Filament\Pages\ContactSettingsPage;
 use AGC\Filament\Pages\SocialMediaSettingsPage;
 use AGC\Filament\Pages\TrustBarSettingsPage;
 use AGC\Filament\Pages\WorkWithUsSettingsPage;
@@ -91,6 +92,7 @@ final class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                ContactSettingsPage::class,
                 FooterSettingsPage::class,
                 SocialMediaSettingsPage::class,
                 TrustBarSettingsPage::class,

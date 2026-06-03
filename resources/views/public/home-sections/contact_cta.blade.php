@@ -68,6 +68,7 @@
 
                     <form action="{{ route('newsletter.store') }}" method="POST" class="flex flex-col gap-4 max-w-xl mx-auto lg:mx-0 lg:ml-auto" @submit="submitForm">
                         @csrf
+                        <x-spam-protection />
                         <div class="flex flex-col sm:flex-row gap-4">
                             <input type="email" name="email" required placeholder="{{ $placeholder }}" class="flex-grow bg-white border border-[#c2c6d3]/50 rounded-full px-6 py-4 text-[16px] text-[#1E293B] placeholder:text-[#64748B]/60 focus:outline-none focus:ring-1 focus:ring-[#00346f] focus:border-[#00346f] shadow-sm transition-all">
                             <button type="submit" class="btn-primary text-[16px] px-8 py-4 whitespace-nowrap"

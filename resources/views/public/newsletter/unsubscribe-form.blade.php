@@ -17,6 +17,7 @@
 
         <form action="{{ route('newsletter.unsubscribe.process') }}" method="POST" class="flex flex-col gap-5">
             @csrf
+            <x-spam-protection />
 
             <div>
                 <label for="email" class="block text-sm font-medium text-[#475569] mb-1.5">

@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeSessionRedirect' => LocaleSessionRedirect::class,
             'localeViewPath' => LaravelLocalizationViewPath::class,
             'localizationRedirect' => LaravelLocalizationRedirectFilter::class,
+            'spam' => \App\Http\Middleware\SpamProtection::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

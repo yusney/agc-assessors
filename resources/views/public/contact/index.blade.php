@@ -77,6 +77,7 @@
               class="bg-white rounded-[2rem] border border-[#E2E8F0] p-8 md:p-12 shadow-sm space-y-6"
               x-data="{ accepted: false }">
             @csrf
+            <x-spam-protection />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>

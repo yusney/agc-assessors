@@ -47,17 +47,17 @@ Route::group(
         Route::get('/equip', TeamController::class)->name('team');
 
         Route::get('/contacte', [ContactController::class, 'index'])->name('contact');
-        Route::post('/contacte', [ContactController::class, 'store'])->name('contact.store');
+        Route::post('/contacte', [ContactController::class, 'store'])->name('contact.store')->middleware('spam', 'throttle:10,1');
 
-        Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+        Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store')->middleware('spam', 'throttle:5,1');
         Route::get('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribeForm'])->name('newsletter.unsubscribe.form');
-        Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribeByForm'])->name('newsletter.unsubscribe.process');
+        Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribeByForm'])->name('newsletter.unsubscribe.process')->middleware('spam', 'throttle:5,1');
         Route::get('/unsubscribe/{email}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
         Route::get(LaravelLocalization::transRoute('routes.offices'), [OfficesController::class, 'index'])->name('offices.index');
 
         Route::get(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'index'])->name('careers.index');
-        Route::post(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'store'])->name('careers.store')->middleware('throttle:3,60');
+        Route::post(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'store'])->name('careers.store')->middleware('spam', 'throttle:3,60');
 
         Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
     }

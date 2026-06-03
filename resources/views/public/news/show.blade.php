@@ -241,6 +241,7 @@
 
                     <form action="{{ route('newsletter.store') }}" method="POST" class="flex flex-col gap-4 max-w-md mx-auto" @submit="submitForm">
                         @csrf
+                        <x-spam-protection />
                         <div class="flex flex-col sm:flex-row gap-3">
                             <input type="email" name="email" required
                                    placeholder="{{ __('messages.home.newsletter_placeholder') }}"

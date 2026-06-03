@@ -30,6 +30,7 @@
 <form method="POST" action="{{ route('careers.store') }}" enctype="multipart/form-data"
       x-data="{ loading: false }" @submit="loading = true" novalidate>
     @csrf
+    <x-spam-protection />
 
     {{-- Errors summary --}}
     @if($errors->any())

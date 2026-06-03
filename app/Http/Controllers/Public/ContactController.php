@@ -42,10 +42,19 @@ final class ContactController extends Controller
             'privacy' => ['accepted'],
         ]);
 
-        $settings = SiteSetting::get('contact_settings', []);
-        $destination = $settings['contact_destination_email'] ?? config('mail.from.address');
+        $settings    = SiteSetting::get('contact_settings', []);
+        $raw         = $settings['contact_destination_email'] ?? config('mail.from.address');
+        $destinations = collect(explode(',', (string) $raw))
+            ->map(fn (string $e) => trim($e))
+            ->filter(fn (string $e) => filter_var($e, FILTER_VALIDATE_EMAIL))
+            ->values()
+            ->all();
 
-        Mail::to($destination)->send(new ContactFormMail($data));
+        if (empty($destinations)) {
+            $destinations = [config('mail.from.address')];
+        }
+
+        Mail::to($destinations)->send(new ContactFormMail($data));
 
         return redirect()->route('contact')->with('success', true);
     }

@@ -118,16 +118,14 @@ final class ContactSettingsPage extends Page
                     ->schema([
                         TextInput::make('contact_destination_email')
                             ->label('Email destino — Formulario de contacto')
-                            ->email()
                             ->required()
-                            ->placeholder('info@agcassessors.com')
-                            ->helperText('Aquí llegarán los mensajes del formulario "Solicitar consulta".'),
+                            ->placeholder('info@agcassessors.com, direccion2@agcassessors.com')
+                            ->helperText('Separa múltiples direcciones con coma. Todos recibirán el mensaje.'),
 
                         TextInput::make('newsletter_notification_email')
                             ->label('Email destino — Aviso de nueva suscripción (opcional)')
-                            ->email()
-                            ->placeholder('marketing@agcassessors.com')
-                            ->helperText('Si se rellena, recibirás un aviso cada vez que alguien se suscriba. Déjalo vacío para no recibir avisos.'),
+                            ->placeholder('marketing@agcassessors.com, info@agcassessors.com')
+                            ->helperText('Separa múltiples direcciones con coma. Déjalo vacío para no recibir avisos.'),
                     ]),
             ]);
     }

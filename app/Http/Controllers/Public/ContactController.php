@@ -16,7 +16,19 @@ final class ContactController extends Controller
 {
     public function index(): View
     {
-        return view('public.contact.index');
+        $settings = SiteSetting::get('contact_settings', []);
+        $locale   = app()->getLocale();
+
+        $contact = [
+            'title'    => $settings['title'][$locale]    ?? __('messages.contact.title'),
+            'subtitle' => $settings['subtitle'][$locale] ?? __('messages.contact.subtitle'),
+            'address'  => $settings['address']           ?? __('messages.contact.address'),
+            'phone'    => $settings['phone']             ?? __('messages.contact.phone_value'),
+            'email'    => $settings['email_public']      ?? __('messages.contact.email_value'),
+            'hours'    => $settings['hours'][$locale]    ?? __('messages.contact.hours_value'),
+        ];
+
+        return view('public.contact.index', compact('contact'));
     }
 
     public function store(Request $request): RedirectResponse

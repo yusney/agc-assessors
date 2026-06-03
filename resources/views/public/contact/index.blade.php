@@ -12,10 +12,10 @@
     <div class="lg:col-span-5">
         <h1 class="font-headline text-[48px] md:text-[60px] font-semibold text-[#1E293B]
                    mb-4 tracking-tight leading-[1.05]">
-            {{ __('messages.contact.title') }}
+            {{ $contact['title'] }}
         </h1>
         <p class="text-[20px] text-[#64748B] mb-12 font-light leading-relaxed">
-            {{ __('messages.contact.subtitle') }}
+            {{ $contact['subtitle'] }}
         </p>
 
         <ul class="space-y-7">
@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     <p class="text-[14px] text-[#64748B] font-medium uppercase tracking-wider mb-1">{{ __('messages.contact.address_label') }}</p>
-                    <p class="text-[17px] text-[#1E293B]">{{ __('messages.contact.address') }}</p>
+                    <p class="text-[17px] text-[#1E293B]">{{ $contact['address'] }}</p>
                 </div>
             </li>
             <li class="flex items-start gap-4">
@@ -34,9 +34,9 @@
                 </div>
                 <div>
                     <p class="text-[14px] text-[#64748B] font-medium uppercase tracking-wider mb-1">{{ __('messages.contact.phone_label') }}</p>
-                    <a href="tel:{{ __('messages.contact.phone_value') }}"
+                    <a href="tel:{{ $contact['phone'] }}"
                        class="text-[17px] text-[#1E293B] hover:text-[#00346f] transition-colors">
-                        {{ __('messages.contact.phone_value') }}
+                        {{ $contact['phone'] }}
                     </a>
                 </div>
             </li>
@@ -46,9 +46,9 @@
                 </div>
                 <div>
                     <p class="text-[14px] text-[#64748B] font-medium uppercase tracking-wider mb-1">{{ __('messages.contact.email_label') }}</p>
-                    <a href="mailto:{{ __('messages.contact.email_value') }}"
+                    <a href="mailto:{{ $contact['email'] }}"
                        class="text-[17px] text-[#1E293B] hover:text-[#00346f] transition-colors">
-                        {{ __('messages.contact.email_value') }}
+                        {{ $contact['email'] }}
                     </a>
                 </div>
             </li>
@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <p class="text-[14px] text-[#64748B] font-medium uppercase tracking-wider mb-1">{{ __('messages.contact.hours_label') }}</p>
-                    <p class="text-[17px] text-[#1E293B]">{{ __('messages.contact.hours_value') }}</p>
+                    <p class="text-[17px] text-[#1E293B]">{{ $contact['hours'] }}</p>
                 </div>
             </li>
         </ul>

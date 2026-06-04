@@ -20,7 +20,7 @@ final class ContactFormMail extends Mailable
     {
         return new Envelope(
             from: new Address(
-                config('mail.from.address', 'noreply@donduque.dev'),
+                config('mail.from.address', 'info@agcassessors.com'),
                 'AGC Assessors'
             ),
             subject: 'Consulta web: ' . $this->data['subject'] . ' — ' . $this->data['name'],

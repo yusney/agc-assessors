@@ -4,7 +4,12 @@
 
     $formIntro      = $settings['form_intro'][$locale] ?? __('messages.careers.form_intro');
     $privacyText    = $settings['form_privacy_text'][$locale] ?? __('messages.careers.form_labels.privacy', ['url' => '#']);
-    $privacyPolicyUrl = route('pages.show', ['slug' => 'politica-privacitat']);
+
+    $privacyPage = \AGC\Infrastructure\Persistence\Eloquent\Models\PageModel::where('slug->ca', 'politica-privacitat')
+        ->orWhere('slug->es', 'politica-privacidad')
+        ->orWhere('slug->en', 'privacy-policy')
+        ->first();
+    $privacyPolicyUrl = $privacyPage ? route('pages.show', ['slug' => $privacyPage->slug[$locale] ?? $privacyPage->slug['ca']]) : '#';
 
     $departments = [
         'fiscal'    => __('messages.careers.dept_fiscal'),
@@ -164,7 +169,7 @@
                        class="mt-1 w-4 h-4 rounded border-[#CBD5E1] text-[#00346f] focus:ring-[#00346f] @error('privacy_accepted') border-red-400 @enderror"
                        required>
                 <span class="text-sm text-[#424751] leading-[1.6]">
-                    {!! $privacyText !!}
+                    {!! strip_tags($privacyText, '<a><br><strong><em>') !!}
                 </span>
             </label>
             @error('privacy_accepted')

@@ -35,7 +35,7 @@ final class WorkWithUsController extends Controller
         $cvPath = null;
         if ($request->hasFile('cv')) {
             $file = $request->file('cv');
-            $ext = $file->getClientOriginalExtension();
+            $ext = $file->extension();
             $filename = Str::uuid().'.'.$ext;
             $cvPath = $file->storeAs('cv-uploads', $filename, 'private');
         }
@@ -54,7 +54,19 @@ final class WorkWithUsController extends Controller
         ]);
 
         // Send email
-        Mail::send(new JobApplicationMail($application, $settings));
+        try {
+            Mail::send(new JobApplicationMail($application, $settings));
+        } catch (\Throwable $e) {
+            report($e);
+
+            $successMessage = $settings['form_success_message'][$locale]
+                ?? __('messages.careers.form_success');
+
+            return redirect()
+                ->to(LaravelLocalization::getLocalizedURL($locale, route('careers.index')))
+                ->with('success', $successMessage)
+                ->with('warning', __('messages.careers.email_notification_failed'));
+        }
 
         // Flash success
         $successMessage = $settings['form_success_message'][$locale]

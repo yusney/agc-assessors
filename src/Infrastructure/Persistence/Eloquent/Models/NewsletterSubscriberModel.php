@@ -7,7 +7,7 @@ namespace AGC\Infrastructure\Persistence\Eloquent\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class NewsletterSubscriberModel extends Model
+final class NewsletterSubscriberModel extends Model
 {
     use SoftDeletes;
 

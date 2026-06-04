@@ -51,7 +51,7 @@ final class ContactController extends Controller
             ->all();
 
         if (empty($destinations)) {
-            $destinations = [config('mail.from.address')];
+            $destinations = [(string) config('mail.from.address', 'info@agcassessors.com')];
         }
 
         Mail::to($destinations)->send(new ContactFormMail($data));

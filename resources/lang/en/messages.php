@@ -180,6 +180,7 @@ return [
             'submit' => 'Send application',
         ],
         'form_success' => 'Thank you! We have received your application. We will be in touch soon.',
+        'email_notification_failed' => 'Your application was saved, but we could not send the email notification. We will be in touch soon.',
         'footer_cta' => 'Take the first step towards your professional career',
         'footer_cta_button' => 'Send your application now',
         'dept_fiscal' => 'Tax',

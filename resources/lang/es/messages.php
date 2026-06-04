@@ -180,6 +180,7 @@ return [
             'submit' => 'Enviar candidatura',
         ],
         'form_success' => '¡Gracias! Hemos recibido tu candidatura. Nos pondremos en contacto contigo pronto.',
+        'email_notification_failed' => 'Tu candidatura se ha guardado, pero no hemos podido enviar la notificación por correo. Nos pondremos en contacto contigo pronto.',
         'footer_cta' => 'Da el primer paso hacia tu carrera profesional',
         'footer_cta_button' => 'Envía tu candidatura ahora',
         'dept_fiscal' => 'Fiscal',

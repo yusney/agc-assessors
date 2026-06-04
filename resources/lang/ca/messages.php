@@ -179,6 +179,7 @@ return [
             'submit' => 'Enviar candidatura',
         ],
         'form_success' => 'Gràcies! Hem rebut la teva candidatura. Ens posarem en contacte amb tu aviat.',
+        'email_notification_failed' => 'La teva candidatura s\'ha guardat, però no hem pogut enviar la notificació per correu. Ens posarem en contacte amb tu aviat.',
         'footer_cta' => 'Fes el primer pas cap a la teva carrera professional',
         'footer_cta_button' => 'Envia la teva candidatura ara',
         'dept_fiscal' => 'Fiscal',

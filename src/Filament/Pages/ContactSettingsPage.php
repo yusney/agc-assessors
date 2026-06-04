@@ -121,11 +121,6 @@ final class ContactSettingsPage extends Page
                             ->required()
                             ->placeholder('info@agcassessors.com, direccion2@agcassessors.com')
                             ->helperText('Separa múltiples direcciones con coma. Todos recibirán el mensaje.'),
-
-                        TextInput::make('newsletter_notification_email')
-                            ->label('Email destino — Aviso de nueva suscripción (opcional)')
-                            ->placeholder('marketing@agcassessors.com, info@agcassessors.com')
-                            ->helperText('Separa múltiples direcciones con coma. Déjalo vacío para no recibir avisos.'),
                     ]),
             ]);
     }

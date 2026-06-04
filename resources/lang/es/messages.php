@@ -94,6 +94,7 @@ return [
         'submit' => 'Enviar mensaje',
         'success' => 'Mensaje enviado correctamente. Te responderemos en breve.',
         'email_notification_failed' => 'Tu mensaje se ha enviado, pero no hemos podido enviar la notificación por correo. Te responderemos en breve.',
+        'email_failed' => 'No hemos podido enviar tu mensaje. Por favor, inténtalo de nuevo más tarde o contáctanos por teléfono.',
         'address_label' => 'Dirección',
         'address' => 'Calle Ejemplo 123, Barcelona',
         'phone_label' => 'Teléfono',

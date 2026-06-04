@@ -8,10 +8,14 @@
     $privacyPage = \AGC\Infrastructure\Persistence\Eloquent\Models\PageModel::where('slug', 'politica-privacitat')->first();
     $privacyPolicyUrl = $privacyPage ? route('pages.show', ['slug' => $privacyPage->slug]) : '#';
 
-    $privacyText = strip_tags($privacyText, '<a><br><strong><em>');
-    $privacyText = preg_replace(
-        '/<a\s+[^>]*>/i',
-        '<a href="' . e($privacyPolicyUrl) . '" class="underline hover:text-[#00346f]" target="_blank">',
+    // Sanitize: allow only <a> tags, reconstruct each with safe href and escaped content
+    $privacyText = strip_tags($privacyText, '<a>');
+    $privacyText = preg_replace_callback(
+        '/<a\b[^>]*>(.*?)<\/a>/is',
+        function ($matches) use ($privacyPolicyUrl) {
+            $content = strip_tags($matches[1]);
+            return '<a href="' . e($privacyPolicyUrl) . '" class="underline hover:text-[#00346f]" target="_blank">' . e($content) . '</a>';
+        },
         $privacyText
     );
 

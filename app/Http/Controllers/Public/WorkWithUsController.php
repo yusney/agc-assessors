@@ -65,7 +65,8 @@ final class WorkWithUsController extends Controller
             return redirect()
                 ->to(LaravelLocalization::getLocalizedURL($locale, route('careers.index')))
                 ->with('success', $successMessage)
-                ->with('warning', __('messages.careers.email_notification_failed'));
+                ->with('warning', __('messages.careers.email_notification_failed'))
+                ->withInput();
         }
 
         // Flash success

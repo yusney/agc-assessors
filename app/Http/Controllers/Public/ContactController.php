@@ -59,7 +59,7 @@ final class ContactController extends Controller
         } catch (\Exception $e) {
             report($e);
 
-            return redirect()->route('contact')->with('success', true)->with('warning', __('messages.contact.email_notification_failed'));
+            return redirect()->route('contact')->with('error', __('messages.contact.email_failed'))->withInput();
         }
 
         return redirect()->route('contact')->with('success', true);

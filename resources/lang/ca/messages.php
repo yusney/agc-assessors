@@ -93,6 +93,7 @@ return [
         'submit' => 'Enviar missatge',
         'success' => 'Missatge enviat correctament. Et respondrem en breu.',
         'email_notification_failed' => 'El teu missatge s\'ha enviat, però no hem pogut enviar la notificació per correu. Et respondrem en breu.',
+        'email_failed' => 'No hem pogut enviar el teu missatge. Si us plau, intenta-ho més tard o contacta\'ns per telèfon.',
         'address_label' => 'Adreça',
         'address' => 'Carrer Exemple 123, Barcelona',
         'phone_label' => 'Telèfon',

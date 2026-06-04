@@ -73,6 +73,13 @@
         </div>
         @endif
 
+        @if(session('error'))
+        <div class="mb-8 p-6 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-4">
+            <span class="material-symbols-outlined text-red-600 text-[28px]">error</span>
+            <p class="text-red-800 font-medium">{{ session('error') }}</p>
+        </div>
+        @endif
+
         <form action="{{ route('contact.store') }}" method="POST"
               class="bg-white rounded-[2rem] border border-[#E2E8F0] p-8 md:p-12 shadow-sm space-y-6"
               x-data="{ accepted: false }">

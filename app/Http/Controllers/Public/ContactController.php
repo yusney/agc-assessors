@@ -54,7 +54,13 @@ final class ContactController extends Controller
             $destinations = [(string) config('mail.from.address', 'info@agcassessors.com')];
         }
 
-        Mail::to($destinations)->send(new ContactFormMail($data));
+        try {
+            Mail::to($destinations)->send(new ContactFormMail($data));
+        } catch (\Exception $e) {
+            report($e);
+
+            return redirect()->route('contact')->with('success', true)->with('warning', __('messages.contact.email_notification_failed'));
+        }
 
         return redirect()->route('contact')->with('success', true);
     }

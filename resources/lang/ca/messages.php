@@ -92,6 +92,7 @@ return [
         'privacy' => 'He llegit i accepto la <a href=":url" class="underline hover:text-[#00346f]">política de privacitat</a>.',
         'submit' => 'Enviar missatge',
         'success' => 'Missatge enviat correctament. Et respondrem en breu.',
+        'email_notification_failed' => 'El teu missatge s\'ha enviat, però no hem pogut enviar la notificació per correu. Et respondrem en breu.',
         'address_label' => 'Adreça',
         'address' => 'Carrer Exemple 123, Barcelona',
         'phone_label' => 'Telèfon',

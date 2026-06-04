@@ -93,6 +93,7 @@ return [
         'privacy' => 'I have read and accept the <a href=":url" class="underline hover:text-[#00346f]">privacy policy</a>.',
         'submit' => 'Send message',
         'success' => 'Message sent successfully. We will get back to you shortly.',
+        'email_notification_failed' => 'Your message was sent, but we could not send the email notification. We will get back to you shortly.',
         'address_label' => 'Address',
         'address' => '123 Example Street, Barcelona',
         'phone_label' => 'Phone',

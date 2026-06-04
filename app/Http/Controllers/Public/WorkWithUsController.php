@@ -56,7 +56,7 @@ final class WorkWithUsController extends Controller
         // Send email
         try {
             Mail::send(new JobApplicationMail($application, $settings));
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             report($e);
 
             $successMessage = $settings['form_success_message'][$locale]

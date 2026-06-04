@@ -151,25 +151,23 @@ final class WorkWithUsSettingsPage extends Page
                             ->placeholder('rrhh@agcassessors.com, direccion@agcassessors.com')
                             ->helperText('Separa múltiples direcciones con coma. Todas recibirán la candidatura.')
                             ->rules([
-                                function () {
-                                    return function (string $attribute, mixed $value, \Closure $fail): void {
-                                        $emails = collect(explode(',', (string) $value))
-                                            ->map(fn (string $e) => trim($e))
-                                            ->filter(fn (string $e) => $e !== '')
-                                            ->values()
-                                            ->all();
+                                function (string $attribute, mixed $value, \Closure $fail): void {
+                                    $emails = collect(explode(',', (string) $value))
+                                        ->map(fn (string $e) => trim($e))
+                                        ->filter(fn (string $e) => $e !== '')
+                                        ->values()
+                                        ->all();
 
-                                        if ($emails === []) {
-                                            $fail('Debes introducir al menos una dirección de email.');
-                                            return;
-                                        }
+                                    if ($emails === []) {
+                                        $fail('Debes introducir al menos una dirección de email.');
+                                        return;
+                                    }
 
-                                        foreach ($emails as $email) {
-                                            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                                                $fail("La dirección '{$email}' no es válida.");
-                                            }
+                                    foreach ($emails as $email) {
+                                        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                                            $fail("La dirección '{$email}' no es válida.");
                                         }
-                                    };
+                                    }
                                 },
                             ]),
                         Tabs::make('Textos del formulario por idioma')

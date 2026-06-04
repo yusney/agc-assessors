@@ -5,11 +5,15 @@
     $formIntro      = $settings['form_intro'][$locale] ?? __('messages.careers.form_intro');
     $privacyText    = $settings['form_privacy_text'][$locale] ?? __('messages.careers.form_labels.privacy', ['url' => '#']);
 
-    $privacyPage = \AGC\Infrastructure\Persistence\Eloquent\Models\PageModel::where('slug->ca', 'politica-privacitat')
-        ->orWhere('slug->es', 'politica-privacidad')
-        ->orWhere('slug->en', 'privacy-policy')
-        ->first();
-    $privacyPolicyUrl = $privacyPage ? route('pages.show', ['slug' => $privacyPage->slug[$locale] ?? $privacyPage->slug['ca']]) : '#';
+    $privacyPage = \AGC\Infrastructure\Persistence\Eloquent\Models\PageModel::where('slug', 'politica-privacitat')->first();
+    $privacyPolicyUrl = $privacyPage ? route('pages.show', ['slug' => $privacyPage->slug]) : '#';
+
+    $privacyText = strip_tags($privacyText, '<a><br><strong><em>');
+    $privacyText = preg_replace(
+        '/<a\s+[^>]*>/i',
+        '<a href="' . e($privacyPolicyUrl) . '" class="underline hover:text-[#00346f]" target="_blank">',
+        $privacyText
+    );
 
     $departments = [
         'fiscal'    => __('messages.careers.dept_fiscal'),
@@ -25,6 +29,14 @@
      x-data x-init="$el.scrollIntoView({behavior:'smooth', block:'center'})">
     <span class="material-symbols-outlined text-green-600 text-[24px] mt-0.5">check_circle</span>
     <p class="text-green-800 font-medium">{{ session('success') }}</p>
+</div>
+@endif
+
+@if(session('warning'))
+<div class="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-4"
+     x-data x-init="$el.scrollIntoView({behavior:'smooth', block:'center'})">
+    <span class="material-symbols-outlined text-amber-600 text-[24px] mt-0.5">warning</span>
+    <p class="text-amber-800 font-medium">{{ session('warning') }}</p>
 </div>
 @endif
 
@@ -169,7 +181,7 @@
                        class="mt-1 w-4 h-4 rounded border-[#CBD5E1] text-[#00346f] focus:ring-[#00346f] @error('privacy_accepted') border-red-400 @enderror"
                        required>
                 <span class="text-sm text-[#424751] leading-[1.6]">
-                    {!! strip_tags($privacyText, '<a><br><strong><em>') !!}
+                    {!! $privacyText !!}
                 </span>
             </label>
             @error('privacy_accepted')

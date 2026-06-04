@@ -54,7 +54,7 @@ final class WorkWithUsController extends Controller
         ]);
 
         // Send email
-        Mail::queue(new JobApplicationMail($application, $settings));
+        Mail::send(new JobApplicationMail($application, $settings));
 
         // Flash success
         $successMessage = $settings['form_success_message'][$locale]

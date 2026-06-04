@@ -25,7 +25,7 @@ final class JobApplicationMail extends Mailable
         return new Envelope(
             subject: 'Nueva candidatura: '.$this->application->name.' '.$this->application->last_name
                 .' — '.$this->application->department,
-            to: [$this->resolveDestinationEmail()],
+            to: $this->resolveDestinationEmails(),
         );
     }
 
@@ -55,16 +55,23 @@ final class JobApplicationMail extends Mailable
         ];
     }
 
-    private function resolveDestinationEmail(): string
+    /** @return list<string> */
+    private function resolveDestinationEmails(): array
     {
         $settings = $this->settings ?: (SiteSetting::get('careers_page', []) ?? []);
-        $email = $settings['form_destination_email'] ?? null;
+        $raw = $settings['form_destination_email'] ?? null;
 
-        if (is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $email;
+        $destinations = collect(explode(',', (string) $raw))
+            ->map(fn (string $e) => trim($e))
+            ->filter(fn (string $e) => filter_var($e, FILTER_VALIDATE_EMAIL))
+            ->values()
+            ->all();
+
+        if ($destinations === []) {
+            return [(string) config('mail.from.address', 'info@agcassessors.com')];
         }
 
-        return (string) config('mail.from.address', 'info@agcassessors.com');
+        return $destinations;
     }
 
     private function guessMime(): string

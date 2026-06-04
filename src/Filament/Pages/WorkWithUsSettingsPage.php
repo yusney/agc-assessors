@@ -146,10 +146,10 @@ final class WorkWithUsSettingsPage extends Page
                 Section::make('Configuración del formulario')
                     ->schema([
                         TextInput::make('form_destination_email')
-                            ->label('Email de destino de candidaturas')
-                            ->email()
+                            ->label('Emails de destino de candidaturas')
                             ->required()
-                            ->placeholder('rrhh@agcassessors.com'),
+                            ->placeholder('rrhh@agcassessors.com, direccion@agcassessors.com')
+                            ->helperText('Separa múltiples direcciones con coma. Todas recibirán la candidatura.'),
                         Tabs::make('Textos del formulario por idioma')
                             ->tabs([
                                 Tabs\Tab::make('Català')

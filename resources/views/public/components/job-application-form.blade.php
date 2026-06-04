@@ -28,7 +28,24 @@
 @endif
 
 <form method="POST" action="{{ route('careers.store') }}" enctype="multipart/form-data"
-      x-data="{ loading: false }" @submit="loading = true" novalidate>
+      x-data="{
+          name: @js(old('name', '')),
+          lastName: @js(old('last_name', '')),
+          email: @js(old('email', '')),
+          department: @js(old('department', '')),
+          message: @js(old('message', '')),
+          privacy: @js((bool) old('privacy_accepted', false)),
+          loading: false,
+          get isValid() {
+              return this.name.trim() !== ''
+                  && this.lastName.trim() !== ''
+                  && this.email.trim() !== ''
+                  && this.department !== ''
+                  && this.message.trim() !== ''
+                  && this.privacy === true;
+          }
+      }"
+      @submit="loading = true" novalidate>
     @csrf
     <x-spam-protection />
 
@@ -50,7 +67,7 @@
             <label for="name" class="block text-sm font-medium text-[#1E293B] mb-1">
                 {{ __('messages.careers.form_labels.name') }} <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}"
+            <input type="text" id="name" name="name" x-model="name"
                    class="w-full px-4 py-3 border rounded-xl text-[#1E293B] text-sm focus:outline-none focus:ring-2 focus:ring-[#00346f] @error('name') border-red-400 bg-red-50 @else border-[#CBD5E1] @enderror"
                    required maxlength="100">
             @error('name')
@@ -63,7 +80,7 @@
             <label for="last_name" class="block text-sm font-medium text-[#1E293B] mb-1">
                 {{ __('messages.careers.form_labels.last_name') }} <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}"
+            <input type="text" id="last_name" name="last_name" x-model="lastName"
                    class="w-full px-4 py-3 border rounded-xl text-[#1E293B] text-sm focus:outline-none focus:ring-2 focus:ring-[#00346f] @error('last_name') border-red-400 bg-red-50 @else border-[#CBD5E1] @enderror"
                    required maxlength="100">
             @error('last_name')
@@ -76,7 +93,7 @@
             <label for="email" class="block text-sm font-medium text-[#1E293B] mb-1">
                 {{ __('messages.careers.form_labels.email') }} <span class="text-red-500">*</span>
             </label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}"
+            <input type="email" id="email" name="email" x-model="email"
                    class="w-full px-4 py-3 border rounded-xl text-[#1E293B] text-sm focus:outline-none focus:ring-2 focus:ring-[#00346f] @error('email') border-red-400 bg-red-50 @else border-[#CBD5E1] @enderror"
                    required maxlength="255">
             @error('email')
@@ -102,7 +119,7 @@
             <label for="department" class="block text-sm font-medium text-[#1E293B] mb-1">
                 {{ __('messages.careers.form_labels.department') }} <span class="text-red-500">*</span>
             </label>
-            <select id="department" name="department"
+            <select id="department" name="department" x-model="department"
                     class="w-full px-4 py-3 border rounded-xl text-[#1E293B] text-sm focus:outline-none focus:ring-2 focus:ring-[#00346f] @error('department') border-red-400 bg-red-50 @else border-[#CBD5E1] @enderror"
                     required>
                 <option value="" disabled {{ old('department') ? '' : 'selected' }}>—</option>
@@ -120,9 +137,9 @@
             <label for="message" class="block text-sm font-medium text-[#1E293B] mb-1">
                 {{ __('messages.careers.form_labels.message') }} <span class="text-red-500">*</span>
             </label>
-            <textarea id="message" name="message" rows="5" maxlength="2000"
+            <textarea id="message" name="message" rows="5" maxlength="2000" x-model="message"
                       class="w-full px-4 py-3 border rounded-xl text-[#1E293B] text-sm focus:outline-none focus:ring-2 focus:ring-[#00346f] resize-y @error('message') border-red-400 bg-red-50 @else border-[#CBD5E1] @enderror"
-                      required>{{ old('message') }}</textarea>
+                      required></textarea>
             @error('message')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -143,8 +160,7 @@
         {{-- Privacy --}}
         <div class="sm:col-span-2">
             <label class="flex items-start gap-3 cursor-pointer">
-                <input type="checkbox" name="privacy_accepted" value="1"
-                       {{ old('privacy_accepted') ? 'checked' : '' }}
+                <input type="checkbox" name="privacy_accepted" value="1" x-model="privacy"
                        class="mt-1 w-4 h-4 rounded border-[#CBD5E1] text-[#00346f] focus:ring-[#00346f] @error('privacy_accepted') border-red-400 @enderror"
                        required>
                 <span class="text-sm text-[#424751] leading-[1.6]">
@@ -161,7 +177,7 @@
     {{-- Submit --}}
     <div class="mt-8">
         <button type="submit"
-                :disabled="loading"
+                :disabled="loading || !isValid"
                 class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#00346f] text-white font-semibold px-10 py-4 rounded-xl hover:bg-[#00285a] disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-200">
             <span x-show="!loading">{{ __('messages.careers.form_labels.submit') }}</span>
             <span x-show="loading" class="flex items-center gap-2">

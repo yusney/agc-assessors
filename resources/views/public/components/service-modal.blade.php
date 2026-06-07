@@ -40,7 +40,7 @@
                 class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white shadow flex items-center justify-center text-[#64748B] hover:text-[#1E293B] transition-colors"
                 aria-label="Close"
             >
-                <span class="material-symbols-outlined text-[20px]">close</span>
+                <span class="material-symbols-outlined text-[20px]">&#xe5cd;</span>
             </button>
 
             {{-- Cover image or icon --}}
@@ -68,7 +68,7 @@
                     class="inline-flex items-center gap-2 px-8 py-3 bg-[#00346f] text-white rounded-full font-medium text-[15px] hover:bg-[#00244f] transition-colors"
                 >
                     {{ __('messages.services.cta') ?? 'Més info' }}
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    <span class="material-symbols-outlined text-[18px]">&#xe5c8;</span>
                 </a>
             </div>
         </div>

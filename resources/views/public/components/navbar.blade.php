@@ -1,4 +1,4 @@
-<header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#E2E8F0]"
+<header class="bg-white sticky top-0 z-[1100] border-b border-[#E2E8F0]"
         x-data="{ open: false, langOpen: false }">
     @php
         use AGC\Infrastructure\Persistence\Eloquent\Models\MenuItem;
@@ -118,7 +118,7 @@
                                     {{ $item->getTranslation('label', app()->getLocale()) }}
                                     <span class="material-symbols-outlined text-[16px]"
                                           :class="dropdownOpen ? 'rotate-180' : ''"
-                                          style="transition: transform .2s">expand_more</span>
+                                          style="transition: transform .2s">&#xe5cf;</span>
                                 </button>
                                 <div x-show="dropdownOpen"
                                      x-transition:enter="transition ease-out duration-100"
@@ -153,7 +153,7 @@
                     <button @click="moreOpen = !moreOpen"
                             class="flex items-center gap-1 nav-link"
                             aria-label="{{ __('messages.nav.more_options') }}">
-                        <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+                        <span class="material-symbols-outlined text-[20px]">&#xe5d3;</span>
                     </button>
                     <div x-show="moreOpen"
                          x-transition:enter="transition ease-out duration-100"
@@ -169,8 +169,8 @@
                                         <button @click="subOpen = !subOpen"
                                                 class="flex items-center justify-between w-full px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
                                             <span>{{ $item->getTranslation('label', app()->getLocale()) }}</span>
-                                            <span class="material-symbols-outlined text-[16px]" x-show="!subOpen">chevron_right</span>
-                                            <span class="material-symbols-outlined text-[16px]" x-show="subOpen">expand_more</span>
+                                            <span class="material-symbols-outlined text-[16px]" x-show="!subOpen">&#xe5cc;</span>
+                                            <span class="material-symbols-outlined text-[16px]" x-show="subOpen">&#xe5cf;</span>
                                         </button>
                                         <div x-show="subOpen"
                                              x-transition:enter="transition ease-out duration-100"
@@ -224,7 +224,7 @@
                             <button @click="moreOpen = !moreOpen"
                                     class="flex items-center justify-center w-5 h-5 text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300"
                                     aria-label="{{ __('messages.nav.more_socials') }}">
-                                <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+                                <span class="material-symbols-outlined text-[20px]">&#xe5d3;</span>
                             </button>
                             <div x-show="moreOpen"
                                  x-transition:enter="transition ease-out duration-100"
@@ -259,8 +259,8 @@
                         class="flex items-center justify-center text-[#00346f] hover:text-[#00B4D8] transition-colors duration-300 p-0.5"
                         :aria-expanded="searchOpen"
                         aria-label="{{ __('messages.nav.search') }}">
-                    <span class="material-symbols-outlined text-[22px]" x-show="!searchOpen">search</span>
-                    <span class="material-symbols-outlined text-[22px]" x-show="searchOpen" x-cloak>close</span>
+                    <span class="material-symbols-outlined text-[22px]" x-show="!searchOpen">&#xe8b6;</span>
+                    <span class="material-symbols-outlined text-[22px]" x-show="searchOpen" x-cloak>&#xe5cd;</span>
                 </button>
 
                 <div x-show="searchOpen"
@@ -287,7 +287,7 @@
                             <button type="submit"
                                     class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#00346f]
                                            text-white hover:bg-[#00B4D8] transition-colors flex-shrink-0">
-                                <span class="material-symbols-outlined text-[18px]">search</span>
+                                <span class="material-symbols-outlined text-[18px]">&#xe8b6;</span>
                             </button>
                         </form>
                     </div>
@@ -302,7 +302,7 @@
                     {{ app()->getLocale() }}
                     <span class="material-symbols-outlined text-[16px]"
                           :class="langOpen ? 'rotate-180' : ''"
-                          style="transition: transform .2s">expand_more</span>
+                          style="transition: transform .2s">&#xe5cf;</span>
                 </button>
                 <div x-show="langOpen"
                      x-transition:enter="transition ease-out duration-100"
@@ -336,8 +336,8 @@
                     class="md:hidden text-[#1E293B] hover:text-[#00346f] transition-colors"
                     :aria-expanded="open"
                     aria-label="Menú">
-                <span x-show="!open" class="material-symbols-outlined text-[28px]">menu</span>
-                <span x-show="open"  class="material-symbols-outlined text-[28px]">close</span>
+                <span x-show="!open" class="material-symbols-outlined text-[28px]">&#xe5d2;</span>
+                <span x-show="open"  class="material-symbols-outlined text-[28px]">&#xe5cd;</span>
             </button>
         </div>
     </div>
@@ -360,7 +360,7 @@
                                 {{ $item->getTranslation('label', app()->getLocale()) }}
                                 <span class="material-symbols-outlined text-[16px]"
                                       :class="mobDropdownOpen ? 'rotate-180' : ''"
-                                      style="transition: transform .2s">expand_more</span>
+                                      style="transition: transform .2s">&#xe5cf;</span>
                             </button>
                             <div x-show="mobDropdownOpen"
                                  x-transition:enter="transition ease-out duration-100"
@@ -390,7 +390,7 @@
             <li class="pt-2">
                 <a href="{{ route('search') }}"
                    class="flex items-center gap-2 py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">search</span>
+                    <span class="material-symbols-outlined text-[20px]">&#xe8b6;</span>
                     {{ __('messages.nav.search') }}
                 </a>
             </li>

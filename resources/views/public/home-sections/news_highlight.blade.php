@@ -13,7 +13,7 @@
         @if($section->localized('cta_label') && $section->cta_url)
             <a href="{{ url($section->cta_url) }}" class="hidden md:inline-flex items-center text-[#1E293B] font-medium text-[15px] hover:text-[#00346f] transition-colors pb-1 border-b-2 border-transparent hover:border-[#00346f]">
                 {{ $section->localized('cta_label') }}
-                <span class="material-symbols-outlined ml-1 text-[20px]">arrow_forward</span>
+                <span class="material-symbols-outlined ml-1 text-[20px]">&#xe5c8;</span>
             </a>
         @endif
     </div>
@@ -42,7 +42,7 @@
                     </p>
                     <div class="flex items-center justify-between mt-auto pt-6 border-t border-[#E2E8F0]">
                         <span class="text-[14px] text-[#64748B] font-medium">{{ $article->publishedAt()?->format('d M Y') }}</span>
-                        <span class="material-symbols-outlined text-[#64748B] group-hover:text-[#00346f] transition-colors">arrow_outward</span>
+                        <span class="material-symbols-outlined text-[#64748B] group-hover:text-[#00346f] transition-colors">&#xf8ce;</span>
                     </div>
                 </div>
             </a>

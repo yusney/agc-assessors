@@ -44,7 +44,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <div id="offices-map-page"
-         class="w-full rounded-[2rem] overflow-hidden border border-[#E2E8F0] shadow-lg"
+         class="relative z-0 isolate w-full rounded-[2rem] overflow-hidden border border-[#E2E8F0] shadow-lg"
          style="min-height: 380px;"></div>
 
     <script>
@@ -167,7 +167,7 @@
                    target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
                     {{ __('messages.offices.directions') }}
-                    <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5">arrow_outward</span>
+                    <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5">&#xf8ce;</span>
                 </a>
                 @endif
             </div>

@@ -37,7 +37,7 @@ mark {
         >
         <button type="submit"
                 class="btn-primary px-6 py-3 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">search</span>
+            <span class="material-symbols-outlined text-[20px]">&#xe8b6;</span>
             <span>{{ __('messages.search.title') }}</span>
         </button>
     </form>
@@ -121,7 +121,7 @@ mark {
                                    class="inline-flex items-center gap-1 mt-3 text-[13px] text-[#00346f]
                                           hover:text-[#00B4D8] transition-colors font-medium">
                                     <span>{{ $url }}</span>
-                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                    <span class="material-symbols-outlined text-[14px]">&#xe5c8;</span>
                                 </a>
                             </div>
                         </div>

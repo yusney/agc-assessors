@@ -93,7 +93,7 @@
                 <div class="flex justify-center lg:justify-end">
                     <a href="{{ url($section->cta_url) }}" class="btn-primary text-[16px] px-10 py-4">
                         {{ $section->localized('cta_label') }}
-                        <span class="material-symbols-outlined text-[20px]">arrow_right_alt</span>
+                        <span class="material-symbols-outlined text-[20px]">&#xe941;</span>
                     </a>
                 </div>
             @endif

@@ -37,7 +37,7 @@
                       group-hover:text-[#00B4D8] transition-colors">
                 {{ __('messages.news.read_more') }}
                 <span class="material-symbols-outlined ml-1 text-[18px]
-                             group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                             group-hover:translate-x-1 transition-transform">&#xe5c8;</span>
             </a>
         </div>
     </div>

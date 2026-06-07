@@ -85,7 +85,7 @@
                     <a href="{{ $network['url'] }}" target="_blank" rel="noopener noreferrer"
                        class="text-[#64748B] hover:text-[#00346f] transition-all duration-300 hover:-translate-y-0.5"
                        aria-label="{{ ucfirst($network['platform']) }}">
-                        @include('public.components.social-icon', ['platform' => $network['platform'], 'size' => 'w-[18px] h-[18px]'])
+                        @include('public.components.social-icon', ['platform' => $network['platform'], 'size' => 'text-[18px]'])
                     </a>
                     @endforeach
                 </div>

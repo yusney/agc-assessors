@@ -37,7 +37,7 @@
 <section class="w-full bg-white border-y border-[#E2E8F0]">
     <div class="max-w-[1280px] mx-auto px-6 md:px-8 py-8 md:py-10">
 
-        <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-center gap-6 md:gap-20 max-w-[360px] md:max-w-none mx-auto">
 
             @foreach($badges as $index => $badge)
                 @php
@@ -54,14 +54,15 @@
                 @endphp
 
                 @if($index > 0)
+                    <span class="block md:hidden h-px w-full bg-[#E2E8F0]"></span>
                     <span class="hidden md:block w-px h-12 bg-[#E2E8F0]"></span>
                 @endif
 
                 @if($hasUrl)
                 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
-                   class="flex items-center gap-4 group hover:opacity-80 transition-opacity">
+                   class="grid grid-cols-[3.5rem_1fr] items-center gap-4 group hover:opacity-80 transition-opacity text-left">
                 @else
-                <div class="flex items-center gap-4 group">
+                <div class="grid grid-cols-[3.5rem_1fr] items-center gap-4 group text-left">
                 @endif
 
                     <div class="w-14 h-14 rounded-2xl bg-[#00346f]/8 flex items-center justify-center

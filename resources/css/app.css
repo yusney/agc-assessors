@@ -72,8 +72,37 @@
     h1, h2, h3, h4, h5, h6 { font-family: theme(--font-headline); }
     body { background-color: var(--color-surface); color: var(--color-on-surface); }
 
+    /*
+     * Material Symbols (Outlined) — used across public components.
+     * The `overflow: hidden` + fixed 1em box clips the literal ligature
+     * name (e.g. "more_horiz", "search") during the FOUT window so the
+     * user never sees it. Once the font loads, the glyph fills the box.
+     *
+     * Note: do NOT add `font-size: inherit` here. The Tailwind `text-[Xpx]`
+     * utilities used on every <span> set the correct per-icon size; a
+     * base-layer `font-size: inherit` would override them and leave every
+     * icon at the browser default (24px).
+     */
     .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        vertical-align: middle;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-feature-settings: 'liga';
         font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        overflow: hidden;
+        width: 1em;
+        height: 1em;
     }
 }
 

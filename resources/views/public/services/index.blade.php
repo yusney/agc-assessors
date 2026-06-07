@@ -69,7 +69,7 @@
                         border-t border-[#E2E8F0] group-hover:border-[#00346f]/20">
                 {{ __('messages.services.cta') }}
                 <span class="material-symbols-outlined ml-1.5 text-[18px]
-                             group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                             group-hover:translate-x-1 transition-transform">&#xe5c8;</span>
             </div>
         </a>
         @endforeach

@@ -17,7 +17,7 @@
             <a href="{{ $officesUrl }}"
                class="hidden md:inline-flex items-center text-[#1E293B] font-medium text-[15px] hover:text-[#00346f] transition-colors pb-1 border-b-2 border-transparent hover:border-[#00346f]">
                 {{ $section->localized('cta_label') }}
-                <span class="material-symbols-outlined ml-1 text-[20px]">arrow_forward</span>
+                <span class="material-symbols-outlined ml-1 text-[20px]">&#xe5c8;</span>
             </a>
         @endif
     </div>
@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-    <div id="offices-map-home" class="w-full rounded-2xl overflow-hidden mb-10" style="min-height: 400px;"></div>
+    <div id="offices-map-home" class="relative z-0 isolate w-full rounded-2xl overflow-hidden mb-10" style="min-height: 400px;"></div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -138,7 +138,7 @@
                            rel="noopener noreferrer"
                            class="inline-flex items-center gap-1 text-[13px] text-[#00346f] font-medium hover:text-[#00B4D8] transition-colors">
                             {{ __('messages.offices.directions') }}
-                            <span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+                            <span class="material-symbols-outlined text-[16px]">&#xf8ce;</span>
                         </a>
                     </div>
                 @endif

@@ -69,7 +69,7 @@ $cookiePolicyUrl = route('pages.show', ['slug' => 'cookie-policy']);
                         {{ __('messages.cookies.customize') }}
                     </h3>
                     <button @click="customizing = false" class="text-[#64748B] hover:text-[#1E293B] transition-colors">
-                        <span class="material-symbols-outlined text-[24px]">close</span>
+                        <span class="material-symbols-outlined text-[24px]">&#xe5cd;</span>
                     </button>
                 </div>
 

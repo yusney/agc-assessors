@@ -27,7 +27,7 @@
                 <a href="{{ $heroCtaUrl }}"
                    class="inline-flex items-center gap-2 bg-[#00346f] text-white font-semibold px-8 py-4 rounded-xl hover:bg-[#00285a] transition-colors duration-200">
                     {{ $heroCtaText }}
-                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    <span class="material-symbols-outlined text-[20px]">&#xe5c8;</span>
                 </a>
             </div>
 

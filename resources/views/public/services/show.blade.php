@@ -140,7 +140,7 @@
                       hover:bg-[#004a99]
                       transition-all duration-300 shadow-lg shadow-[#00346f]/10">
                 {{ __('messages.services.contact_cta') }}
-                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                <span class="material-symbols-outlined text-[20px]">&#xe5c8;</span>
             </a>
         </div>
     </div>

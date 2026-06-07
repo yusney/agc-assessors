@@ -49,7 +49,7 @@
                         @if($ctaLabel && data_get($item, 'cta_url'))
                             <a href="{{ url(data_get($item, 'cta_url')) }}" class="inline-flex items-center justify-center gap-2 bg-white text-[#1E293B] font-medium px-7 py-3 rounded-full hover:bg-[#d7e2ff] transition-colors duration-300">
                                 {{ $ctaLabel }}
-                                <span class="material-symbols-outlined text-[20px]">arrow_right_alt</span>
+                                <span class="material-symbols-outlined text-[20px]">&#xe941;</span>
                             </a>
                         @endif
                     </div>

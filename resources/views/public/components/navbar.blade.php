@@ -356,7 +356,7 @@
                     @if($item->children->isNotEmpty())
                         <div x-data="{ mobDropdownOpen: false }">
                             <button @click="mobDropdownOpen = !mobDropdownOpen"
-                                    class="flex items-center justify-between w-full py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium transition-colors">
+                                    class="flex items-center justify-between w-full py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium font-headline transition-colors">
                                 {{ $item->getTranslation('label', app()->getLocale()) }}
                                 <span class="material-symbols-outlined text-[16px]"
                                       :class="mobDropdownOpen ? 'rotate-180' : ''"
@@ -379,7 +379,7 @@
                     @else
                         <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
                            target="{{ $item->target }}"
-                           class="block py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium transition-colors">
+                           class="block py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium font-headline transition-colors">
                             {{ $item->getTranslation('label', app()->getLocale()) }}
                         </a>
                     @endif

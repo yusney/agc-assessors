@@ -5,26 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
 
-    <title>@yield('seo_title', config('app.name'))</title>
-    <meta name="description" content="@yield('seo_description', '')">
-    @hasSection('seo_canonical')
-        <link rel="canonical" href="@yield('seo_canonical')">
-    @else
-        <link rel="canonical" href="{{ $canonicalUrl ?? url()->current() }}">
-    @endif
-    <meta property="og:title" content="@yield('seo_title', config('app.name'))">
-    <meta property="og:description" content="@yield('seo_description', '')">
-    <meta property="og:type" content="@yield('seo_og_type', 'website')">
-    <meta property="og:url" content="{{ url()->current() }}">
+    @php
+        // Decode any HTML entities introduced by @section('name', $value) shorthand
+        // (Blade's e() pre-escapes the value). Normalising to plain text here lets
+        // every output below—<title>, description, og:*, twitter:*—escape exactly once
+        // via {{ }}, preventing the &amp;amp; double-encoding that occurred when the
+        // partial's {{ }} received an already-escaped string.
+        $_seoTitle    = html_entity_decode(trim($__env->yieldContent('seo_title', config('app.name'))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $_seoDesc     = html_entity_decode(trim($__env->yieldContent('seo_description', '')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $_seoOgType   = trim($__env->yieldContent('seo_og_type', 'website'));
+        $_seoTitle    = $_seoTitle !== '' ? $_seoTitle : config('app.name');
+        $_seoOgType   = $_seoOgType !== '' ? $_seoOgType : 'website';
+        $_canonicalUrl = $canonicalUrl ?? url()->current();
+    @endphp
+
+    <title>{{ $_seoTitle }}</title>
+    <meta name="description" content="{{ $_seoDesc }}">
+
+    @include('public.partials.seo', [
+        'canonicalUrl'       => $_canonicalUrl,
+        'seoTitle'           => $_seoTitle,
+        'seoDescription'     => $_seoDesc,
+        'ogLocale'           => $ogLocale ?? 'ca_ES',
+        'ogLocaleAlternates' => $ogLocaleAlternates ?? [],
+        'ogType'             => $_seoOgType,
+        'hreflangAlternates' => $hreflangAlternates ?? [],
+    ])
+
     @if(!empty($ogImage))
         <meta property="og:image" content="{{ $ogImage }}">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
-    @endif
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('seo_title', config('app.name'))">
-    <meta name="twitter:description" content="@yield('seo_description', '')">
-    @if(!empty($ogImage))
         <meta name="twitter:image" content="{{ $ogImage }}">
     @endif
 

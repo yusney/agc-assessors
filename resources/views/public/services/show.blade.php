@@ -1,7 +1,19 @@
 @extends('layouts.public')
 
-@section('seo_title', $service->name()->get(app()->getLocale()) . ' – AGC Assessors')
-@section('seo_description', strip_tags($service->description()->get(app()->getLocale())))
+@php
+    $locale   = app()->getLocale();
+    $seoTitle = $service->seo()->title()->get($locale);
+    if ($seoTitle === '') {
+        $seoTitle = $service->name()->get($locale) . ' – AGC Assessors';
+    }
+    $seoDesc  = $service->seo()->description()->get($locale);
+    if ($seoDesc === '') {
+        $seoDesc = Str::limit(strip_tags($service->description()->get($locale)), 159, '');
+    }
+@endphp
+
+@section('seo_title', $seoTitle)
+@section('seo_description', $seoDesc)
 
 @push('styles')
 <style>

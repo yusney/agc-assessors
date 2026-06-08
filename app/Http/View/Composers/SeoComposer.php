@@ -40,6 +40,9 @@ final class SeoComposer
         $view->with('schemas', $schemas);
         $view->with('ogImage', $this->getOgImage());
         $view->with('canonicalUrl', $this->getCanonicalUrl());
+        $view->with('hreflangAlternates', $this->getHreflangAlternates());
+        $view->with('ogLocaleAlternates', $this->getOgLocaleAlternates());
+        $view->with('ogLocale', $this->getActiveOgLocale());
     }
 
     private function getCanonicalUrl(): string
@@ -47,9 +50,102 @@ final class SeoComposer
         return LaravelLocalization::getLocalizedURL(
             app()->getLocale(),
             url()->current(),
-            [],
-            true
+            []
         );
+    }
+
+    /**
+     * Returns hreflang alternate entries for all supported locales.
+     *
+     * @return array<int, array{locale: string, url: string}>
+     */
+    public function getHreflangAlternates(): array
+    {
+        $alternates = [];
+
+        foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
+            $alternates[] = [
+                'locale' => (string) $locale,
+                'url'    => LaravelLocalization::getLocalizedURL(
+                    (string) $locale,
+                    url()->current(),
+                    []
+                ),
+            ];
+        }
+
+        return $alternates;
+    }
+
+    /**
+     * Returns regional locale codes (e.g. 'es_ES') for all locales EXCEPT the
+     * currently active one — used for og:locale:alternate meta tags.
+     *
+     * @return array<int, string>
+     */
+    public function getOgLocaleAlternates(): array
+    {
+        $activeLocale = app()->getLocale();
+        $alternates   = [];
+
+        foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
+            if ($locale !== $activeLocale) {
+                $regional = $properties['regional'] ?? $locale;
+                if (is_string($regional) && $regional !== '') {
+                    $alternates[] = $regional;
+                }
+            }
+        }
+
+        return $alternates;
+    }
+
+    /**
+     * Returns the regional locale code for the currently active locale,
+     * e.g. 'ca_ES', 'es_ES', 'en_GB'.
+     */
+    public function getActiveOgLocale(): string
+    {
+        $locale     = app()->getLocale();
+        $locales    = LaravelLocalization::getSupportedLocales();
+        $properties = $locales[$locale] ?? [];
+        $regional   = $properties['regional'] ?? $locale;
+
+        return is_string($regional) && $regional !== '' ? $regional : $locale;
+    }
+
+    /**
+     * Returns the global default SEO title for a given locale from SiteSetting,
+     * or null when none is configured.
+     */
+    public function getGlobalDefaultTitle(?string $locale = null): ?string
+    {
+        $locale ??= app()->getLocale();
+
+        try {
+            $value = SiteSetting::get("seo.global.{$locale}.title");
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return is_string($value) && $value !== '' ? $value : null;
+    }
+
+    /**
+     * Returns the global default SEO description for a given locale from
+     * SiteSetting, or null when none is configured.
+     */
+    public function getGlobalDefaultDescription(?string $locale = null): ?string
+    {
+        $locale ??= app()->getLocale();
+
+        try {
+            $value = SiteSetting::get("seo.global.{$locale}.description");
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return is_string($value) && $value !== '' ? $value : null;
     }
 
     public function getOrganizationSchema(): array

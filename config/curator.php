@@ -4,9 +4,10 @@ declare(strict_types=1);
 use Awcodes\Curator\Enums\PreviewableExtensions;
 use Awcodes\Curator\Models\Media;
 use Awcodes\Curator\Providers\GlideUrlProvider;
-use Awcodes\Curator\Resources\Media\MediaResource;
-use Awcodes\Curator\Resources\Media\Pages\CreateMedia;
-use Awcodes\Curator\Resources\Media\Pages\EditMedia;
+use AGC\Filament\Resources\Curator\CustomMediaResource;
+use AGC\Filament\Resources\Curator\CustomMediaTable;
+use AGC\Filament\Resources\Curator\Pages\CustomCreateMedia;
+use AGC\Filament\Resources\Curator\Pages\CustomEditMedia;
 use Awcodes\Curator\Resources\Media\Pages\ListMedia;
 use Awcodes\Curator\Resources\Media\Schemas\MediaForm;
 use Awcodes\Curator\Resources\Media\Tables\MediaTable;
@@ -40,17 +41,17 @@ return [
             'should_register' => true,
             'should_show_badge' => false,
         ],
-        'resource' => MediaResource::class,
+        'resource' => \AGC\Filament\Resources\Curator\CustomMediaResource::class,
         'pages' => [
-            'create' => CreateMedia::class,
-            'edit' => EditMedia::class,
+            'create' => \AGC\Filament\Resources\Curator\Pages\CustomCreateMedia::class,
+            'edit' => \AGC\Filament\Resources\Curator\Pages\CustomEditMedia::class,
             'index' => ListMedia::class,
         ],
         'schemas' => [
-            'form' => MediaForm::class,
+            'form' => \AGC\Filament\Resources\Curator\CustomMediaForm::class,
         ],
         'tables' => [
-            'table' => MediaTable::class,
+            'table' => \AGC\Filament\Resources\Curator\CustomMediaTable::class,
         ],
     ],
     'url_provider' => GlideUrlProvider::class,

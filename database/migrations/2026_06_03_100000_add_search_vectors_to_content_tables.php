@@ -10,6 +10,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         // news_articles
         DB::statement('ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS search_vector_ca tsvector');
         DB::statement('ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS search_vector_es tsvector');
@@ -79,6 +83,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         Schema::table('news_articles', function ($table) {
             $table->dropColumn(['search_vector_ca', 'search_vector_es', 'search_vector_en']);
         });

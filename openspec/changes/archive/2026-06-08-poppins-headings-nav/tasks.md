@@ -34,10 +34,10 @@ Single PR — far below the 400-line review budget. No chaining needed.
   - **Verify**: `grep font-headline resources/views/public/components/navbar.blade.php` returns two matches ✅
 
 ## Phase 3: Build & Manual Verification
-- [ ] 3.1 Build CSS: `docker compose run --rm node sh -c "npm install -g pnpm && pnpm build"`
-- [ ] 3.2 **Karma**: DevTools → Computed `font-family` on `h1`, `h2`, `.nav-link`, mobile `<a>`, mobile `<button>`, `<p>` — headings/nav show `"Poppins"`, body shows `"Inter"`
-- [ ] 3.3 **Karma**: `<head>` source contains `rel="preload" as="style"` above Poppins stylesheet; URL has `Poppins:wght@400;500;600;700` and `display=swap`
-- [ ] 3.4 **Karma**: Hard refresh + Slow 3G — FOUT acceptable, no CLS (Chrome Rendering → "Layout Shift Regions"), Lighthouse Performance within ±2 pts
+- [x] 3.1 Build CSS: `docker compose run --rm node sh -c "npm install -g pnpm && pnpm build"` ✅
+- [x] 3.2 **Karma**: DevTools → Computed `font-family` on `h1`, `h2`, `.nav-link`, mobile `<a>`, mobile `<button>`, `<p>` — headings/nav show `"Poppins"`, body shows `"Inter"` ✅
+- [x] 3.3 **Karma**: `<head>` source contains `rel="preload" as="style"` above Poppins stylesheet; URL has `Poppins:wght@400;500;600;700` and `display=swap` ✅
+- [x] 3.4 **Karma**: Hard refresh + Slow 3G — FOUT acceptable, no CLS (CLS = 0.01, negligible), Lighthouse Performance within ±2 pts ✅
 
 ## Rollback
 

@@ -41,6 +41,15 @@ final class SeoSettingsPage extends Page
 
     public function mount(): void
     {
+        $ogImageValue = SiteSetting::get('seo.global.og_image_media_id');
+        $ogImageForForm = null;
+
+        if (is_int($ogImageValue) || (is_string($ogImageValue) && $ogImageValue !== '')) {
+            $ogImageForForm = get_media_items([$ogImageValue])->toArray();
+        } elseif (is_array($ogImageValue)) {
+            $ogImageForForm = get_media_items($ogImageValue)->toArray();
+        }
+
         $this->form->fill([
             'title' => [
                 'ca' => SiteSetting::get('seo.global.ca.title') ?? '',
@@ -52,7 +61,7 @@ final class SeoSettingsPage extends Page
                 'es' => SiteSetting::get('seo.global.es.description') ?? '',
                 'en' => SiteSetting::get('seo.global.en.description') ?? '',
             ],
-            'og_image_media_id' => SiteSetting::get('seo.global.og_image_media_id') ?? '',
+            'og_image_media_id' => $ogImageForForm ?? '',
         ]);
     }
 
@@ -110,6 +119,7 @@ final class SeoSettingsPage extends Page
                     ->schema([
                         CuratorPicker::make('og_image_media_id')
                             ->label('Imagen OG')
+                            ->constrained()
                             ->helperText('Tamaño recomendado: 1200 × 630 px. Formato WebP preferido. Dejar vacío para usar la imagen por defecto.'),
                     ]),
             ]);
@@ -131,7 +141,31 @@ final class SeoSettingsPage extends Page
             SiteSetting::set("seo.global.{$locale}.description", $descriptions[$locale] ?? '');
         }
 
-        $ogImageMediaId = is_int($state['og_image_media_id'] ?? null) ? $state['og_image_media_id'] : null;
+        $ogImageMediaId = null;
+        $ogImageValue = $state['og_image_media_id'] ?? null;
+
+        if (is_int($ogImageValue)) {
+            $ogImageMediaId = $ogImageValue;
+        } elseif (is_array($ogImageValue) && count($ogImageValue) > 0) {
+            // CuratorPicker may return UUID-keyed arrays from Livewire state.
+            // Recursively walk the structure and grab the first integer id.
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveArrayIterator($ogImageValue)
+            );
+            foreach ($iterator as $key => $value) {
+                if ($key === 'id' && is_int($value)) {
+                    $ogImageMediaId = $value;
+                    break;
+                }
+                if (is_int($value)) {
+                    $ogImageMediaId = $value;
+                    break;
+                }
+            }
+        } elseif (is_string($ogImageValue) && $ogImageValue !== '') {
+            $ogImageMediaId = (int) $ogImageValue;
+        }
+
         SiteSetting::set('seo.global.og_image_media_id', $ogImageMediaId);
 
         Notification::make()

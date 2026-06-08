@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use AGC\Filament\Pages\FooterSettingsPage;
 use AGC\Filament\Pages\ContactSettingsPage;
+use AGC\Filament\Pages\SeoSettingsPage;
 use AGC\Filament\Pages\SocialMediaSettingsPage;
 use AGC\Filament\Pages\TrustBarSettingsPage;
 use AGC\Filament\Pages\WorkWithUsSettingsPage;
@@ -94,6 +95,7 @@ final class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
                 ContactSettingsPage::class,
                 FooterSettingsPage::class,
+                SeoSettingsPage::class,
                 SocialMediaSettingsPage::class,
                 TrustBarSettingsPage::class,
                 WorkWithUsSettingsPage::class,

@@ -62,16 +62,15 @@ Document any pre-existing unrelated failures. Do NOT fix them in this change.
 
 ## PR2 — Admin Global Defaults (est. ~170 lines)
 
-- [ ] 2.1 **New `src/Filament/Pages/SeoSettingsPage.php`** — Filament 5 page with `Schema`+Tabs for ca/es/en; fields: `TextInput` title, `Textarea` description per locale, single `FileUpload` og_image; save to `SiteSetting` keys `seo.global.{locale}.{field}` + `seo.global.og_image`; register in `AdminPanelProvider`. NO keywords field.
-  - Verify: visit `/admin/seo-settings`; save values; check DB `site_settings` table
-  - Rollback: `rm src/Filament/Pages/SeoSettingsPage.php`; revert AdminPanelProvider
+- [x] 2.1 **New `src/Filament/Pages/SeoSettingsPage.php`** — Filament 5 page with `Schema`+Tabs for ca/es/en; fields: `TextInput` title, `Textarea` description per locale, single `TextInput` og_image (URL, not FileUpload); save to `SiteSetting` keys `seo.global.{locale}.{field}` + `seo.global.og_image`; registered in `AdminPanelProvider`. NO keywords field.
+  - Blade view: `resources/views/filament/pages/seo-settings.blade.php`
+  - Note: og_image implemented as `TextInput::make('og_image')->url()` (not FileUpload — simpler, no Curator dependency)
 
-- [ ] 2.2 **Modify `app/Http/View/Composers/SeoComposer.php`** — use `seo.global.{locale}.{title,description}` as ultimate fallback; use `seo.global.og_image` for `og:image`/`twitter:image`
-  - Rollback: `git checkout -- app/Http/View/Composers/SeoComposer.php`
+- [x] 2.2 **Modify `app/Http/View/Composers/SeoComposer.php`** — `getOgImage()` reads `seo.global.og_image` first (falls back to legacy `og_image` key); `compose()` passes `globalDefaultTitle` and `globalDefaultDescription` to view; layout uses them as fallback when entity seo_title/seo_description is empty.
 
-- [ ] 2.3 **Extend `tests/Feature/Http/SeoHeadTest.php`** — assert no `keywords` field in SeoSettingsPage; assert global default title used when entity `seo_title` is null
-  - Verify: `docker compose exec php php artisan test --filter SeoHeadTest`
-  - Rollback: `git checkout -- tests/Feature/Http/SeoHeadTest.php`
+- [x] 2.3 **Extend `tests/Feature/Http/SeoHeadTest.php`** + **New `tests/Feature/Filament/SeoSettingsPageTest.php`** — schema inspection (7 fields, no keywords, per-locale title/desc, shared og_image), save persists to SiteSetting keys, HTTP smoke 200 for admin, global default fallback via `pages.show` route (not services.show which always has name() fallback), entity priority triangulation.
+  - Note: Schema inspection uses PHP Reflection instead of `getFlatComponents()` (which needs Livewire context); `getChildComponents['default']` for Component objects, `$components` for Schema objects.
+  - Test for global default uses `pages.show` with Page(seo_title=null, title='') so `@section('seo_title', '' ?: '')` yields empty → layout fallback chain triggers.
 
 ## PR3 — Sitemap & Verification (est. ~150 lines)
 

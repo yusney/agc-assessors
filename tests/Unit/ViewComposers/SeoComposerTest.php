@@ -215,4 +215,90 @@ final class SeoComposerTest extends TestCase
 
         $this->assertSame('Nom de Fallback', $effective);
     }
+
+    // ---------------------------------------------------------------------------
+    // PR2 — getGlobalDefaultTitle() / getGlobalDefaultDescription() with DB value
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Proves getGlobalDefaultTitle() returns the value from SiteSetting when
+     * a `seo.global.{locale}.title` row exists.
+     *
+     * Uses a real DB (SQLite in-memory via RefreshDatabase is NOT needed here —
+     * SiteSetting::set() writes to the test DB seeded by migrate:fresh in setUp).
+     *
+     * @test
+     */
+    public function test_get_global_default_title_returns_value_from_db_when_setting_exists(): void
+    {
+        $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
+
+        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+            'seo.global.ca.title',
+            'AGC Assessors – Fiscal i Laboral'
+        );
+
+        $composer = new \App\Http\View\Composers\SeoComposer();
+        $result   = $composer->getGlobalDefaultTitle('ca');
+
+        $this->assertSame(
+            'AGC Assessors – Fiscal i Laboral',
+            $result,
+            'getGlobalDefaultTitle must return the SiteSetting value when one is set'
+        );
+    }
+
+    /**
+     * Triangulate: getGlobalDefaultDescription() returns the value when set.
+     *
+     * @test
+     */
+    public function test_get_global_default_description_returns_value_from_db_when_setting_exists(): void
+    {
+        $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
+
+        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+            'seo.global.ca.description',
+            'Assessoria fiscal, laboral i comptable.'
+        );
+
+        $composer = new \App\Http\View\Composers\SeoComposer();
+        $result   = $composer->getGlobalDefaultDescription('ca');
+
+        $this->assertSame(
+            'Assessoria fiscal, laboral i comptable.',
+            $result,
+            'getGlobalDefaultDescription must return the SiteSetting value when one is set'
+        );
+    }
+
+    /**
+     * Proves getGlobalDefaultTitle() reads from 'seo.global.og_image' key
+     * via the updated getOgImage path (PR2: og_image key migration).
+     * Uses a fresh DB write to seo.global.og_image.
+     *
+     * @test
+     */
+    public function test_get_og_image_reads_from_seo_global_og_image_key(): void
+    {
+        $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
+
+        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+            'seo.global.og_image',
+            'https://cdn.agc.com/og.jpg'
+        );
+
+        $composer = new \App\Http\View\Composers\SeoComposer();
+        // getOgImage() is private — use reflection to call it
+        $method = new \ReflectionMethod($composer, 'getOgImage');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($composer);
+
+        $this->assertSame(
+            'https://cdn.agc.com/og.jpg',
+            $result,
+            'getOgImage() must read from seo.global.og_image SiteSetting key'
+        );
+    }
 }

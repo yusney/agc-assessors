@@ -11,10 +11,24 @@
         // every output below—<title>, description, og:*, twitter:*—escape exactly once
         // via {{ }}, preventing the &amp;amp; double-encoding that occurred when the
         // partial's {{ }} received an already-escaped string.
-        $_seoTitle    = html_entity_decode(trim($__env->yieldContent('seo_title', config('app.name'))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $_seoTitle    = html_entity_decode(trim($__env->yieldContent('seo_title', '')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $_seoDesc     = html_entity_decode(trim($__env->yieldContent('seo_description', '')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $_seoOgType   = trim($__env->yieldContent('seo_og_type', 'website'));
-        $_seoTitle    = $_seoTitle !== '' ? $_seoTitle : config('app.name');
+
+        // Fallback chain: entity seo_title → global default (PR2) → config('app.name')
+        $_seoTitle    = $_seoTitle !== ''
+            ? $_seoTitle
+            : (isset($globalDefaultTitle) && is_string($globalDefaultTitle) && $globalDefaultTitle !== ''
+                ? $globalDefaultTitle
+                : config('app.name'));
+
+        // Fallback chain: entity seo_description → global default (PR2) → ''
+        $_seoDesc     = $_seoDesc !== ''
+            ? $_seoDesc
+            : (isset($globalDefaultDescription) && is_string($globalDefaultDescription) && $globalDefaultDescription !== ''
+                ? $globalDefaultDescription
+                : '');
+
         $_seoOgType   = $_seoOgType !== '' ? $_seoOgType : 'website';
         $_canonicalUrl = $canonicalUrl ?? url()->current();
     @endphp

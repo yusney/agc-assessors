@@ -43,6 +43,8 @@ final class SeoComposer
         $view->with('hreflangAlternates', $this->getHreflangAlternates());
         $view->with('ogLocaleAlternates', $this->getOgLocaleAlternates());
         $view->with('ogLocale', $this->getActiveOgLocale());
+        $view->with('globalDefaultTitle', $this->getGlobalDefaultTitle());
+        $view->with('globalDefaultDescription', $this->getGlobalDefaultDescription());
     }
 
     private function getCanonicalUrl(): string
@@ -301,10 +303,16 @@ final class SeoComposer
 
     private function getOgImage(): string
     {
-        $configured = SiteSetting::get('og_image');
+        // Primary: SeoSettingsPage stores to seo.global.og_image (PR2)
+        $globalOgImage = SiteSetting::get('seo.global.og_image');
+        if (is_string($globalOgImage) && $globalOgImage !== '') {
+            return $globalOgImage;
+        }
 
-        if (is_string($configured) && $configured !== '') {
-            return $configured;
+        // Legacy fallback: old og_image key (kept for smooth rollout)
+        $legacyOgImage = SiteSetting::get('og_image');
+        if (is_string($legacyOgImage) && $legacyOgImage !== '') {
+            return $legacyOgImage;
         }
 
         if (file_exists(public_path('images/og-default.jpg'))) {

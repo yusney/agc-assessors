@@ -518,6 +518,98 @@ final class SeoHeadTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------
+    // Section C — PR2: Global default SEO fallback
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Spec: "Given seo.global.ca.title set in SiteSetting AND a page with
+     * seo_title.ca = null, WHEN the page renders in ca, THEN the global
+     * default title appears in <title>."
+     *
+     * This test exercises task 2.2: SeoComposer passes globalDefaultTitle to
+     * the layout, and the layout uses it when the @section seo_title is empty.
+     *
+     * @test
+     */
+    public function test_global_default_title_used_when_entity_seo_title_is_null(): void
+    {
+        $this->refreshDatabase();
+
+        // Set global default title via SiteSetting
+        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+            'seo.global.ca.title',
+            'AGC Assessors – Fiscal i Laboral'
+        );
+
+        // Insert a published Page with null seo_title AND empty title.
+        // pages/show.blade.php uses: @section('seo_title', $seoTitle ?: $pageTitle)
+        // Both resolve to '' → section is empty → layout falls back to $globalDefaultTitle.
+        // (services/show always falls back to name() so its section is never empty.)
+        DB::table('pages')->insert([
+            'slug'            => 'global-fallback-page',
+            'title'           => json_encode(['ca' => '']),          // empty title
+            'content'         => json_encode(['ca' => '<p>Test.</p>']),
+            'seo_title'       => null,                               // null → $seoTitle = ''
+            'seo_description' => null,
+            'published'       => 1,
+            'created_at'      => now()->toDateTimeString(),
+            'updated_at'      => now()->toDateTimeString(),
+        ]);
+
+        $response = $this->get('/pages/global-fallback-page');
+
+        $response->assertStatus(200);
+
+        // Global default title must appear as <title>
+        $response->assertSee(
+            '<title>AGC Assessors – Fiscal i Laboral</title>',
+            false
+        );
+    }
+
+    /**
+     * Triangulate: when entity has seo_title set, the global default is NOT
+     * used — the entity value takes priority.
+     *
+     * @test
+     */
+    public function test_entity_seo_title_takes_priority_over_global_default(): void
+    {
+        $this->refreshDatabase();
+
+        // Set global default — should NOT appear when entity seo_title is set
+        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+            'seo.global.ca.title',
+            'Global Default Title'
+        );
+
+        DB::table('services')->insert([
+            'slug'            => 'priority-test-service',
+            'name'            => json_encode(['ca' => 'Service Name']),
+            'description'     => json_encode(['ca' => '<p>Desc.</p>']),
+            'seo_title'       => json_encode(['ca' => 'Entity SEO Title – AGC']),
+            'seo_description' => json_encode(['ca' => 'Entity description.']),
+            'active'          => 1,
+            'sort_order'      => 1,
+            'created_at'      => now()->toDateTimeString(),
+            'updated_at'      => now()->toDateTimeString(),
+        ]);
+
+        $response = $this->get('/serveis/priority-test-service');
+
+        $response->assertStatus(200);
+
+        // Entity seo_title must appear
+        $response->assertSee('<title>Entity SEO Title – AGC</title>', false);
+
+        // Global default must NOT appear as the <title>
+        $this->assertStringNotContainsString(
+            '<title>Global Default Title</title>',
+            $response->getContent() ?? ''
+        );
+    }
+
+    // ---------------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------------
 

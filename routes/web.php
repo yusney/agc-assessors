@@ -31,6 +31,10 @@ Route::get('/switch-locale/{locale}', function (string $locale) {
     return redirect($target);
 })->name('locale.switch');
 
+// Sitemap — must be outside the locale group so /sitemap.xml is accessible without locale prefix
+Route::get('/sitemap.xml', [\App\Http\Controllers\Public\SitemapController::class, 'index'])
+    ->name('sitemap');
+
 Route::group(
     ['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']],
     function () {

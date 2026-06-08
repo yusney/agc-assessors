@@ -74,23 +74,23 @@ Document any pre-existing unrelated failures. Do NOT fix them in this change.
 
 ## PR3 — Sitemap & Verification (est. ~150 lines)
 
-- [ ] 3.1 **New `app/Http/Controllers/Public/SitemapController.php`** — `index()`: query active News/Pages/Services; for each emit `<url><loc>`×3 locales via `getLocalizedURL()`; add static routes (home, offices, team, contact, search)×3 locales; return `response($xml, 200, ['Content-Type' => 'application/xml'])`
+- [x] 3.1 **New `app/Http/Controllers/Public/SitemapController.php`** — `index()`: query active News/Pages/Services; for each emit `<url><loc>`×3 locales via `getLocalizedURL()`; add static routes (home, offices, team, contact, search)×3 locales; return `response($xml, 200, ['Content-Type' => 'application/xml'])`
   - Verify: `docker compose exec php vendor/bin/phpstan analyse --level=8 app/Http/Controllers/Public/SitemapController.php`
   - Rollback: `rm app/Http/Controllers/Public/SitemapController.php`
 
-- [ ] 3.2 **Modify `routes/web.php`** — add `Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')` OUTSIDE locale middleware group
+- [x] 3.2 **Modify `routes/web.php`** — add `Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')` OUTSIDE locale middleware group
   - Rollback: `git checkout -- routes/web.php`
 
-- [ ] 3.3 **Modify `public/robots.txt`** — add `Sitemap: {{ config('app.url') }}/sitemap.xml` once the sitemap route (3.2) is in place
+- [x] 3.3 **Modify `public/robots.txt`** — add `Sitemap: {{ config('app.url') }}/sitemap.xml` once the sitemap route (3.2) is in place
   - Deferred from PR1 task 1.5: the directive must not exist before the URL it points to does.
   - Rollback: `git checkout -- public/robots.txt`
 
-- [ ] 3.4 **New `tests/Feature/Http/SitemapTest.php`** — assert HTTP 200, `application/xml` Content-Type, known slug in ca/es/en, unpublished excluded
+- [x] 3.4 **New `tests/Feature/Http/SitemapTest.php`** — assert HTTP 200, `application/xml` Content-Type, known slug in ca/es/en, unpublished excluded
   - Verify: `docker compose exec php php artisan test --filter SitemapTest`
 
-- [ ] 3.5 **Extend `tests/Feature/Http/SeoHeadTest.php`** — add: `services.show` title matches `seo_title`; `news.show` uses entity `seo_description`; robots.txt `Sitemap:` present (after task 3.3)
+- [x] 3.5 **Extend `tests/Feature/Http/SeoHeadTest.php`** — add: `services.show` title matches `seo_title`; `news.show` uses entity `seo_description`; robots.txt `Sitemap:` present (after task 3.3)
 
-- [ ] 3.6 **Full verification** — `docker compose exec php php artisan test`; `curl -s localhost:8080/sitemap.xml | head -5`; `curl -s localhost:8080/robots.txt | grep Sitemap`
+- [x] 3.6 **Full verification** — `docker compose exec php php artisan test`; `curl -s localhost:8080/sitemap.xml | head -5`; `curl -s localhost:8080/robots.txt | grep Sitemap`
 
 ## Keyword Scope Confirmation
 

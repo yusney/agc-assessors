@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Pages;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -51,7 +52,7 @@ final class SeoSettingsPage extends Page
                 'es' => SiteSetting::get('seo.global.es.description') ?? '',
                 'en' => SiteSetting::get('seo.global.en.description') ?? '',
             ],
-            'og_image' => SiteSetting::get('seo.global.og_image') ?? '',
+            'og_image_media_id' => SiteSetting::get('seo.global.og_image_media_id') ?? '',
         ]);
     }
 
@@ -105,14 +106,11 @@ final class SeoSettingsPage extends Page
 
                 // ── Shared OG image (not per-locale) ─────────────────────────
                 Section::make('Imagen Open Graph (compartida)')
-                    ->description('URL de la imagen que aparece al compartir en redes sociales. Se usa para todas las páginas y todos los idiomas.')
+                    ->description('Imagen que aparece al compartir en redes sociales. Se usa para todas las páginas y todos los idiomas.')
                     ->schema([
-                        TextInput::make('og_image')
-                            ->label('URL imagen OG')
-                            ->url()
-                            ->maxLength(500)
-                            ->placeholder('https://cdn.agcassessors.com/og-image.jpg')
-                            ->helperText('Tamaño recomendado: 1200 × 630 px. Dejar vacío para usar la imagen por defecto.'),
+                        CuratorPicker::make('og_image_media_id')
+                            ->label('Imagen OG')
+                            ->helperText('Tamaño recomendado: 1200 × 630 px. Formato WebP preferido. Dejar vacío para usar la imagen por defecto.'),
                     ]),
             ]);
     }
@@ -133,8 +131,8 @@ final class SeoSettingsPage extends Page
             SiteSetting::set("seo.global.{$locale}.description", $descriptions[$locale] ?? '');
         }
 
-        $ogImage = is_string($state['og_image'] ?? null) ? $state['og_image'] : '';
-        SiteSetting::set('seo.global.og_image', $ogImage);
+        $ogImageMediaId = is_int($state['og_image_media_id'] ?? null) ? $state['og_image_media_id'] : null;
+        SiteSetting::set('seo.global.og_image_media_id', $ogImageMediaId);
 
         Notification::make()
             ->title('Configuración SEO guardada correctamente')

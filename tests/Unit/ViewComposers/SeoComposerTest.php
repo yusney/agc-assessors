@@ -279,13 +279,26 @@ final class SeoComposerTest extends TestCase
      *
      * @test
      */
-    public function test_get_og_image_reads_from_seo_global_og_image_key(): void
+    public function test_get_og_image_reads_from_seo_global_og_image_media_id(): void
     {
         $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
 
+        // Create a media entry for testing
+        $media = \Awcodes\Curator\Models\Media::create([
+            'name' => 'og-test',
+            'path' => 'og-test.webp',
+            'type' => 'image/webp',
+            'width' => 1200,
+            'height' => 630,
+            'size' => 50000,
+            'disk' => 'public',
+            'directory' => 'og',
+            'ext' => 'webp',
+        ]);
+
         \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
-            'seo.global.og_image',
-            'https://cdn.agc.com/og.jpg'
+            'seo.global.og_image_media_id',
+            $media->id
         );
 
         $composer = new \App\Http\View\Composers\SeoComposer();
@@ -296,9 +309,9 @@ final class SeoComposerTest extends TestCase
         $result = $method->invoke($composer);
 
         $this->assertSame(
-            'https://cdn.agc.com/og.jpg',
+            $media->url,
             $result,
-            'getOgImage() must read from seo.global.og_image SiteSetting key'
+            'getOgImage() must read from seo.global.og_image_media_id SiteSetting key via Curator'
         );
     }
 }

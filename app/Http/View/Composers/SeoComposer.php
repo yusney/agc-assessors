@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\View\Composers;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+use Awcodes\Curator\Models\Media;
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -303,13 +304,16 @@ final class SeoComposer
 
     private function getOgImage(): string
     {
-        // Primary: SeoSettingsPage stores to seo.global.og_image (PR2)
-        $globalOgImage = SiteSetting::get('seo.global.og_image');
-        if (is_string($globalOgImage) && $globalOgImage !== '') {
-            return $globalOgImage;
+        // Primary: SeoSettingsPage stores to seo.global.og_image_media_id (PR2)
+        $mediaId = SiteSetting::get('seo.global.og_image_media_id');
+        if (is_int($mediaId) && $mediaId > 0) {
+            $media = Media::find($mediaId);
+            if ($media !== null) {
+                return $media->url;
+            }
         }
 
-        // Legacy fallback: old og_image key (kept for smooth rollout)
+        // Legacy fallback: old og_image URL (kept for smooth rollout)
         $legacyOgImage = SiteSetting::get('og_image');
         if (is_string($legacyOgImage) && $legacyOgImage !== '') {
             return $legacyOgImage;

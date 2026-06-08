@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('seo_title', $article->seo()->title()->get(app()->getLocale()) ?: $article->title()->get(app()->getLocale()))
-@section('seo_description', $article->seo()->description()->get(app()->getLocale()))
+@section('seo_description', $article->seo()->description()->get(app()->getLocale()) ?: strip_tags($article->excerpt()->get(app()->getLocale())))
 @if($article->seo()->canonicalUrl())
     @section('seo_canonical', $article->seo()->canonicalUrl())
 @endif

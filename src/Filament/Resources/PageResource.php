@@ -8,6 +8,7 @@ use AGC\Filament\Resources\PageResource\Pages\CreatePage;
 use AGC\Filament\Resources\PageResource\Pages\EditPage;
 use AGC\Filament\Resources\PageResource\Pages\ListPages;
 use AGC\Infrastructure\Persistence\Eloquent\Models\PageModel;
+use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
@@ -61,15 +62,15 @@ class PageResource extends Resource
                                 ->tabs([
                                     Tabs\Tab::make('Català')->schema([
                                         TextInput::make('title.ca')->label('Título (ca)')->required(),
-                                        RichEditor::make('content.ca')->label('Contenido (ca)'),
+                                         RichEditor::make('content.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()]),
                                     ]),
                                     Tabs\Tab::make('Español')->schema([
                                         TextInput::make('title.es')->label('Título (es)'),
-                                        RichEditor::make('content.es')->label('Contenido (es)'),
+                                         RichEditor::make('content.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()]),
                                     ]),
                                     Tabs\Tab::make('English')->schema([
                                         TextInput::make('title.en')->label('Título (en)'),
-                                        RichEditor::make('content.en')->label('Contenido (en)'),
+                                         RichEditor::make('content.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()]),
                                     ]),
                                 ])->columnSpanFull(),
                         ]),

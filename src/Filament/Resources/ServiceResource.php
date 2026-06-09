@@ -60,7 +60,13 @@ class ServiceResource extends Resource
                                 Tabs\Tab::make('Català')->schema([
                                     TextInput::make('name.ca')->label('Nombre (ca)')->required(),
                                     RichEditor::make('description.ca')->label('Descripción (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                ]),
+                                Tabs\Tab::make('Español')->schema([
+                                    TextInput::make('name.es')->label('Nombre (es)'),
                                     RichEditor::make('description.es')->label('Descripción (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                ]),
+                                Tabs\Tab::make('English')->schema([
+                                    TextInput::make('name.en')->label('Nombre (en)'),
                                     RichEditor::make('description.en')->label('Descripción (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
                                 ]),
                             ])->columnSpanFull(),

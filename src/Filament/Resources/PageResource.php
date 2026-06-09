@@ -63,7 +63,13 @@ class PageResource extends Resource
                                     Tabs\Tab::make('Català')->schema([
                                         TextInput::make('title.ca')->label('Título (ca)')->required(),
                                         RichEditor::make('content.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                    ]),
+                                    Tabs\Tab::make('Español')->schema([
+                                        TextInput::make('title.es')->label('Título (es)'),
                                         RichEditor::make('content.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                    ]),
+                                    Tabs\Tab::make('English')->schema([
+                                        TextInput::make('title.en')->label('Título (en)'),
                                         RichEditor::make('content.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
                                     ]),
                                 ])->columnSpanFull(),

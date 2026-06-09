@@ -6,9 +6,9 @@ namespace AGC\Filament\Resources\Curator;
 
 use AGC\Filament\Resources\Curator\Pages\CustomCreateMedia;
 use AGC\Filament\Resources\Curator\Pages\CustomEditMedia;
+use AGC\Filament\Resources\Curator\Pages\CustomListMedia;
 use AGC\Filament\Resources\Curator\Tables\CustomMediaTable;
 use Awcodes\Curator\Resources\Media\MediaResource;
-use Awcodes\Curator\Resources\Media\Pages\ListMedia;
 use Exception;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -19,6 +19,7 @@ class CustomMediaResource extends MediaResource
     {
         return 'media';
     }
+
     /** @throws Exception */
     public static function form(Schema $schema): Schema
     {
@@ -34,7 +35,7 @@ class CustomMediaResource extends MediaResource
     public static function getPages(): array
     {
         return [
-            'index' => ListMedia::route('/'),
+            'index' => CustomListMedia::route('/'),
             'create' => CustomCreateMedia::route('/create'),
             'edit' => CustomEditMedia::route('/{record}/edit'),
         ];

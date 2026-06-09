@@ -5,10 +5,9 @@ use Awcodes\Curator\Enums\PreviewableExtensions;
 use Awcodes\Curator\Models\Media;
 use Awcodes\Curator\Providers\GlideUrlProvider;
 use AGC\Filament\Resources\Curator\CustomMediaResource;
-use AGC\Filament\Resources\Curator\CustomMediaTable;
 use AGC\Filament\Resources\Curator\Pages\CustomCreateMedia;
 use AGC\Filament\Resources\Curator\Pages\CustomEditMedia;
-use Awcodes\Curator\Resources\Media\Pages\ListMedia;
+use AGC\Filament\Resources\Curator\Pages\CustomListMedia;
 use Awcodes\Curator\Resources\Media\Schemas\MediaForm;
 use Awcodes\Curator\Resources\Media\Tables\MediaTable;
 
@@ -45,7 +44,7 @@ return [
         'pages' => [
             'create' => \AGC\Filament\Resources\Curator\Pages\CustomCreateMedia::class,
             'edit' => \AGC\Filament\Resources\Curator\Pages\CustomEditMedia::class,
-            'index' => ListMedia::class,
+            'index' => CustomListMedia::class,
         ],
         'schemas' => [
             'form' => \AGC\Filament\Resources\Curator\CustomMediaForm::class,

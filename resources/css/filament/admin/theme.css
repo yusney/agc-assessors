@@ -18,3 +18,54 @@
 .curator-picker-grid {
     @apply grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8;
 }
+
+/* Lock media card height in the CustomListMedia grid to prevent layout shifts
+   when a thumbnail is missing or has a different aspect ratio.
+   Targets Filament's grid record markup used by Curator's MediaTable. */
+.fi-ta-content-grid {
+    @apply gap-3 p-3 sm:px-4;
+}
+
+.fi-ta-content-grid .fi-ta-record {
+    @apply min-h-56;
+
+    & .fi-ta-record-content-ctn {
+        @apply h-full;
+    }
+
+    & .curator-grid-column {
+        @apply static h-full;
+    }
+
+    & img {
+        @apply h-full w-full;
+    }
+}
+
+/* When the folder is empty, expand the table container to fill the viewport
+   so the empty state is a large, obvious drop-zone rather than a small card. */
+.fi-ta-ctn:has(.fi-ta-empty-state) {
+    @apply min-h-[60vh];
+}
+
+.fi-ta-empty-state {
+    @apply min-h-[60vh] flex flex-col items-center justify-center py-16;
+
+    & .fi-ta-empty-state-icon-bg {
+        @apply mb-4;
+    }
+
+    & .fi-ta-empty-state-heading {
+        @apply text-lg font-semibold;
+    }
+
+    & .fi-ta-empty-state-description {
+        @apply mt-2 max-w-md text-center;
+    }
+}
+
+/* Visual feedback when dragging files over the media table area.
+   Toggled by vanilla JS in custom-list-media.blade.php. */
+#media-drop-zone.media-drop-active {
+    @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 bg-primary-50/50 dark:bg-primary-500/5;
+}

@@ -22,6 +22,14 @@ class CustomMediaTable extends MediaTable
         $directories = self::getDirectoryOptions();
 
         return $table
+            ->contentGrid(fn () => [
+                'md' => 3,
+                'lg' => 4,
+                'xl' => 4,
+            ])
+            ->emptyStateIcon('heroicon-o-cloud-arrow-up')
+            ->emptyStateHeading('Esta carpeta está vacía')
+            ->emptyStateDescription('Subí imágenes con el botón "Subida múltiple" o arrastralas directamente a esta zona.')
             ->filters([
                 SelectFilter::make('directory')
                     ->label('Carpeta')

@@ -9,6 +9,7 @@ use AGC\Filament\Resources\NewsResource\Pages\EditNews;
 use AGC\Filament\Resources\NewsResource\Pages\ListNews;
 use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -61,17 +62,17 @@ class NewsResource extends Resource
                                 Tabs\Tab::make('Català')->schema([
                                     TextInput::make('title.ca')->label('Título (ca)')->required(),
                                     Textarea::make('excerpt.ca')->label('Extracto (ca)')->rows(3),
-                                    RichEditor::make('body.ca')->label('Contenido (ca)'),
+                                    RichEditor::make('body.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                                 Tabs\Tab::make('Español')->schema([
                                     TextInput::make('title.es')->label('Título (es)'),
                                     Textarea::make('excerpt.es')->label('Extracto (es)')->rows(3),
-                                    RichEditor::make('body.es')->label('Contenido (es)'),
+                                    RichEditor::make('body.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                                 Tabs\Tab::make('English')->schema([
                                     TextInput::make('title.en')->label('Título (en)'),
                                     Textarea::make('excerpt.en')->label('Extracto (en)')->rows(3),
-                                    RichEditor::make('body.en')->label('Contenido (en)'),
+                                    RichEditor::make('body.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                             ])->columnSpanFull(),
                     ]),

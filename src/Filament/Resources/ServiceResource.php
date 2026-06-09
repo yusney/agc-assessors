@@ -9,6 +9,7 @@ use AGC\Filament\Resources\ServiceResource\Pages\EditService;
 use AGC\Filament\Resources\ServiceResource\Pages\ListServices;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -58,15 +59,15 @@ class ServiceResource extends Resource
                             ->tabs([
                                 Tabs\Tab::make('Català')->schema([
                                     TextInput::make('name.ca')->label('Nombre (ca)')->required(),
-                                    RichEditor::make('description.ca')->label('Descripción (ca)'),
+                                     RichEditor::make('description.ca')->label('Descripción (ca)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                                 Tabs\Tab::make('Español')->schema([
                                     TextInput::make('name.es')->label('Nombre (es)'),
-                                    RichEditor::make('description.es')->label('Descripción (es)'),
+                                     RichEditor::make('description.es')->label('Descripción (es)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                                 Tabs\Tab::make('English')->schema([
                                     TextInput::make('name.en')->label('Nombre (en)'),
-                                    RichEditor::make('description.en')->label('Descripción (en)'),
+                                     RichEditor::make('description.en')->label('Descripción (en)')->plugins([AttachCuratorMediaPlugin::make()]),
                                 ]),
                             ])->columnSpanFull(),
                     ]),

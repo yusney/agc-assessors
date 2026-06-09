@@ -123,13 +123,30 @@ final class NewsResourceTest extends TestCase
         // so Filament does not auto-inject the attachCuratorMedia tool. The Resource
         // must explicitly call ->enableToolbarButtons(['attachCuratorMedia']) so the
         // button renders in the toolbar.
+        //
+        // We assert by reading $toolbarButtonsModifications directly via Reflection,
+        // because $field->hasToolbarButton() requires a container that Schema::make(null)
+        // does not initialize.
         $schema = NewsResource::form(Schema::make());
         $field  = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in NewsResource form");
+
+        $refl = new \ReflectionClass($field);
+        $prop = $refl->getProperty('toolbarButtonsModifications');
+        $prop->setAccessible(true);
+        $modifications = $prop->getValue($field);
+
+        $hasEnableForCurator = false;
+        foreach ($modifications as $mod) {
+            if (($mod['type'] ?? null) === 'enable' && in_array('attachCuratorMedia', $mod['buttons'] ?? [], true)) {
+                $hasEnableForCurator = true;
+                break;
+            }
+        }
         $this->assertTrue(
-            $field->hasToolbarButton('attachCuratorMedia'),
-            "Field '{$fieldName}' must enable 'attachCuratorMedia' in the toolbar"
+            $hasEnableForCurator,
+            "Field '{$fieldName}' must have an 'enable' modification for 'attachCuratorMedia'"
         );
     }
 

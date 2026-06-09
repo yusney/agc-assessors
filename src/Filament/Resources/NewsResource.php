@@ -62,17 +62,17 @@ class NewsResource extends Resource
                                 Tabs\Tab::make('Català')->schema([
                                     TextInput::make('title.ca')->label('Título (ca)')->required(),
                                     Textarea::make('excerpt.ca')->label('Extracto (ca)')->rows(3),
-                                    RichEditor::make('body.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()]),
+                                    RichEditor::make('body.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
                                 ]),
                                 Tabs\Tab::make('Español')->schema([
                                     TextInput::make('title.es')->label('Título (es)'),
                                     Textarea::make('excerpt.es')->label('Extracto (es)')->rows(3),
-                                    RichEditor::make('body.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()]),
+                                    RichEditor::make('body.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
                                 ]),
                                 Tabs\Tab::make('English')->schema([
                                     TextInput::make('title.en')->label('Título (en)'),
                                     Textarea::make('excerpt.en')->label('Extracto (en)')->rows(3),
-                                    RichEditor::make('body.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()]),
+                                    RichEditor::make('body.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
                                 ]),
                             ])->columnSpanFull(),
                     ]),

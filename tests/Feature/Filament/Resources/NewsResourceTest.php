@@ -115,6 +115,24 @@ final class NewsResourceTest extends TestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('bodyFieldNamesProvider')]
+    public function test_news_body_fields_enable_attach_curator_media_toolbar_button(string $fieldName): void
+    {
+        // The AttachCuratorMediaPlugin v5.0.7 does NOT implement HasToolbarButtons,
+        // so Filament does not auto-inject the attachCuratorMedia tool. The Resource
+        // must explicitly call ->enableToolbarButtons(['attachCuratorMedia']) so the
+        // button renders in the toolbar.
+        $schema = NewsResource::form(Schema::make());
+        $field  = $this->findFieldInSchema($schema, $fieldName);
+
+        $this->assertNotNull($field, "Field '{$fieldName}' must exist in NewsResource form");
+        $this->assertTrue(
+            $field->hasToolbarButton('attachCuratorMedia'),
+            "Field '{$fieldName}' must enable 'attachCuratorMedia' in the toolbar"
+        );
+    }
+
     /** @return array<string, array{0: string}> */
     public static function bodyFieldNamesProvider(): array
     {

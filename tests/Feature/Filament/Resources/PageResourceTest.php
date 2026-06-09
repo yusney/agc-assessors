@@ -112,6 +112,20 @@ final class PageResourceTest extends TestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('contentFieldNamesProvider')]
+    public function test_page_content_fields_enable_attach_curator_media_toolbar_button(string $fieldName): void
+    {
+        $schema = PageResource::form(Schema::make());
+        $field  = $this->findFieldInSchema($schema, $fieldName);
+
+        $this->assertNotNull($field, "Field '{$fieldName}' must exist in PageResource form");
+        $this->assertTrue(
+            $field->hasToolbarButton('attachCuratorMedia'),
+            "Field '{$fieldName}' must enable 'attachCuratorMedia' in the toolbar"
+        );
+    }
+
     /** @return array<string, array{0: string}> */
     public static function contentFieldNamesProvider(): array
     {

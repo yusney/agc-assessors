@@ -112,6 +112,20 @@ final class ServiceResourceTest extends TestCase
         );
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('descriptionFieldNamesProvider')]
+    public function test_service_description_fields_enable_attach_curator_media_toolbar_button(string $fieldName): void
+    {
+        $schema = ServiceResource::form(Schema::make());
+        $field  = $this->findFieldInSchema($schema, $fieldName);
+
+        $this->assertNotNull($field, "Field '{$fieldName}' must exist in ServiceResource form");
+        $this->assertTrue(
+            $field->hasToolbarButton('attachCuratorMedia'),
+            "Field '{$fieldName}' must enable 'attachCuratorMedia' in the toolbar"
+        );
+    }
+
     /** @return array<string, array{0: string}> */
     public static function descriptionFieldNamesProvider(): array
     {

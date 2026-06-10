@@ -138,6 +138,7 @@ return [
         'manager_label' => 'Responsable de l\'oficina',
         'common_content_heading' => 'Coneix AGC Assessors',
         'back_to_all' => 'Tornar a totes les oficines',
+        'cover_upload_hint' => 'Pengeu una foto de l\'equip o de la façana per personalitzar aquesta pàgina.',
         'empty' => 'Pròximament publicarem les nostres oficines.',
     ],
     'cookies' => [

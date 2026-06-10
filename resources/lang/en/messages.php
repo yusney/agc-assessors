@@ -139,6 +139,7 @@ return [
         'manager_label' => 'Office manager',
         'common_content_heading' => 'Discover AGC Assessors',
         'back_to_all' => 'Back to all offices',
+        'cover_upload_hint' => 'Upload a photo of the team or the facade to customise this page.',
         'empty' => 'Our offices will be published soon.',
     ],
     'cookies' => [

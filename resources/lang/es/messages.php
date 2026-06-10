@@ -139,6 +139,7 @@ return [
         'manager_label' => 'Responsable de la oficina',
         'common_content_heading' => 'Conoce AGC Assessors',
         'back_to_all' => 'Volver a todas las oficinas',
+        'cover_upload_hint' => 'Sube una foto del equipo o de la fachada para personalizar esta página.',
         'empty' => 'Próximamente publicaremos nuestras oficinas.',
     ],
     'cookies' => [

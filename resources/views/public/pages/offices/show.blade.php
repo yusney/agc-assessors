@@ -36,17 +36,41 @@
             </ol>
         </nav>
 
-        <div class="max-w-3xl">
-            <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-3">
-                AGC Assessors
-            </span>
-            <h1 class="font-headline text-[36px] md:text-[52px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-4">
-                {{ __('messages.offices.office_in') }} {{ $city }}
-            </h1>
-            @if($description !== '')
-            <p class="text-[17px] text-[#64748B] leading-relaxed font-light max-w-2xl">
-                {{ $description }}
-            </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {{-- Left: title + description --}}
+            <div>
+                <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-3">
+                    AGC Assessors
+                </span>
+                <h1 class="font-headline text-[36px] md:text-[52px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-4">
+                    {{ __('messages.offices.office_in') }} {{ $city }}
+                </h1>
+                @if($description !== '')
+                <p class="text-[17px] text-[#64748B] leading-relaxed font-light max-w-2xl">
+                    {{ $description }}
+                </p>
+                @endif
+            </div>
+
+            {{-- Right: office cover image (only if uploaded) --}}
+            @if($office->coverUrl())
+            <div class="relative aspect-[4/3] rounded-[1.5rem] overflow-hidden border border-[#E2E8F0] shadow-md">
+                <img src="{{ $office->coverUrl() }}"
+                     alt="{{ $altText }}"
+                     itemprop="image"
+                     class="w-full h-full object-cover">
+            </div>
+            @else
+            <div class="relative aspect-[4/3] rounded-[1.5rem] overflow-hidden border border-[#E2E8F0] bg-gradient-to-br from-[#00346f]/8 to-[#00B4D8]/15 flex items-center justify-center">
+                <div class="text-center">
+                    <span class="font-headline text-[120px] font-bold text-[#00346f]/15 select-none leading-none">
+                        {{ mb_substr($city, 0, 1) }}
+                    </span>
+                    <p class="text-[14px] text-[#64748B] mt-2 px-6">
+                        {{ __('messages.offices.cover_upload_hint') }}
+                    </p>
+                </div>
+            </div>
             @endif
         </div>
     </div>

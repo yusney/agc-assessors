@@ -75,17 +75,30 @@ Route::get('/sitemap.xml', [\App\Http\Controllers\Public\SitemapController::clas
 // each route (the one for the active locale at boot). Registering all three
 // ensures /es/... and /en/... resolve correctly, which is what the locale
 // switcher redirects to and what hreflang alternates point to.
+//
+// IMPORTANT: the default locale (ca) is registered LAST so its prefix-less
+// variant does not shadow the prefixed variants of the other locales. Laravel
+// matches routes in registration order, so an /es/... URL must be matched
+// against the /es/ group first, not against the empty-prefix ca group.
 $supportedLocales = array_keys(LaravelLocalization::getSupportedLocales());
 $hideDefaultLocaleInURL = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
 $defaultLocale = (string) config('app.locale');
 
-foreach ($supportedLocales as $localeCode) {
+// Non-default locales first (in any order, but alphabetical for stability),
+// then the default locale with its (possibly empty) prefix last.
+$localesToRegister = array_values(array_filter(
+    $supportedLocales,
+    static fn (string $l): bool => $l !== $defaultLocale
+));
+$localesToRegister[] = $defaultLocale;
+
+foreach ($localesToRegister as $localeCode) {
     $prefix = ($hideDefaultLocaleInURL && $localeCode === $defaultLocale) ? '' : $localeCode;
 
     Route::group(
         [
             'prefix' => $prefix,
-            'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
+            'middleware' => ['setLocaleFromUrl', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
         ],
         function () {
             Route::get('/', HomeController::class)->name('home');

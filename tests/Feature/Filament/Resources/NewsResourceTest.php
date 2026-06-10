@@ -117,36 +117,42 @@ final class NewsResourceTest extends TestCase
 
     #[\PHPUnit\Framework\Attributes\Test]
     #[\PHPUnit\Framework\Attributes\DataProvider('bodyFieldNamesProvider')]
-    public function test_news_body_fields_enable_attach_curator_media_toolbar_button(string $fieldName): void
+    public function test_news_body_fields_have_attach_curator_media_in_toolbar(string $fieldName): void
     {
         // The AttachCuratorMediaPlugin v5.0.7 does NOT implement HasToolbarButtons,
         // so Filament does not auto-inject the attachCuratorMedia tool. The Resource
-        // must explicitly call ->enableToolbarButtons(['attachCuratorMedia']) so the
+        // must include 'attachCuratorMedia' in its toolbarButtons() array so the
         // button renders in the toolbar.
         //
-        // We assert by reading $toolbarButtonsModifications directly via Reflection,
-        // because $field->hasToolbarButton() requires a container that Schema::make(null)
-        // does not initialize.
+        // We assert by reading the toolbarButtons property directly via Reflection
+        // and verifying 'attachCuratorMedia' appears in one of its groups.
         $schema = NewsResource::form(Schema::make());
         $field  = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in NewsResource form");
 
         $refl = new \ReflectionClass($field);
-        $prop = $refl->getProperty('toolbarButtonsModifications');
+        $prop = $refl->getProperty('toolbarButtons');
         $prop->setAccessible(true);
-        $modifications = $prop->getValue($field);
+        $toolbarButtons = $prop->getValue($field);
 
-        $hasEnableForCurator = false;
-        foreach ($modifications as $mod) {
-            if (($mod['type'] ?? null) === 'enable' && in_array('attachCuratorMedia', $mod['buttons'] ?? [], true)) {
-                $hasEnableForCurator = true;
-                break;
+        $flat = [];
+        foreach ($toolbarButtons as $group) {
+            if (is_array($group)) {
+                foreach ($group as $item) {
+                    if (is_string($item)) {
+                        $flat[] = $item;
+                    }
+                }
+            } elseif (is_string($group)) {
+                $flat[] = $group;
             }
         }
-        $this->assertTrue(
-            $hasEnableForCurator,
-            "Field '{$fieldName}' must have an 'enable' modification for 'attachCuratorMedia'"
+
+        $this->assertContains(
+            'attachCuratorMedia',
+            $flat,
+            "Field '{$fieldName}' toolbar must include 'attachCuratorMedia'"
         );
     }
 

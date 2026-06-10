@@ -335,7 +335,7 @@
             <button @click="open = !open"
                     class="md:hidden text-[#1E293B] hover:text-[#00346f] transition-colors"
                     :aria-expanded="open"
-                    aria-label="Menú">
+                    aria-label="{{ __('messages.nav.menu') }}">
                 <span x-show="!open" class="material-symbols-outlined text-[28px]">&#xe5d2;</span>
                 <span x-show="open"  class="material-symbols-outlined text-[28px]">&#xe5cd;</span>
             </button>

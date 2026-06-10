@@ -26,11 +26,11 @@
 <section class="relative w-full overflow-hidden bg-[#f9f9ff]">
     <div class="relative z-10 w-full max-w-[1280px] mx-auto px-6 md:px-8 pt-10 pb-12">
         {{-- Breadcrumb --}}
-        <nav aria-label="Breadcrumb" class="mb-6 text-[13px] text-[#64748B]">
+        <nav aria-label="{{ __('messages.breadcrumb.label') }}" class="mb-6 text-[13px] text-[#64748B]">
             <ol class="flex flex-wrap items-center gap-1.5">
-                <li><a href="{{ route('home', ['locale' => $locale]) }}" class="hover:text-[#00346f]">{{ __('messages.nav.home') }}</a></li>
+                <li><a href="{{ route('home', ['locale' => $locale]) }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.nav.home') }}</a></li>
                 <li aria-hidden="true">/</li>
-                <li><a href="{{ route('offices.index', ['locale' => $locale]) }}" class="hover:text-[#00346f]">{{ __('messages.offices.title') }}</a></li>
+                <li><a href="{{ route('offices.index', ['locale' => $locale]) }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.offices.title') }}</a></li>
                 <li aria-hidden="true">/</li>
                 <li aria-current="page" class="text-[#1E293B] font-semibold">{{ $city }}</li>
             </ol>
@@ -42,7 +42,7 @@
                 <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-3">
                     AGC Assessors
                 </span>
-                <h1 class="font-headline text-[36px] md:text-[52px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-4">
+                <h1 class="font-headline text-[36px] md:text-[52px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-4 text-balance">
                     {{ __('messages.offices.office_in') }} {{ $city }}
                 </h1>
                 @if($description !== '')
@@ -58,6 +58,11 @@
                 <img src="{{ $office->coverUrl() }}"
                      alt="{{ $altText }}"
                      itemprop="image"
+                     width="1200"
+                     height="900"
+                     loading="eager"
+                     fetchpriority="high"
+                     decoding="async"
                      class="w-full h-full object-cover">
             </div>
             @else
@@ -140,7 +145,7 @@
                     <span class="material-symbols-outlined text-[20px] text-[#64748B] flex-shrink-0" aria-hidden="true">call</span>
                     <a href="tel:{{ $office->phone() }}"
                        itemprop="telephone"
-                       class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors">
+                       class="text-[14px] text-[#424751] hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded transition-colors">
                         {{ $office->phone() }}
                     </a>
                 </div>
@@ -151,7 +156,7 @@
                     <span class="material-symbols-outlined text-[20px] text-[#64748B] flex-shrink-0" aria-hidden="true">mail</span>
                     <a href="mailto:{{ $office->email() }}"
                        itemprop="email"
-                       class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors break-all">
+                       class="text-[14px] text-[#424751] hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded transition-colors break-all">
                         {{ $office->email() }}
                     </a>
                 </div>
@@ -174,7 +179,7 @@
                 <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
                    target="_blank" rel="noopener noreferrer"
                    itemprop="hasMap"
-                   class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#00346f] text-white text-[14px] font-semibold rounded-full hover:bg-[#004a99] transition-colors">
+                   class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#00346f] text-white text-[14px] font-semibold rounded-full hover:bg-[#004a99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] focus-visible:ring-offset-2 transition-colors">
                     <span class="material-symbols-outlined text-[18px]" aria-hidden="true">directions</span>
                     {{ __('messages.offices.directions') }}
                 </a>
@@ -233,22 +238,22 @@
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <a href="{{ route('services.index', ['locale' => $locale]) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] transition-colors">
+                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">business_center</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.services') }}</span>
                     </a>
                     <a href="{{ route('team', ['locale' => $locale]) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] transition-colors">
+                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">groups</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.team') }}</span>
                     </a>
                     <a href="{{ route('news.index', ['locale' => $locale]) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] transition-colors">
+                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">article</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.news') }}</span>
                     </a>
                     <a href="{{ route('contact', ['locale' => $locale]) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] transition-colors">
+                       class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">mail</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.contact') }}</span>
                     </a>
@@ -256,7 +261,7 @@
 
                 <div class="mt-5 pt-5 border-t border-[#E2E8F0]">
                     <a href="{{ route('offices.index', ['locale' => $locale]) }}"
-                       class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors">
+                       class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded pb-0.5 transition-colors">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
                         {{ __('messages.offices.back_to_all') }}
                     </a>

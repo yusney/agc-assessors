@@ -1,6 +1,10 @@
 <?php
-
 return [
+
+    'breadcrumb' => [
+        'label' => 'Navegación de migas de pan',
+    ],
+
     'nav' => [
         'home' => 'Inicio',
         'services' => 'Servicios',
@@ -10,6 +14,7 @@ return [
         'offices' => 'Oficinas',
         'cta' => 'Área de cliente',
         'search' => 'Buscar',
+        'menu' => 'Menú',
         'more_socials' => 'Más redes sociales',
     ],
     'footer' => [

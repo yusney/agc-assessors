@@ -1,6 +1,10 @@
 <?php
-
 return [
+
+    'breadcrumb' => [
+        'label' => 'Navegació de molles de pa',
+    ],
+
     'nav' => [
         'home' => 'Inici',
         'services' => 'Serveis',
@@ -10,6 +14,7 @@ return [
         'offices' => 'Oficines',
         'cta' => 'Àrea de client',
         'search' => 'Cercar',
+        'menu' => 'Menú',
         'more_socials' => 'Més xarxes socials',
     ],
     'footer' => [

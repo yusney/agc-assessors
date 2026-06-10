@@ -28,9 +28,9 @@
             <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-5">
                 AGC Assessors
             </span>
-            <h1 class="font-headline text-[40px] md:text-[56px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-5">
-                {{ __('messages.offices.title') }}
-            </h1>
+                <h1 class="font-headline text-[40px] md:text-[56px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-5 text-balance">
+                    {{ __('messages.offices.title') }}
+                </h1>
             <p class="text-[18px] text-[#64748B] leading-relaxed font-light max-w-xl mx-auto">
                 {{ __('messages.offices.subtitle') }}
             </p>
@@ -112,7 +112,7 @@
                 @endphp
                 <tr class="hover:bg-[#F8FAFC] transition-colors">
                     <th scope="row" class="px-4 py-3 font-semibold text-[#1E293B]">
-                        <a href="#office-{{ $office->id() }}" class="hover:text-[#00346f]">
+                        <a href="#office-{{ $office->id() }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded scroll-margin-top">
                             {{ $office->city()->get(app()->getLocale()) }}
                         </a>
                     </th>
@@ -165,6 +165,10 @@
                     <img src="{{ $office->coverUrl() }}"
                          alt="{{ $altText }}"
                          itemprop="image"
+                         width="800"
+                         height="600"
+                         loading="lazy"
+                         decoding="async"
                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 @else
                     <div class="w-full h-full bg-gradient-to-br from-[#00346f]/10 to-[#00B4D8]/20 flex items-center justify-center" aria-hidden="true">

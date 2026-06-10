@@ -1,6 +1,10 @@
 <?php
-
 return [
+
+    'breadcrumb' => [
+        'label' => 'Breadcrumb navigation',
+    ],
+
     'nav' => [
         'home' => 'Home',
         'services' => 'Services',
@@ -10,6 +14,7 @@ return [
         'offices' => 'Offices',
         'cta' => 'Client Area',
         'search' => 'Search',
+        'menu' => 'Menu',
         'more_socials' => 'More social networks',
     ],
     'footer' => [

@@ -1,0 +1,203 @@
+==============================================================================
+ AGC ASSESSORS — LOCAL SEO AUDIT (LocalBusiness + ItemList)
+==============================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Hub (es)  →  /es/oficinas
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (47 chars): Oficinas de asesoría fiscal, laboral y contable
+  ✓ Description (148 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  ⊘ No LocalBusiness (hub page, correct — each office has its own URL)
+
+  📋 ItemList schema (1 found):
+    ✓ ItemList: 6 items, passes validation
+
+  Result: 0 errors, 0 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Caldes (es)  →  /es/oficinas/caldes-de-montbui
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (44 chars): Oficina de Caldes de Montbui | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/caldes-de-montbui
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Caldes de Montbui: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Caldes de Montbui'.image: missing recommended field
+      • address: Av. Pi i Margall, 114, Caldes de Montbui
+      • geo: 41.6277038, 2.1674534
+      • phone: +34 93 862 61 00
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 6 cities → Sentmenat, Palau-solità i Plegamans, Santa Perpètua de Mogoda, Polinyà, Castellar del Vallès +1 more
+
+  Result: 0 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Sant Celoni (es)  →  /es/oficinas/sant-celoni
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (38 chars): Oficina de Sant Celoni | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/sant-celoni
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Sant Celoni: passes validation
+      • address: Crtra. Vella, 66, 1º, Sant Celoni
+      • geo: 41.6880663, 2.4913484
+      • phone: +34 93 867 05 12
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 8 cities → Hostalric, Breda, Arbúcies, Santa Maria de Palautordera, Vallgorguina +3 more
+
+  Result: 0 errors, 0 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Mollet (es)  →  /es/oficinas/mollet-del-valles
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (44 chars): Oficina de Mollet del Vallès | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/mollet-del-valles
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Mollet del Vallès: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Mollet del Vallès'.image: missing recommended field
+      • address: C/ St. Roc, 35, 2º-8ª, Mollet del Vallès
+      • geo: 41.5447492, 2.2192054
+      • phone: +34 93 570 03 37
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 6 cities → Parets del Vallès, Montmeló, Martorelles, Santa Maria de Martorelles, Palau-solità i Plegamans +1 more
+
+  Result: 0 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Granollers (es)  →  /es/oficinas/granollers
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (37 chars): Oficina de Granollers | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/granollers
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Granollers: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Granollers'.image: missing recommended field
+      • address: C/ Josep Umbert i Ventura, 43 Bx, Granollers
+      • geo: 41.6079, 2.2876
+      • phone: +34 93 860 36 20
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 8 cities → La Garriga, Llinars del Vallès, Les Franqueses del Vallès, Canovelles, L'Ametlla del Vallès +3 more
+
+  Result: 0 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Prats (es)  →  /es/oficinas/prats-de-llucanes
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (44 chars): Oficina de Prats de Lluçanès | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/prats-de-llucanes
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Prats de Lluçanès: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Prats de Lluçanès'.image: missing recommended field
+      • address: Plaça Nova, 20, Prats de Lluçanès
+      • geo: 42.0029, 2.0156
+      • phone: +34 93 856 06 57
+      • openingHoursSpecification: 8 day rules
+      • areaServed: 7 cities → Olost, Lluçà, Sant Martí d'Albars, Sobremunt, Perafita +2 more
+
+  Result: 0 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Manlleu (es)  →  /es/oficinas/manlleu
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (34 chars): Oficina de Manlleu | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/es/oficinas/manlleu
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+      ✗ LocalBusiness 'AGC Assessors - Manlleu'.telephone: missing REQUIRED field
+      ⚠ LocalBusiness 'AGC Assessors - Manlleu'.image: missing recommended field
+      • address: Plaça de Dalt de la Vila, 5, Manlleu
+      • geo: 42.0013284, 2.2844067
+      • phone: ?
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 7 cities → Vic, Torelló, Roda de Ter, Sant Hipòlit de Voltregà, Les Masies de Voltregà +2 more
+
+  Result: 1 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Hub (ca)  →  /oficines
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (54 chars): Oficines d&#039;assessoria fiscal, laboral i comptable
+  ✓ Description (148 chars)
+  ✓ Canonical: http://localhost:8080/oficines
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  ⊘ No LocalBusiness (hub page, correct — each office has its own URL)
+
+  📋 ItemList schema (1 found):
+    ✓ ItemList: 6 items, passes validation
+
+  Result: 0 errors, 0 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Granollers (ca)  →  /oficines/granollers
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (37 chars): Oficina de Granollers | AGC Assessors
+  ✓ Description (146 chars)
+  ✓ Canonical: http://localhost:8080/oficines/granollers
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Granollers: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Granollers'.image: missing recommended field
+      • address: C/ Josep Umbert i Ventura, 43 Bx, Granollers
+      • geo: 41.6079, 2.2876
+      • phone: +34 93 860 36 20
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 8 cities → La Garriga, Llinars del Vallès, Les Franqueses del Vallès, Canovelles, L'Ametlla del Vallès +3 more
+
+  Result: 0 errors, 1 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Hub (en)  →  /en/offices
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (43 chars): Tax, labour and accounting advisory offices
+  ✓ Description (138 chars)
+  ✓ Canonical: http://localhost:8080/en/offices
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  ⊘ No LocalBusiness (hub page, correct — each office has its own URL)
+
+  📋 ItemList schema (1 found):
+    ✓ ItemList: 6 items, passes validation
+
+  Result: 0 errors, 0 warnings
+
+──────────────────────────────────────────────────────────────────────────────
+📄 Granollers (en)  →  /en/offices/granollers
+──────────────────────────────────────────────────────────────────────────────
+  ✓ Title (36 chars): Office in Granollers | AGC Assessors
+  ✓ Description (147 chars)
+  ✓ Canonical: http://localhost:8080/en/offices/granollers
+  ✓ Hreflang alternates: 4 (ca/es/en/x-default expected)
+
+  📍 LocalBusiness schema (1 found):
+    ✓ AGC Assessors - Granollers: passes validation
+      ⚠ LocalBusiness 'AGC Assessors - Granollers'.image: missing recommended field
+      • address: Josep Umbert i Ventura St., 43, Granollers
+      • geo: 41.6079, 2.2876
+      • phone: +34 93 860 36 20
+      • openingHoursSpecification: 5 day rules
+      • areaServed: 8 cities → La Garriga, Llinars del Vallès, Les Franqueses del Vallès, Canovelles, L'Ametlla del Vallès +3 more
+
+  Result: 0 errors, 1 warnings
+
+==============================================================================
+ ❌ 1 ERRORS, 7 WARNINGS across 11 pages
+==============================================================================

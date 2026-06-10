@@ -560,8 +560,8 @@ final class SeoComposer
             }
 
             $dayPart = mb_strtolower(trim($m[1]));
-            $opens = $m[2];
-            $closes = $m[3];
+            $opens = $this->normalizeTime($m[2]);
+            $closes = $this->normalizeTime($m[3]);
 
             $matchedDays = [];
 
@@ -600,5 +600,22 @@ final class SeoComposer
         }
 
         return $specs;
+    }
+
+    /**
+     * Normalize a time string to HH:MM (two-digit) per schema.org spec.
+     * Accepts "9:00", "9:0", "09:00" and returns "09:00".
+     */
+    private function normalizeTime(string $time): string
+    {
+        $parts = explode(':', $time);
+        if (count($parts) !== 2) {
+            return $time;
+        }
+
+        $h = (int) $parts[0];
+        $m = (int) $parts[1];
+
+        return sprintf('%02d:%02d', $h, $m);
     }
 }

@@ -29,12 +29,24 @@ final class EloquentOfficeRepository implements OfficeRepositoryInterface
 
     private function map(EloquentOffice $model): Office
     {
+        $translatableFactory = static function (string $field) use ($model): ?TranslatableString {
+            $translations = $model->getTranslations($field);
+            if ($translations === []) {
+                return null;
+            }
+
+            return new TranslatableString($translations);
+        };
+
         return new Office(
             id: $model->id,
             name: new TranslatableString($model->getTranslations('name')),
             address: new TranslatableString($model->getTranslations('address')),
             city: new TranslatableString($model->getTranslations('city')),
             description: new TranslatableString($model->getTranslations('description') ?: []),
+            openingHours: $translatableFactory('opening_hours'),
+            serviceArea: $translatableFactory('service_area'),
+            imageAlt: $translatableFactory('image_alt'),
             phone: $model->phone,
             email: $model->email,
             lat: $model->lat,

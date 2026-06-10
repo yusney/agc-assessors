@@ -14,6 +14,9 @@ final class Office
         private readonly TranslatableString $address,
         private readonly TranslatableString $city,
         private readonly TranslatableString $description,
+        private readonly ?TranslatableString $openingHours,
+        private readonly ?TranslatableString $serviceArea,
+        private readonly ?TranslatableString $imageAlt,
         private readonly ?string $phone,
         private readonly ?string $email,
         private readonly ?float $lat,
@@ -47,6 +50,21 @@ final class Office
         return $this->description;
     }
 
+    public function openingHours(): ?TranslatableString
+    {
+        return $this->openingHours;
+    }
+
+    public function serviceArea(): ?TranslatableString
+    {
+        return $this->serviceArea;
+    }
+
+    public function imageAlt(): ?TranslatableString
+    {
+        return $this->imageAlt;
+    }
+
     public function phone(): ?string
     {
         return $this->phone;
@@ -75,5 +93,24 @@ final class Office
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function serviceAreaList(string $locale): array
+    {
+        if ($this->serviceArea === null) {
+            return [];
+        }
+
+        $value = $this->serviceArea->get($locale);
+        if ($value === '') {
+            return [];
+        }
+
+        $parts = preg_split('/[\n,]+/', $value) ?: [];
+
+        return array_values(array_filter(array_map('trim', $parts), static fn (string $v) => $v !== ''));
     }
 }

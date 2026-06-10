@@ -94,7 +94,20 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @foreach($offices as $office)
         @php
-            $locale = app()->getLocale();
+            // Resolve the active locale from the URL via the SeoComposer (which
+            // also fixes the switcher state). config('app.locale') cannot be used
+            // here because the package mutates it to the active locale at
+            // runtime; we compare against the package's defaultLocale instead.
+            $activeLocale = $activeLocale ?? (string) config('app.locale');
+            $defaultLocale = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+            $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+            $officePath = function (string $slug) use ($activeLocale, $defaultLocale, $hideDefault): string {
+                if ($activeLocale === $defaultLocale && $hideDefault) {
+                    return '/oficines/' . $slug;
+                }
+                return '/' . $activeLocale . '/oficines/' . $slug;
+            };
+            $locale = $activeLocale;
             $altText = $office->imageAlt()?->get($locale)
                 ?? $office->imageAlt()?->get('ca')
                 ?? $office->name()->get($locale);
@@ -107,7 +120,7 @@
             $serviceArea = $office->serviceAreaList($locale);
         @endphp
         <article id="office-{{ $office->id() }}" itemscope itemtype="https://schema.org/LocalBusiness" class="group bg-white rounded-[1.5rem] border border-[#E2E8F0] overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-            <meta itemprop="@id" content="{{ url('/oficinas#office-'.$office->id()) }}">
+            <meta itemprop="@id" content="{{ $officePath('#office-'.$office->id()) }}">
             <meta itemprop="name" content="{{ $office->name()->get($locale) }} - {{ $office->city()->get($locale) }}">
 
             {{-- Image with proper alt text --}}
@@ -139,7 +152,7 @@
             <div class="p-6">
                 {{-- H2 = one per office — required for SEO local differentiation --}}
                 <h2 class="font-headline text-[22px] font-semibold text-[#1E293B] mb-3 leading-tight">
-                    <a href="{{ route('offices.show', ['locale' => $locale, 'slug' => $office->publicSlug($locale)]) }}"
+                    <a href="{{ $officePath($office->publicSlug($locale)) }}"
                        class="hover:text-[#00346f] transition-colors">
                         {{ __('messages.offices.office_in') }} {{ $office->city()->get($locale) }}
                     </a>
@@ -216,7 +229,7 @@
 
                 {{-- CTA: Ver oficina + Cómo llegar --}}
                 <div class="flex flex-col gap-2">
-                    <a href="{{ route('offices.show', ['locale' => $locale, 'slug' => $office->publicSlug($locale)]) }}"
+                    <a href="{{ $officePath($office->publicSlug($locale)) }}"
                        class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
                         {{ __('messages.offices.see_office') }}
                         <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5" aria-hidden="true">arrow_forward</span>

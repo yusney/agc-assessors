@@ -133,7 +133,14 @@
 
                 {{-- CTAs: Ver oficina (primary) + Cómo llegar (secondary) --}}
                 <div class="mt-auto pt-3 border-t border-[#E2E8F0] flex flex-col gap-2">
-                    <a href="{{ route('offices.show', ['locale' => app()->getLocale(), 'slug' => $office->publicSlug(app()->getLocale())]) }}"
+                    @php
+                        $cardLocale = $activeLocale ?? (string) config('app.locale');
+                        $cardDefault = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+                        $cardHref = $cardLocale === $cardDefault && config('laravellocalization.hideDefaultLocaleInURL')
+                            ? '/oficines/' . $office->publicSlug($cardLocale)
+                            : '/' . $cardLocale . '/oficines/' . $office->publicSlug($cardLocale);
+                    @endphp
+                    <a href="{{ $cardHref }}"
                        class="inline-flex items-center justify-between gap-1 text-[14px] text-[#00346f] font-semibold hover:text-[#00B4D8] transition-colors">
                         {{ __('messages.offices.see_office') }}
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>

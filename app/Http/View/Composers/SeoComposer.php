@@ -78,6 +78,7 @@ final class SeoComposer
         $view->with('ogLocale', $this->getActiveOgLocale());
         $view->with('globalDefaultTitle', $this->getGlobalDefaultTitle());
         $view->with('globalDefaultDescription', $this->getGlobalDefaultDescription());
+        $view->with('activeLocale', $this->resolveActiveLocale());
     }
 
     private function getCanonicalUrl(): string
@@ -356,6 +357,25 @@ final class SeoComposer
         }
 
         return '';
+    }
+
+    /**
+     * Resolve the active locale from the current URL.
+     *
+     * Reading from the request URL is the only reliable source of truth
+     * for the current locale. LaravelLocalization::getCurrentLocale() and
+     * app()->getLocale() can both be stale at view-render time because the
+     * package caches the locale at service-container boot and the ViewPath
+     * middleware only sets app()->setLocale() AFTER the controller view
+     * path is resolved.
+     */
+    private function resolveActiveLocale(): string
+    {
+        $supported = array_keys(LaravelLocalization::getSupportedLocales());
+        $segments = request()->segments();
+        $first = $segments[0] ?? '';
+
+        return in_array($first, $supported, true) ? $first : (string) config('app.locale');
     }
 
     private function getLogoUrl(): string

@@ -1,6 +1,10 @@
 @extends('layouts.public')
 
-@section('seo_title', __('messages.offices.seo_title') . ' - ' . $office->city()->get(app()->getLocale()) . ' | AGC Assessors')
+@section('seo_title', \Illuminate\Support\Str::limit(
+    __('messages.offices.office_in') . ' ' . ($office->city()->get(app()->getLocale()) ?? $office->city()->get('ca')) . ' | AGC Assessors',
+    60,
+    ''
+))
 @section('seo_description', \Illuminate\Support\Str::limit(
     $office->description()->get(app()->getLocale()) ?? $office->description()->get('ca') ?? __('messages.offices.seo_description'),
     160

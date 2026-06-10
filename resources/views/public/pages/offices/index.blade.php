@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('seo_title', __('messages.offices.seo_title') . ' | AGC Assessors')
+@section('seo_title', __('messages.offices.seo_title'))
 @section('seo_description', __('messages.offices.seo_description'))
 @section('seo_og_type', 'website')
 

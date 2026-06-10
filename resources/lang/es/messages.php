@@ -134,6 +134,11 @@ return [
         'col_hours' => 'Horario',
         'office_in' => 'Oficina de',
         'also_serving' => 'También atendemos en',
+        'also_serving_intro' => 'Además de :city, desde esta oficina damos servicio a empresas y particulares de:',
+        'contact_heading' => 'Datos de contacto',
+        'manager_label' => 'Responsable de la oficina',
+        'common_content_heading' => 'Conoce AGC Assessors',
+        'back_to_all' => 'Volver a todas las oficinas',
         'empty' => 'Próximamente publicaremos nuestras oficinas.',
     ],
     'cookies' => [

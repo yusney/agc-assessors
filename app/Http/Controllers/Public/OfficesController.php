@@ -40,4 +40,33 @@ final class OfficesController extends Controller
             'officesGeoJson' => $officesGeoJson,
         ]);
     }
+
+    public function show(string $slug): View
+    {
+        $locale = (string) app()->getLocale();
+        $office = $this->offices->findActiveBySlug($slug, $locale);
+
+        abort_if($office === null, 404);
+
+        $officeGeoJson = ($office->lat() !== null && $office->lng() !== null)
+            ? [[
+                'name' => $office->name()->get($locale),
+                'address' => $office->address()->get($locale),
+                'lat' => $office->lat(),
+                'lng' => $office->lng(),
+            ]]
+            : [];
+
+        $breadcrumbs = [
+            ['name' => __('messages.nav.home'), 'url' => route('home', ['locale' => $locale])],
+            ['name' => __('messages.offices.title'), 'url' => route('offices.index', ['locale' => $locale])],
+            ['name' => $office->city()->get($locale), 'url' => null],
+        ];
+
+        return view('public.pages.offices.show', [
+            'office' => $office,
+            'officeGeoJson' => $officeGeoJson,
+            'breadcrumbs' => $breadcrumbs,
+        ]);
+    }
 }

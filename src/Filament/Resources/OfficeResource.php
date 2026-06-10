@@ -99,6 +99,21 @@ final class OfficeResource extends Resource
                                 ->label('Text alternatiu imatge (ca)')
                                 ->maxLength(125)
                                 ->helperText('Descriu la imatge per a lectors de pantalla i SEO.'),
+                            TextInput::make('slug.ca')
+                                ->label('Slug URL (ca)')
+                                ->helperText('Buit = auto-generat des del nom de la ciutat. Ex: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.ca')
+                                ->label('Responsable - Nom (ca)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.ca')
+                                ->label('Responsable - Càrrec (ca)')
+                                ->maxLength(120)
+                                ->placeholder('Ex: "Assessor fiscal sènior"'),
+                            Textarea::make('manager_bio.ca')
+                                ->label('Responsable - Presentació (ca)')
+                                ->helperText('1-2 frases. Es mostra a la pàgina individual de l\'oficina.')
+                                ->rows(3),
                         ]),
                         Tabs\Tab::make('Castellano')->schema([
                             Textarea::make('opening_hours.es')
@@ -113,6 +128,21 @@ final class OfficeResource extends Resource
                                 ->label('Texto alternativo imagen (es)')
                                 ->maxLength(125)
                                 ->helperText('Describe la imagen para lectores de pantalla y SEO.'),
+                            TextInput::make('slug.es')
+                                ->label('Slug URL (es)')
+                                ->helperText('Vacío = auto-generado desde el nombre de la ciudad. Ej: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.es')
+                                ->label('Responsable - Nombre (es)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.es')
+                                ->label('Responsable - Cargo (es)')
+                                ->maxLength(120)
+                                ->placeholder('Ej: "Asesor fiscal senior"'),
+                            Textarea::make('manager_bio.es')
+                                ->label('Responsable - Presentación (es)')
+                                ->helperText('1-2 frases. Se muestra en la página individual de la oficina.')
+                                ->rows(3),
                         ]),
                         Tabs\Tab::make('English')->schema([
                             Textarea::make('opening_hours.en')
@@ -127,6 +157,21 @@ final class OfficeResource extends Resource
                                 ->label('Image alt text (en)')
                                 ->maxLength(125)
                                 ->helperText('Describe the image for screen readers and SEO.'),
+                            TextInput::make('slug.en')
+                                ->label('URL slug (en)')
+                                ->helperText('Empty = auto-generated from the city name. Ex: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.en')
+                                ->label('Manager - Name (en)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.en')
+                                ->label('Manager - Role (en)')
+                                ->maxLength(120)
+                                ->placeholder('Ex: "Senior tax advisor"'),
+                            Textarea::make('manager_bio.en')
+                                ->label('Manager - Bio (en)')
+                                ->helperText('1-2 sentences. Shown on the office individual page.')
+                                ->rows(3),
                         ]),
                     ])->columnSpanFull(),
             ])->columnSpanFull(),

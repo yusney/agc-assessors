@@ -17,6 +17,10 @@ final class Office
         private readonly ?TranslatableString $openingHours,
         private readonly ?TranslatableString $serviceArea,
         private readonly ?TranslatableString $imageAlt,
+        private readonly ?TranslatableString $slug,
+        private readonly ?TranslatableString $managerName,
+        private readonly ?TranslatableString $managerRole,
+        private readonly ?TranslatableString $managerBio,
         private readonly ?string $phone,
         private readonly ?string $email,
         private readonly ?float $lat,
@@ -65,6 +69,26 @@ final class Office
         return $this->imageAlt;
     }
 
+    public function slug(): ?TranslatableString
+    {
+        return $this->slug;
+    }
+
+    public function managerName(): ?TranslatableString
+    {
+        return $this->managerName;
+    }
+
+    public function managerRole(): ?TranslatableString
+    {
+        return $this->managerRole;
+    }
+
+    public function managerBio(): ?TranslatableString
+    {
+        return $this->managerBio;
+    }
+
     public function phone(): ?string
     {
         return $this->phone;
@@ -93,6 +117,22 @@ final class Office
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    /**
+     * Resolve the public URL slug for the current locale, falling back to a
+     * slug built from the city name when no explicit slug is configured.
+     */
+    public function publicSlug(string $locale): string
+    {
+        if ($this->slug !== null) {
+            $value = $this->slug->get($locale);
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return \Illuminate\Support\Str::slug($this->city()->get($locale) ?: $this->city()->get('ca'));
     }
 
     /**

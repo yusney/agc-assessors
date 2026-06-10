@@ -133,6 +133,11 @@ return [
         'col_hours' => 'Horari',
         'office_in' => 'Oficina de',
         'also_serving' => 'També atenem a',
+        'also_serving_intro' => 'A més de :city, des d\'aquesta oficina donem servei a empreses i particulars de:',
+        'contact_heading' => 'Dades de contacte',
+        'manager_label' => 'Responsable de l\'oficina',
+        'common_content_heading' => 'Coneix AGC Assessors',
+        'back_to_all' => 'Tornar a totes les oficines',
         'empty' => 'Pròximament publicarem les nostres oficines.',
     ],
     'cookies' => [

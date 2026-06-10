@@ -134,6 +134,11 @@ return [
         'col_hours' => 'Hours',
         'office_in' => 'Office in',
         'also_serving' => 'Also serving',
+        'also_serving_intro' => 'In addition to :city, from this office we serve businesses and individuals from:',
+        'contact_heading' => 'Contact details',
+        'manager_label' => 'Office manager',
+        'common_content_heading' => 'Discover AGC Assessors',
+        'back_to_all' => 'Back to all offices',
         'empty' => 'Our offices will be published soon.',
     ],
     'cookies' => [

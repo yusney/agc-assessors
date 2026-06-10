@@ -59,6 +59,7 @@ Route::group(
         Route::get('/unsubscribe/{email}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
         Route::get(LaravelLocalization::transRoute('routes.offices'), [OfficesController::class, 'index'])->name('offices.index');
+        Route::get(LaravelLocalization::transRoute('routes.offices') . '/{slug}', [OfficesController::class, 'show'])->name('offices.show');
 
         Route::get(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'index'])->name('careers.index');
         Route::post(LaravelLocalization::transRoute('routes.careers'), [WorkWithUsController::class, 'store'])->name('careers.store')->middleware('spam', 'throttle:3,60');

@@ -184,7 +184,10 @@
             <div class="p-6">
                 {{-- H2 = one per office — required for SEO local differentiation --}}
                 <h2 class="font-headline text-[22px] font-semibold text-[#1E293B] mb-3 leading-tight">
-                    {{ __('messages.offices.office_in') }} {{ $office->city()->get($locale) }}
+                    <a href="{{ route('offices.show', ['locale' => $locale, 'slug' => $office->publicSlug($locale)]) }}"
+                       class="hover:text-[#00346f] transition-colors">
+                        {{ __('messages.offices.office_in') }} {{ $office->city()->get($locale) }}
+                    </a>
                 </h2>
 
                 {{-- Semantic <address> with full NAP — strong local SEO signal --}}
@@ -256,16 +259,23 @@
                 </div>
                 @endif
 
-                {{-- CTA: "Cómo llegar" → Google Maps directions (link saliente, igual que antes) --}}
-                @if($office->lat() !== null && $office->lng() !== null)
-                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
-                   target="_blank" rel="noopener noreferrer"
-                   itemprop="hasMap"
-                   class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
-                    {{ __('messages.offices.directions') }}
-                    <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" aria-hidden="true">&#xf8ce;</span>
-                </a>
-                @endif
+                {{-- CTA: Ver oficina + Cómo llegar --}}
+                <div class="flex flex-col gap-2">
+                    <a href="{{ route('offices.show', ['locale' => $locale, 'slug' => $office->publicSlug($locale)]) }}"
+                       class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
+                        {{ __('messages.offices.see_office') }}
+                        <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5" aria-hidden="true">arrow_forward</span>
+                    </a>
+                    @if($office->lat() !== null && $office->lng() !== null)
+                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
+                       target="_blank" rel="noopener noreferrer"
+                       itemprop="hasMap"
+                       class="inline-flex items-center gap-2 text-[13px] text-[#64748B] hover:text-[#00346f] transition-colors w-fit group/link">
+                        {{ __('messages.offices.directions') }}
+                        <span class="material-symbols-outlined text-[14px]" aria-hidden="true">&#xf8ce;</span>
+                    </a>
+                    @endif
+                </div>
             </div>
         </article>
         @endforeach

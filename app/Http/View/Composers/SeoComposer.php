@@ -30,18 +30,30 @@ final class SeoComposer
             $schemas[] = $localBusiness;
         }
 
-        // Emit one LocalBusiness schema per active office on the offices page.
-        // Wrapped in a @graph so Google treats them as a single, related cluster.
-        $routeName = optional($view->getData()['__currentRoute'] ?? null)->getName();
-        $currentPath = (string) request()->path();
-        $isOfficesPage = $routeName === 'offices.index'
-            || str_contains($currentPath, 'oficinas')
-            || str_contains($currentPath, 'oficines')
-            || str_contains($currentPath, 'offices');
+        // Emit one LocalBusiness schema on each office's individual page.
+        // The /offices index gets an ItemList of all offices instead.
+        $currentPath = trim((string) request()->path(), '/');
+        $tail = preg_replace('#^(ca|es|en)/#', '', $currentPath);
 
-        if ($isOfficesPage) {
-            foreach ($this->getOfficesLocalBusinessSchemas() as $officeSchema) {
+        $isOfficeIndex = $tail === 'oficines'
+            || $tail === 'oficinas'
+            || $tail === 'offices';
+
+        $isOfficeShow = preg_match('#^(oficines|oficinas|offices)/[a-z0-9-]+$#i', $tail) === 1;
+
+        if ($isOfficeShow) {
+            $officeSchema = $this->getSingleOfficeLocalBusinessSchema(
+                $view->getData()['office'] ?? null
+            );
+            if ($officeSchema !== []) {
                 $schemas[] = $officeSchema;
+            }
+        }
+
+        if ($isOfficeIndex) {
+            $itemList = $this->getOfficesItemListSchema();
+            if ($itemList !== []) {
+                $schemas[] = $itemList;
             }
         }
 
@@ -362,16 +374,13 @@ final class SeoComposer
     }
 
     /**
-     * Build one LocalBusiness schema per active office.
-     * Used on the offices index page so Google can index each location
-     * as a distinct local entity even though they share a single URL.
+     * Build the LocalBusiness schema for a single office (used on its individual page).
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
-    private function getOfficesLocalBusinessSchemas(): array
+    private function getSingleOfficeLocalBusinessSchema(mixed $office): array
     {
-        $offices = $this->officeRepository->findAllActive();
-        if ($offices === []) {
+        if ($office === null) {
             return [];
         }
 
@@ -379,85 +388,125 @@ final class SeoComposer
         $baseName = (string) SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
         $locale = (string) app()->getLocale();
 
+        $city = $office->city()->get($locale) !== ''
+            ? $office->city()->get($locale)
+            : ($office->city()->get('ca') ?? '');
+
+        $address = $office->address()->get($locale) !== ''
+            ? $office->address()->get($locale)
+            : ($office->address()->get('ca') ?? '');
+
+        if ($city === '' || $address === '') {
+            return [];
+        }
+
+        $slug = $office->publicSlug($locale);
+        $pageUrl = $siteUrl . '/' . $locale . '/oficinas/' . $slug;
+
+        $description = $office->description()->get($locale) !== ''
+            ? $office->description()->get($locale)
+            : ($office->description()->get('ca') ?? null);
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'LocalBusiness',
+            '@id' => $pageUrl,
+            'name' => $baseName . ' - ' . $city,
+            'url' => $pageUrl,
+            'description' => $description,
+            'telephone' => $office->phone(),
+            'email' => $office->email(),
+            'image' => $office->coverUrl(),
+            'priceRange' => '€€',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $address,
+                'addressLocality' => $city,
+                'addressRegion' => 'Barcelona',
+                'addressCountry' => 'ES',
+            ],
+            'parentOrganization' => [
+                '@type' => 'AccountingService',
+                'name' => $baseName,
+                'url' => $siteUrl,
+            ],
+        ];
+
+        $schema = array_filter($schema, static fn ($v) => $v !== null && $v !== '');
+
+        if ($office->lat() !== null && $office->lng() !== null) {
+            $schema['geo'] = [
+                '@type' => 'GeoCoordinates',
+                'latitude' => (float) $office->lat(),
+                'longitude' => (float) $office->lng(),
+            ];
+        }
+
+        $openingHoursValue = $office->openingHours()?->get($locale) !== ''
+            ? $office->openingHours()?->get($locale)
+            : ($office->openingHours()?->get('ca') ?? null);
+
+        if (is_string($openingHoursValue) && $openingHoursValue !== '') {
+            $specs = $this->buildOpeningHoursSpec($openingHoursValue);
+            if ($specs !== []) {
+                $schema['openingHoursSpecification'] = $specs;
+            }
+        }
+
+        $serviceAreaList = $office->serviceAreaList($locale);
+        if ($serviceAreaList !== []) {
+            $schema['areaServed'] = array_map(
+                static fn (string $area): array => [
+                    '@type' => 'City',
+                    'name' => $area,
+                ],
+                $serviceAreaList
+            );
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Build an ItemList of all offices for the /oficinas index page.
+     *
+     * @return array<string, mixed>
+     */
+    private function getOfficesItemListSchema(): array
+    {
+        $offices = $this->officeRepository->findAllActive();
+        if ($offices === []) {
+            return [];
+        }
+
+        $siteUrl = rtrim((string) config('app.url', 'https://agcassessors.com'), '/');
+        $locale = (string) app()->getLocale();
+
         $items = [];
+        $position = 1;
         foreach ($offices as $office) {
             $city = $office->city()->get($locale) !== ''
                 ? $office->city()->get($locale)
                 : ($office->city()->get('ca') ?? '');
 
-            $address = $office->address()->get($locale) !== ''
-                ? $office->address()->get($locale)
-                : ($office->address()->get('ca') ?? '');
-
-            if ($city === '' || $address === '') {
+            if ($city === '') {
                 continue;
             }
 
-            $description = $office->description()->get($locale) !== ''
-                ? $office->description()->get($locale)
-                : ($office->description()->get('ca') ?? null);
-
-            $schema = [
-                '@context' => 'https://schema.org',
-                '@type' => 'LocalBusiness',
-                '@id' => $siteUrl . '/oficinas#office-' . $office->id(),
-                'name' => $baseName . ' - ' . $city,
-                'url' => $siteUrl . '/oficinas#office-' . $office->id(),
-                'description' => $description,
-                'telephone' => $office->phone(),
-                'email' => $office->email(),
-                'image' => $office->coverUrl(),
-                'priceRange' => '€€',
-                'address' => [
-                    '@type' => 'PostalAddress',
-                    'streetAddress' => $address,
-                    'addressLocality' => $city,
-                    'addressRegion' => 'Barcelona',
-                    'addressCountry' => 'ES',
-                ],
-                'parentOrganization' => [
-                    '@type' => 'AccountingService',
-                    'name' => $baseName,
-                    'url' => $siteUrl,
-                ],
+            $slug = $office->publicSlug($locale);
+            $items[] = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => 'AGC Assessors - ' . $city,
+                'url' => $siteUrl . '/' . $locale . '/oficinas/' . $slug,
             ];
-
-            $schema = array_filter($schema, static fn ($v) => $v !== null && $v !== '');
-
-            if ($office->lat() !== null && $office->lng() !== null) {
-                $schema['geo'] = [
-                    '@type' => 'GeoCoordinates',
-                    'latitude' => (float) $office->lat(),
-                    'longitude' => (float) $office->lng(),
-                ];
-            }
-
-            $openingHoursValue = $office->openingHours()?->get($locale) !== ''
-                ? $office->openingHours()?->get($locale)
-                : ($office->openingHours()?->get('ca') ?? null);
-
-            if (is_string($openingHoursValue) && $openingHoursValue !== '') {
-                $specs = $this->buildOpeningHoursSpec($openingHoursValue);
-                if ($specs !== []) {
-                    $schema['openingHoursSpecification'] = $specs;
-                }
-            }
-
-            $serviceAreaList = $office->serviceAreaList($locale);
-            if ($serviceAreaList !== []) {
-                $schema['areaServed'] = array_map(
-                    static fn (string $area): array => [
-                        '@type' => 'City',
-                        'name' => $area,
-                    ],
-                    $serviceAreaList
-                );
-            }
-
-            $items[] = $schema;
         }
 
-        return $items;
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            'itemListElement' => $items,
+        ];
     }
 
     /**

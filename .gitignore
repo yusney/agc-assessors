@@ -25,6 +25,8 @@
 /resources/lang/vendor
 /resources/views/vendor
 /resources/views/mcp
+/resources/views/errors
+/stubs
 /routes/ai.php
 /config/blade-heroicons.php
 /config/blade-icons.php
@@ -38,10 +40,6 @@
 /database/migrations/*_create_imports_table.php
 /database/migrations/*_create_exports_table.php
 /database/migrations/*_create_failed_import_rows_table.php
-
-# Keep these vendor-published assets (Filament needs them):
-# - resources/views/errors/  (Filament error pages)
-# - stubs/                   (Filament generator stubs)
 /storage/*.key
 /storage/pail
 /vendor

@@ -62,15 +62,36 @@ class PageResource extends Resource
                                 ->tabs([
                                     Tabs\Tab::make('Català')->schema([
                                         TextInput::make('title.ca')->label('Título (ca)')->required(),
-                                        RichEditor::make('content.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                        RichEditor::make('content.ca')->label('Contenido (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                            ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                            ['alignStart', 'alignCenter', 'alignEnd'],
+                                            ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                            ['table', 'attachFiles', 'attachCuratorMedia'],
+                                            ['undo', 'redo'],
+                                        ]),
                                     ]),
                                     Tabs\Tab::make('Español')->schema([
                                         TextInput::make('title.es')->label('Título (es)'),
-                                        RichEditor::make('content.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                        RichEditor::make('content.es')->label('Contenido (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                            ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                            ['alignStart', 'alignCenter', 'alignEnd'],
+                                            ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                            ['table', 'attachFiles', 'attachCuratorMedia'],
+                                            ['undo', 'redo'],
+                                        ]),
                                     ]),
                                     Tabs\Tab::make('English')->schema([
                                         TextInput::make('title.en')->label('Título (en)'),
-                                        RichEditor::make('content.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                        RichEditor::make('content.en')->label('Contenido (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                            ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                            ['alignStart', 'alignCenter', 'alignEnd'],
+                                            ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                            ['table', 'attachFiles', 'attachCuratorMedia'],
+                                            ['undo', 'redo'],
+                                        ]),
                                     ]),
                                 ])->columnSpanFull(),
                         ]),

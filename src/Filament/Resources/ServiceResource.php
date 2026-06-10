@@ -59,15 +59,36 @@ class ServiceResource extends Resource
                             ->tabs([
                                 Tabs\Tab::make('Català')->schema([
                                     TextInput::make('name.ca')->label('Nombre (ca)')->required(),
-                                    RichEditor::make('description.ca')->label('Descripción (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                    RichEditor::make('description.ca')->label('Descripción (ca)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                        ['alignStart', 'alignCenter', 'alignEnd'],
+                                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                        ['table', 'attachFiles', 'attachCuratorMedia'],
+                                        ['undo', 'redo'],
+                                    ]),
                                 ]),
                                 Tabs\Tab::make('Español')->schema([
                                     TextInput::make('name.es')->label('Nombre (es)'),
-                                    RichEditor::make('description.es')->label('Descripción (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                    RichEditor::make('description.es')->label('Descripción (es)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                        ['alignStart', 'alignCenter', 'alignEnd'],
+                                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                        ['table', 'attachFiles', 'attachCuratorMedia'],
+                                        ['undo', 'redo'],
+                                    ]),
                                 ]),
                                 Tabs\Tab::make('English')->schema([
                                     TextInput::make('name.en')->label('Nombre (en)'),
-                                    RichEditor::make('description.en')->label('Descripción (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia']),
+                                    RichEditor::make('description.en')->label('Descripción (en)')->plugins([AttachCuratorMediaPlugin::make()])->enableToolbarButtons(['attachCuratorMedia'])->toolbarButtons([
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                                        ['alignStart', 'alignCenter', 'alignEnd'],
+                                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                        ['table', 'attachFiles', 'attachCuratorMedia'],
+                                        ['undo', 'redo'],
+                                    ]),
                                 ]),
                             ])->columnSpanFull(),
                     ]),

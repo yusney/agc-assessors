@@ -88,55 +88,6 @@
 </section>
 @endif
 
-{{-- Summary table — all offices scannable for crawlers and users --}}
-@if(!empty($offices))
-<section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 mb-12" aria-labelledby="resumen-oficinas">
-    <h2 id="resumen-oficinas" class="sr-only">{{ __('messages.offices.summary_heading') }}</h2>
-    <div class="overflow-x-auto rounded-[1rem] border border-[#E2E8F0]">
-        <table class="w-full text-left text-[14px]">
-            <caption class="sr-only">{{ __('messages.offices.summary_caption') }}</caption>
-            <thead class="bg-[#F8FAFC] text-[#475569]">
-                <tr>
-                    <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.offices.col_city') }}</th>
-                    <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.offices.col_address') }}</th>
-                    <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.offices.col_phone') }}</th>
-                    <th scope="col" class="px-4 py-3 font-semibold">{{ __('messages.offices.col_hours') }}</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-[#E2E8F0]">
-                @foreach($offices as $office)
-                @php
-                    $hoursValue = $office->openingHours()?->get(app()->getLocale())
-                        ?? $office->openingHours()?->get('ca')
-                        ?? '';
-                @endphp
-                <tr class="hover:bg-[#F8FAFC] transition-colors">
-                    <th scope="row" class="px-4 py-3 font-semibold text-[#1E293B]">
-                        <a href="#office-{{ $office->id() }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded scroll-margin-top">
-                            {{ $office->city()->get(app()->getLocale()) }}
-                        </a>
-                    </th>
-                    <td class="px-4 py-3 text-[#424751]">
-                        {{ $office->address()->get(app()->getLocale()) }}
-                    </td>
-                    <td class="px-4 py-3 text-[#424751]">
-                        @if($office->phone())
-                            <a href="tel:{{ $office->phone() }}" class="hover:text-[#00346f]">
-                                {{ $office->phone() }}
-                            </a>
-                        @endif
-                    </td>
-                    <td class="px-4 py-3 text-[#64748B] text-[13px]">
-                        {{ \Illuminate\Support\Str::limit($hoursValue, 40) }}
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</section>
-@endif
-
 {{-- Per-office semantic blocks with H2 + <address> + unique content + service area --}}
 @if(!empty($offices))
 <section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pb-28">

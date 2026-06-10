@@ -32,6 +32,7 @@
                 'address' => $o->address()->get(app()->getLocale()),
                 'lat'     => $o->lat(),
                 'lng'     => $o->lng(),
+                'slug'    => $o->publicSlug(app()->getLocale()),
             ];
         }, $offices)));
     @endphp
@@ -59,14 +60,14 @@
                 '<div style="min-width:200px;font-family:inherit">' +
                 '<strong style="color:#00346f;font-size:14px;display:block;margin-bottom:4px">' + o.name + '</strong>' +
                 '<span style="color:#64748B;font-size:13px;display:block;margin-bottom:10px">' + o.address + '</span>' +
-                '<div style="display:flex;gap:10px;align-items:center">' +
+                '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
                 '<a href="https://www.google.com/maps/dir/?api=1&destination=' + o.lat + ',' + o.lng + '" ' +
                 'target="_blank" rel="noopener" ' +
                 'style="color:#64748B;font-size:12px;font-weight:600;text-decoration:none;border:1px solid #E2E8F0;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
                 'onmouseover="this.style.borderColor=\'#00346f\';this.style.color=\'#00346f\'" ' +
                 'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.color=\'#64748B\'">' +
                 '{{ __("messages.offices.directions") }}</a>' +
-                '<a href="' + baseUrl + '#office-' + o.id + '" ' +
+                '<a href="' + baseUrl + '/' + o.slug + '" ' +
                 'style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:#00346f;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
                 'onmouseover="this.style.background=\'#00B4D8\'" ' +
                 'onmouseout="this.style.background=\'#00346f\'">' +
@@ -130,18 +131,23 @@
                     </div>
                 @endif
 
-                {{-- Directions CTA (only if lat+lng set) --}}
-                @if($office->lat() !== null && $office->lng() !== null)
-                    <div class="mt-auto pt-3 border-t border-[#E2E8F0]">
+                {{-- CTAs: Ver oficina (primary) + Cómo llegar (secondary) --}}
+                <div class="mt-auto pt-3 border-t border-[#E2E8F0] flex flex-col gap-2">
+                    <a href="{{ route('offices.show', ['locale' => app()->getLocale(), 'slug' => $office->publicSlug(app()->getLocale())]) }}"
+                       class="inline-flex items-center justify-between gap-1 text-[14px] text-[#00346f] font-semibold hover:text-[#00B4D8] transition-colors">
+                        {{ __('messages.offices.see_office') }}
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </a>
+                    @if($office->lat() !== null && $office->lng() !== null)
                         <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center gap-1 text-[13px] text-[#00346f] font-medium hover:text-[#00B4D8] transition-colors">
+                           class="inline-flex items-center gap-1 text-[12px] text-[#64748B] hover:text-[#00346f] transition-colors">
                             {{ __('messages.offices.directions') }}
-                            <span class="material-symbols-outlined text-[16px]">&#xf8ce;</span>
+                            <span class="material-symbols-outlined text-[14px]">&#xf8ce;</span>
                         </a>
-                    </div>
-                @endif
+                    @endif
+                </div>
 
             </div>
         @endforeach

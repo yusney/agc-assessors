@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace AGC\Infrastructure\Persistence\Eloquent\Models;
 
+use Awcodes\Curator\Models\Media;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Spatie\Translatable\HasTranslations;
@@ -46,4 +48,13 @@ class NewsModel extends Model
         'published' => 'boolean',
         'published_at' => 'datetime',
     ];
+
+    /**
+     * Cover image relation. Eager-load via `with('coverMedia')` to avoid
+     * N+1 queries when listing multiple news items (e.g., on the home page).
+     */
+    public function coverMedia(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'cover_media_id');
+    }
 }

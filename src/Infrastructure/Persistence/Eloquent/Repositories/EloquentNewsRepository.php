@@ -10,7 +10,6 @@ use AGC\Domain\Shared\ValueObjects\SEOData;
 use AGC\Domain\Shared\ValueObjects\Slug;
 use AGC\Domain\Shared\ValueObjects\TranslatableString;
 use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
-use Awcodes\Curator\Models\Media;
 
 final class EloquentNewsRepository implements NewsRepository
 {
@@ -30,7 +29,8 @@ final class EloquentNewsRepository implements NewsRepository
 
     public function findPublished(int $limit = 10, int $offset = 0): array
     {
-        return NewsModel::where('published', true)
+        return NewsModel::with('coverMedia')
+            ->where('published', true)
             ->orderBy('published_at', 'desc')
             ->limit($limit)
             ->offset($offset)
@@ -88,7 +88,7 @@ final class EloquentNewsRepository implements NewsRepository
                 ? \DateTimeImmutable::createFromMutable($model->published_at->toDateTime())
                 : null,
             coverUrl: $model->cover_media_id
-                ? Media::find($model->cover_media_id)?->url
+                ? $model->coverMedia?->url
                 : null,
         );
     }

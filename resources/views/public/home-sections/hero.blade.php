@@ -46,7 +46,7 @@
         @endif
 
         <h1 class="font-headline text-[48px] lg:text-[72px] text-[#0f172a] leading-[1.05] tracking-[-0.02em] font-bold">
-            {!! $section->localized('title') !!}
+            {{ $section->localized('title') }}
         </h1>
 
         @if($section->localized('subtitle'))

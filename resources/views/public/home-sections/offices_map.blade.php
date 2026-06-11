@@ -54,26 +54,55 @@
             maxZoom: 19
         }).addTo(map);
 
+        var directionsLabel = @json(__('messages.offices.directions'));
+        var seeOfficeLabel  = @json(__('messages.offices.see_office'));
+
+        // Build the popup via DOM API (textContent) so office name/address with
+        // quotes, apostrophes, or HTML chars cannot break the popup HTML or
+        // inject markup.
+        function buildPopup(o) {
+            var wrapper = document.createElement('div');
+            wrapper.style.minWidth = '200px';
+            wrapper.style.fontFamily = 'inherit';
+
+            var name = document.createElement('strong');
+            name.style.cssText = 'color:#00346f;font-size:14px;display:block;margin-bottom:4px';
+            name.textContent = o.name;
+            wrapper.appendChild(name);
+
+            var address = document.createElement('span');
+            address.style.cssText = 'color:#64748B;font-size:13px;display:block;margin-bottom:10px';
+            address.textContent = o.address;
+            wrapper.appendChild(address);
+
+            var actions = document.createElement('div');
+            actions.style.cssText = 'display:flex;gap:6px;align-items:center;flex-wrap:wrap';
+
+            var dirLink = document.createElement('a');
+            dirLink.href = 'https://www.google.com/maps/dir/?api=1&destination=' + o.lat + ',' + o.lng;
+            dirLink.target = '_blank';
+            dirLink.rel = 'noopener';
+            dirLink.style.cssText = 'color:#64748B;font-size:12px;font-weight:600;text-decoration:none;border:1px solid #E2E8F0;padding:4px 10px;border-radius:6px;white-space:nowrap';
+            dirLink.textContent = directionsLabel;
+            dirLink.addEventListener('mouseover', function () { dirLink.style.borderColor = '#00346f'; dirLink.style.color = '#00346f'; });
+            dirLink.addEventListener('mouseout',  function () { dirLink.style.borderColor = '#E2E8F0'; dirLink.style.color = '#64748B'; });
+            actions.appendChild(dirLink);
+
+            var seeLink = document.createElement('a');
+            seeLink.href = baseUrl + '/' + o.slug;
+            seeLink.style.cssText = 'color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:#00346f;padding:4px 10px;border-radius:6px;white-space:nowrap';
+            seeLink.textContent = seeOfficeLabel;
+            seeLink.addEventListener('mouseover', function () { seeLink.style.background = '#00B4D8'; });
+            seeLink.addEventListener('mouseout',  function () { seeLink.style.background = '#00346f'; });
+            actions.appendChild(seeLink);
+
+            wrapper.appendChild(actions);
+            return wrapper;
+        }
+
         var markers = offices.map(function (o) {
             var m = L.marker([o.lat, o.lng]).addTo(map);
-            m.bindPopup(
-                '<div style="min-width:200px;font-family:inherit">' +
-                '<strong style="color:#00346f;font-size:14px;display:block;margin-bottom:4px">' + o.name + '</strong>' +
-                '<span style="color:#64748B;font-size:13px;display:block;margin-bottom:10px">' + o.address + '</span>' +
-                '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
-                '<a href="https://www.google.com/maps/dir/?api=1&destination=' + o.lat + ',' + o.lng + '" ' +
-                'target="_blank" rel="noopener" ' +
-                'style="color:#64748B;font-size:12px;font-weight:600;text-decoration:none;border:1px solid #E2E8F0;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
-                'onmouseover="this.style.borderColor=\'#00346f\';this.style.color=\'#00346f\'" ' +
-                'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.color=\'#64748B\'">' +
-                '{{ __("messages.offices.directions") }}</a>' +
-                '<a href="' + baseUrl + '/' + o.slug + '" ' +
-                'style="color:#fff;font-size:12px;font-weight:600;text-decoration:none;background:#00346f;padding:4px 10px;border-radius:6px;white-space:nowrap" ' +
-                'onmouseover="this.style.background=\'#00B4D8\'" ' +
-                'onmouseout="this.style.background=\'#00346f\'">' +
-                '{{ __("messages.offices.see_office") }}</a>' +
-                '</div></div>'
-            );
+            m.bindPopup(buildPopup(o));
             m.on('mouseover', function () { m.openPopup(); });
             return m;
         });

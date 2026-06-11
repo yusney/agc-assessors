@@ -114,6 +114,14 @@
     .max-w-reading { max-width: var(--spacing-reading-width); }
     .max-w-site    { max-width: var(--spacing-container-max); }
     .px-site       { padding-inline: var(--spacing-gutter); }
+
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* === Components === */

@@ -140,6 +140,11 @@ return [
         'back_to_all' => 'Volver a todas las oficinas',
         'cover_upload_hint' => 'Sube una foto del equipo o de la fachada para personalizar esta página.',
         'empty' => 'Próximamente publicaremos nuestras oficinas.',
+        'carousel_prev' => 'Anterior',
+        'carousel_next' => 'Siguiente',
+        'carousel_go_to' => 'Ir a la diapositiva :slide',
+        'carousel_drag_hint' => 'Desliza para navegar',
+        'carousel_label' => 'Carrusel de oficinas',
     ],
     'cookies' => [
         'banner_title' => 'Utilizamos cookies',

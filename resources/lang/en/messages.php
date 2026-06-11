@@ -140,6 +140,11 @@ return [
         'back_to_all' => 'Back to all offices',
         'cover_upload_hint' => 'Upload a photo of the team or the facade to customise this page.',
         'empty' => 'Our offices will be published soon.',
+        'carousel_prev' => 'Previous',
+        'carousel_next' => 'Next',
+        'carousel_go_to' => 'Go to slide :slide',
+        'carousel_drag_hint' => 'Drag to navigate',
+        'carousel_label' => 'Offices carousel',
     ],
     'cookies' => [
         'banner_title' => 'We use cookies',

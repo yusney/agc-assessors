@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Public;
 use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class OfficesController extends Controller
 {
@@ -38,6 +39,35 @@ final class OfficesController extends Controller
         return view('public.pages.offices.index', [
             'offices' => $offices,
             'officesGeoJson' => $officesGeoJson,
+        ]);
+    }
+
+    public function show(string $slug): View
+    {
+        $locale = (string) app()->getLocale();
+        $office = $this->offices->findActiveBySlug($slug, $locale);
+
+        abort_if($office === null, 404);
+
+        $officeGeoJson = ($office->lat() !== null && $office->lng() !== null)
+            ? [[
+                'name' => $office->name()->get($locale),
+                'address' => $office->address()->get($locale),
+                'lat' => $office->lat(),
+                'lng' => $office->lng(),
+            ]]
+            : [];
+
+        $breadcrumbs = [
+            ['name' => __('messages.nav.home'), 'url' => LaravelLocalization::getLocalizedURL($locale, '/')],
+            ['name' => __('messages.offices.title'), 'url' => LaravelLocalization::getLocalizedURL($locale, '/oficines')],
+            ['name' => $office->city()->get($locale), 'url' => null],
+        ];
+
+        return view('public.pages.offices.show', [
+            'office' => $office,
+            'officeGeoJson' => $officeGeoJson,
+            'breadcrumbs' => $breadcrumbs,
         ]);
     }
 }

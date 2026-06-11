@@ -1,6 +1,10 @@
 <?php
-
 return [
+
+    'breadcrumb' => [
+        'label' => 'Navegación de migas de pan',
+    ],
+
     'nav' => [
         'home' => 'Inicio',
         'services' => 'Servicios',
@@ -10,6 +14,7 @@ return [
         'offices' => 'Oficinas',
         'cta' => 'Área de cliente',
         'search' => 'Buscar',
+        'menu' => 'Menú',
         'more_socials' => 'Más redes sociales',
     ],
     'footer' => [
@@ -118,12 +123,22 @@ return [
     ],
     'offices' => [
         'title' => 'Nuestras oficinas',
-        'subtitle' => 'Encuentra la oficina más cercana a ti y contacta con nuestros profesionales.',
+        'subtitle' => 'Siempre encontrarás una oficina cerca de ti.',
+        'seo_title' => 'Oficinas de asesoría fiscal, laboral y contable',
+        'seo_description' => '6 oficinas de AGC Assessors en el Vallès Oriental y Osona. Asesoría fiscal, laboral y contable con atención personalizada. Encuentra la más cercana.',
         'offices_count' => 'oficinas',
         'directions' => 'Cómo llegar',
         'see_office' => 'Ver oficina',
         'phone' => 'Teléfono',
         'email' => 'Email',
+        'office_in' => 'Oficina de',
+        'also_serving' => 'También atendemos en',
+        'also_serving_intro' => 'Además de :city, desde esta oficina damos servicio a empresas y particulares de:',
+        'contact_heading' => 'Datos de contacto',
+        'manager_label' => 'Responsable de la oficina',
+        'common_content_heading' => 'Conoce AGC Assessors',
+        'back_to_all' => 'Volver a todas las oficinas',
+        'cover_upload_hint' => 'Sube una foto del equipo o de la fachada para personalizar esta página.',
         'empty' => 'Próximamente publicaremos nuestras oficinas.',
     ],
     'cookies' => [

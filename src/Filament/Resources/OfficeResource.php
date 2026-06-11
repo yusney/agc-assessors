@@ -82,6 +82,99 @@ final class OfficeResource extends Resource
                 ]),
                 Toggle::make('is_active')->label('Activa')->inline(false),
             ]),
+
+            Section::make('Horaris i cobertura (SEO local)')->schema([
+                Tabs::make('Idiomes horaris')
+                    ->tabs([
+                        Tabs\Tab::make('Català')->schema([
+                            Textarea::make('opening_hours.ca')
+                                ->label('Horari (ca)')
+                                ->helperText('Una línia per dia. Ex: "dilluns a dijous: 9:00–18:00"')
+                                ->rows(3),
+                            Textarea::make('service_area.ca')
+                                ->label('Pobles / zones que atenem (ca)')
+                                ->helperText('Un per línia. Ex: "Sentmenat", "Palau-solità i Plegamans"')
+                                ->rows(4),
+                            TextInput::make('image_alt.ca')
+                                ->label('Text alternatiu imatge (ca)')
+                                ->maxLength(125)
+                                ->helperText('Descriu la imatge per a lectors de pantalla i SEO.'),
+                            TextInput::make('slug.ca')
+                                ->label('Slug URL (ca)')
+                                ->helperText('Buit = auto-generat des del nom de la ciutat. Ex: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.ca')
+                                ->label('Responsable - Nom (ca)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.ca')
+                                ->label('Responsable - Càrrec (ca)')
+                                ->maxLength(120)
+                                ->placeholder('Ex: "Assessor fiscal sènior"'),
+                            Textarea::make('manager_bio.ca')
+                                ->label('Responsable - Presentació (ca)')
+                                ->helperText('1-2 frases. Es mostra a la pàgina individual de l\'oficina.')
+                                ->rows(3),
+                        ]),
+                        Tabs\Tab::make('Castellano')->schema([
+                            Textarea::make('opening_hours.es')
+                                ->label('Horario (es)')
+                                ->helperText('Una línea por día. Ej: "lunes a jueves: 9:00–18:00"')
+                                ->rows(3),
+                            Textarea::make('service_area.es')
+                                ->label('Pueblos / zonas que atendemos (es)')
+                                ->helperText('Uno por línea. Ej: "Sentmenat", "Palau-solità i Plegamans"')
+                                ->rows(4),
+                            TextInput::make('image_alt.es')
+                                ->label('Texto alternativo imagen (es)')
+                                ->maxLength(125)
+                                ->helperText('Describe la imagen para lectores de pantalla y SEO.'),
+                            TextInput::make('slug.es')
+                                ->label('Slug URL (es)')
+                                ->helperText('Vacío = auto-generado desde el nombre de la ciudad. Ej: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.es')
+                                ->label('Responsable - Nombre (es)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.es')
+                                ->label('Responsable - Cargo (es)')
+                                ->maxLength(120)
+                                ->placeholder('Ej: "Asesor fiscal senior"'),
+                            Textarea::make('manager_bio.es')
+                                ->label('Responsable - Presentación (es)')
+                                ->helperText('1-2 frases. Se muestra en la página individual de la oficina.')
+                                ->rows(3),
+                        ]),
+                        Tabs\Tab::make('English')->schema([
+                            Textarea::make('opening_hours.en')
+                                ->label('Opening hours (en)')
+                                ->helperText('One line per day. Ex: "Monday to Thursday: 9:00–18:00"')
+                                ->rows(3),
+                            Textarea::make('service_area.en')
+                                ->label('Towns / areas served (en)')
+                                ->helperText('One per line. Ex: "Sentmenat", "Palau-solità i Plegamans"')
+                                ->rows(4),
+                            TextInput::make('image_alt.en')
+                                ->label('Image alt text (en)')
+                                ->maxLength(125)
+                                ->helperText('Describe the image for screen readers and SEO.'),
+                            TextInput::make('slug.en')
+                                ->label('URL slug (en)')
+                                ->helperText('Empty = auto-generated from the city name. Ex: "caldes-de-montbui"')
+                                ->dehydrated(),
+                            TextInput::make('manager_name.en')
+                                ->label('Manager - Name (en)')
+                                ->maxLength(120),
+                            TextInput::make('manager_role.en')
+                                ->label('Manager - Role (en)')
+                                ->maxLength(120)
+                                ->placeholder('Ex: "Senior tax advisor"'),
+                            Textarea::make('manager_bio.en')
+                                ->label('Manager - Bio (en)')
+                                ->helperText('1-2 sentences. Shown on the office individual page.')
+                                ->rows(3),
+                        ]),
+                    ])->columnSpanFull(),
+            ])->columnSpanFull(),
         ]);
     }
 
@@ -95,7 +188,17 @@ final class OfficeResource extends Resource
                 Tables\Columns\TextColumn::make('city')
                     ->label('Ciutat')
                     ->getStateUsing(fn (EloquentOffice $record): string => $record->getTranslation('city', 'ca')),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('Telèfon')
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\IconColumn::make('is_active')->label('Activa')->boolean(),
+                Tables\Columns\TextColumn::make('lat')
+                    ->label('Lat')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('lng')
+                    ->label('Lng')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
                 EditAction::make(),

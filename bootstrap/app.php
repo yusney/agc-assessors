@@ -8,6 +8,7 @@ use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
 use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
+use App\Http\Middleware\SetLocaleFromUrl;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'localize' => LaravelLocalizationRoutes::class,
+            'setLocaleFromUrl' => SetLocaleFromUrl::class,
             'localeSessionRedirect' => LocaleSessionRedirect::class,
             'localeViewPath' => LaravelLocalizationViewPath::class,
             'localizationRedirect' => LaravelLocalizationRedirectFilter::class,

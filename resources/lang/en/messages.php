@@ -1,6 +1,10 @@
 <?php
-
 return [
+
+    'breadcrumb' => [
+        'label' => 'Breadcrumb navigation',
+    ],
+
     'nav' => [
         'home' => 'Home',
         'services' => 'Services',
@@ -10,6 +14,7 @@ return [
         'offices' => 'Offices',
         'cta' => 'Client Area',
         'search' => 'Search',
+        'menu' => 'Menu',
         'more_socials' => 'More social networks',
     ],
     'footer' => [
@@ -118,12 +123,22 @@ return [
     ],
     'offices' => [
         'title' => 'Our offices',
-        'subtitle' => 'Find the nearest office to you and get in touch with our professionals.',
+        'subtitle' => 'You will always find an office near you.',
+        'seo_title' => 'Tax, labour and accounting advisory offices',
+        'seo_description' => '6 AGC Assessors offices in Vallès Oriental and Osona. Tax, labour and accounting advisory with personalized service. Find the closest one.',
         'offices_count' => 'offices',
         'directions' => 'Get directions',
         'see_office' => 'See office',
         'phone' => 'Phone',
         'email' => 'Email',
+        'office_in' => 'Office in',
+        'also_serving' => 'Also serving',
+        'also_serving_intro' => 'In addition to :city, from this office we serve businesses and individuals from:',
+        'contact_heading' => 'Contact details',
+        'manager_label' => 'Office manager',
+        'common_content_heading' => 'Discover AGC Assessors',
+        'back_to_all' => 'Back to all offices',
+        'cover_upload_hint' => 'Upload a photo of the team or the facade to customise this page.',
         'empty' => 'Our offices will be published soon.',
     ],
     'cookies' => [

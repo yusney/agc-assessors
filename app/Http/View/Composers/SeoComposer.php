@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\View\Composers;
 
+use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use Awcodes\Curator\Models\Media;
 use Illuminate\View\View;
@@ -11,6 +12,10 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class SeoComposer
 {
+    public function __construct(
+        private readonly OfficeRepositoryInterface $officeRepository,
+    ) {}
+
     public function compose(View $view): void
     {
         $schemas = [];
@@ -23,6 +28,33 @@ final class SeoComposer
         $localBusiness = $this->getLocalBusinessSchema();
         if ($localBusiness !== []) {
             $schemas[] = $localBusiness;
+        }
+
+        // Emit one LocalBusiness schema on each office's individual page.
+        // The /offices index gets an ItemList of all offices instead.
+        $currentPath = trim((string) request()->path(), '/');
+        $tail = preg_replace('#^(ca|es|en)/#', '', $currentPath);
+
+        $isOfficeIndex = $tail === 'oficines'
+            || $tail === 'oficinas'
+            || $tail === 'offices';
+
+        $isOfficeShow = preg_match('#^(oficines|oficinas|offices)/[a-z0-9-]+$#i', $tail) === 1;
+
+        if ($isOfficeShow) {
+            $officeSchema = $this->getSingleOfficeLocalBusinessSchema(
+                $view->getData()['office'] ?? null
+            );
+            if ($officeSchema !== []) {
+                $schemas[] = $officeSchema;
+            }
+        }
+
+        if ($isOfficeIndex) {
+            $itemList = $this->getOfficesItemListSchema();
+            if ($itemList !== []) {
+                $schemas[] = $itemList;
+            }
         }
 
         $website = $this->getWebsiteSchema();
@@ -46,6 +78,21 @@ final class SeoComposer
         $view->with('ogLocale', $this->getActiveOgLocale());
         $view->with('globalDefaultTitle', $this->getGlobalDefaultTitle());
         $view->with('globalDefaultDescription', $this->getGlobalDefaultDescription());
+        $view->with('activeLocale', $this->resolveActiveLocale());
+
+        // Global helper available in all views: build a localized URL from
+        // a bare path without route() (which would emit ?locale= because
+        // the three per-locale route groups share the same name).
+        $view->with('localizedUrl', function (string $path) {
+            $active = $this->resolveActiveLocale();
+            $default = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+            $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+
+            if ($active === $default && $hideDefault) {
+                return $path;
+            }
+            return '/' . $active . $path;
+        });
     }
 
     private function getCanonicalUrl(): string
@@ -66,12 +113,16 @@ final class SeoComposer
     {
         $alternates = [];
 
+        // Build from a bare path so the package doesn't append ?locale=
+        // when re-localizing a URL it received as input.
+        $path = '/' . ltrim(parse_url(url()->current(), PHP_URL_PATH) ?? '/', '/');
+
         foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
             $alternates[] = [
                 'locale' => (string) $locale,
                 'url'    => LaravelLocalization::getLocalizedURL(
                     (string) $locale,
-                    url()->current(),
+                    $path,
                     []
                 ),
             ];
@@ -326,6 +377,25 @@ final class SeoComposer
         return '';
     }
 
+    /**
+     * Resolve the active locale from the current URL.
+     *
+     * Reading from the request URL is the only reliable source of truth
+     * for the current locale. LaravelLocalization::getCurrentLocale() and
+     * app()->getLocale() can both be stale at view-render time because the
+     * package caches the locale at service-container boot and the ViewPath
+     * middleware only sets app()->setLocale() AFTER the controller view
+     * path is resolved.
+     */
+    private function resolveActiveLocale(): string
+    {
+        $supported = array_keys(LaravelLocalization::getSupportedLocales());
+        $segments = request()->segments();
+        $first = $segments[0] ?? '';
+
+        return in_array($first, $supported, true) ? $first : (string) config('app.locale');
+    }
+
     private function getLogoUrl(): string
     {
         $configured = SiteSetting::get('logo_url');
@@ -339,5 +409,251 @@ final class SeoComposer
         }
 
         return '';
+    }
+
+    /**
+     * Build the LocalBusiness schema for a single office (used on its individual page).
+     *
+     * @return array<string, mixed>
+     */
+    private function getSingleOfficeLocalBusinessSchema(mixed $office): array
+    {
+        if ($office === null) {
+            return [];
+        }
+
+        $siteUrl = rtrim((string) config('app.url', 'https://agcassessors.com'), '/');
+        $baseName = (string) SiteSetting::get('site_name', config('app.name', 'AGC Assessors'));
+        $locale = (string) app()->getLocale();
+
+        $city = $office->city()->get($locale) !== ''
+            ? $office->city()->get($locale)
+            : ($office->city()->get('ca') ?? '');
+
+        $address = $office->address()->get($locale) !== ''
+            ? $office->address()->get($locale)
+            : ($office->address()->get('ca') ?? '');
+
+        if ($city === '' || $address === '') {
+            return [];
+        }
+
+        $slug = $office->publicSlug($locale);
+        $pageUrl = $siteUrl . '/' . $locale . '/oficinas/' . $slug;
+
+        $description = $office->description()->get($locale) !== ''
+            ? $office->description()->get($locale)
+            : ($office->description()->get('ca') ?? null);
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'LocalBusiness',
+            '@id' => $pageUrl,
+            'name' => $baseName . ' - ' . $city,
+            'url' => $pageUrl,
+            'description' => $description,
+            'telephone' => $office->phone(),
+            'email' => $office->email(),
+            'image' => $office->coverUrl(),
+            'priceRange' => '€€',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $address,
+                'addressLocality' => $city,
+                'addressRegion' => 'Barcelona',
+                'addressCountry' => 'ES',
+            ],
+            'parentOrganization' => [
+                '@type' => 'AccountingService',
+                'name' => $baseName,
+                'url' => $siteUrl,
+            ],
+        ];
+
+        $schema = array_filter($schema, static fn ($v) => $v !== null && $v !== '');
+
+        if ($office->lat() !== null && $office->lng() !== null) {
+            $schema['geo'] = [
+                '@type' => 'GeoCoordinates',
+                'latitude' => (float) $office->lat(),
+                'longitude' => (float) $office->lng(),
+            ];
+        }
+
+        $openingHoursValue = $office->openingHours()?->get($locale) !== ''
+            ? $office->openingHours()?->get($locale)
+            : ($office->openingHours()?->get('ca') ?? null);
+
+        if (is_string($openingHoursValue) && $openingHoursValue !== '') {
+            $specs = $this->buildOpeningHoursSpec($openingHoursValue);
+            if ($specs !== []) {
+                $schema['openingHoursSpecification'] = $specs;
+            }
+        }
+
+        $serviceAreaList = $office->serviceAreaList($locale);
+        if ($serviceAreaList !== []) {
+            $schema['areaServed'] = array_map(
+                static fn (string $area): array => [
+                    '@type' => 'City',
+                    'name' => $area,
+                ],
+                $serviceAreaList
+            );
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Build an ItemList of all offices for the /oficinas index page.
+     *
+     * @return array<string, mixed>
+     */
+    private function getOfficesItemListSchema(): array
+    {
+        $offices = $this->officeRepository->findAllActive();
+        if ($offices === []) {
+            return [];
+        }
+
+        $siteUrl = rtrim((string) config('app.url', 'https://agcassessors.com'), '/');
+        $locale = (string) app()->getLocale();
+
+        $items = [];
+        $position = 1;
+        foreach ($offices as $office) {
+            $city = $office->city()->get($locale) !== ''
+                ? $office->city()->get($locale)
+                : ($office->city()->get('ca') ?? '');
+
+            if ($city === '') {
+                continue;
+            }
+
+            $slug = $office->publicSlug($locale);
+            $items[] = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => 'AGC Assessors - ' . $city,
+                'url' => $siteUrl . '/' . $locale . '/oficinas/' . $slug,
+            ];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            'itemListElement' => $items,
+        ];
+    }
+
+    /**
+     * Parse a free-text opening hours string into schema.org OpeningHoursSpecification.
+     * Accepts lines like:
+     *   "Lunes a jueves: 9:00-18:00"
+     *   "Friday: 9:00-14:00"
+     *   "Lunes: cerrado"
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildOpeningHoursSpec(string $raw): array
+    {
+        $dayMap = [
+            'ca' => [
+                'dilluns' => 'Monday', 'dimarts' => 'Tuesday', 'dimecres' => 'Wednesday',
+                'dijous' => 'Thursday', 'divendres' => 'Friday',
+                'dissabte' => 'Saturday', 'diumenge' => 'Sunday',
+            ],
+            'es' => [
+                'lunes' => 'Monday', 'martes' => 'Tuesday', 'miercoles' => 'Wednesday', 'miércoles' => 'Wednesday',
+                'jueves' => 'Thursday', 'viernes' => 'Friday',
+                'sabado' => 'Saturday', 'sábado' => 'Saturday', 'domingo' => 'Sunday',
+            ],
+            'en' => [
+                'monday' => 'Monday', 'tuesday' => 'Tuesday', 'wednesday' => 'Wednesday',
+                'thursday' => 'Thursday', 'friday' => 'Friday',
+                'saturday' => 'Saturday', 'sunday' => 'Sunday',
+            ],
+        ];
+
+        $locale = (string) app()->getLocale();
+        $map = $dayMap[$locale] ?? $dayMap['es'];
+        $englishDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        $specs = [];
+        $lines = preg_split('/[\n;]+/', $raw) ?: [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+            $lower = mb_strtolower($line);
+            if (str_contains($lower, 'tancat') || str_contains($lower, 'cerrado') || str_contains($lower, 'closed')) {
+                continue;
+            }
+
+            if (!preg_match('/^(.+?):\s*(\d{1,2}:\d{2})\s*[–\-—to]+\s*(\d{1,2}:\d{2})/iu', $line, $m)) {
+                continue;
+            }
+
+            $dayPart = mb_strtolower(trim($m[1]));
+            $opens = $this->normalizeTime($m[2]);
+            $closes = $this->normalizeTime($m[3]);
+
+            $matchedDays = [];
+
+            // Try to match "<day1> a <day2>" / "<day1> to <day2>" range
+            $rangeStart = null;
+            $rangeEnd = null;
+            foreach ($map as $localName => $enName) {
+                if (str_contains($dayPart, $localName)) {
+                    if ($rangeStart === null) {
+                        $rangeStart = $enName;
+                    }
+                    $rangeEnd = $enName;
+                }
+            }
+
+            if ($rangeStart !== null && $rangeEnd !== null) {
+                $startIdx = array_search($rangeStart, $englishDays, true);
+                $endIdx = array_search($rangeEnd, $englishDays, true);
+                if ($startIdx !== false && $endIdx !== false && $endIdx >= $startIdx) {
+                    $matchedDays = array_slice($englishDays, $startIdx, $endIdx - $startIdx + 1);
+                }
+            }
+
+            if ($matchedDays === [] && $rangeStart !== null) {
+                $matchedDays = [$rangeStart];
+            }
+
+            foreach ($matchedDays as $day) {
+                $specs[] = [
+                    '@type' => 'OpeningHoursSpecification',
+                    'dayOfWeek' => $day,
+                    'opens' => $opens,
+                    'closes' => $closes,
+                ];
+            }
+        }
+
+        return $specs;
+    }
+
+    /**
+     * Normalize a time string to HH:MM (two-digit) per schema.org spec.
+     * Accepts "9:00", "9:0", "09:00" and returns "09:00".
+     */
+    private function normalizeTime(string $time): string
+    {
+        $parts = explode(':', $time);
+        if (count($parts) !== 2) {
+            return $time;
+        }
+
+        $h = (int) $parts[0];
+        $m = (int) $parts[1];
+
+        return sprintf('%02d:%02d', $h, $m);
     }
 }

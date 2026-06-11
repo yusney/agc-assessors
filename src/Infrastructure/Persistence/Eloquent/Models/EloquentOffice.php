@@ -13,10 +13,16 @@ class EloquentOffice extends Model
 
     protected $table = 'offices';
 
-    public array $translatable = ['name', 'address', 'city', 'description'];
+    public array $translatable = [
+        'name', 'address', 'city', 'description',
+        'opening_hours', 'service_area', 'image_alt',
+        'slug', 'manager_name', 'manager_role', 'manager_bio',
+    ];
 
     protected $fillable = [
         'name', 'address', 'city', 'description',
+        'opening_hours', 'service_area', 'image_alt',
+        'slug', 'manager_name', 'manager_role', 'manager_bio',
         'phone', 'email', 'lat', 'lng',
         'cover_media_id', 'is_active',
     ];
@@ -29,5 +35,12 @@ class EloquentOffice extends Model
         'address' => 'array',
         'city' => 'array',
         'description' => 'array',
+        'opening_hours' => 'array',
+        'service_area' => 'array',
+        'image_alt' => 'array',
+        'slug' => 'array',
+        'manager_name' => 'array',
+        'manager_role' => 'array',
+        'manager_bio' => 'array',
     ];
 }

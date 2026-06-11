@@ -1,7 +1,8 @@
 @extends('layouts.public')
 
-@section('seo_title', __('messages.offices.title') . ' – AGC Assessors')
-@section('seo_description', __('messages.offices.subtitle'))
+@section('seo_title', __('messages.offices.seo_title'))
+@section('seo_description', __('messages.offices.seo_description'))
+@section('seo_og_type', 'website')
 
 @section('content')
 
@@ -27,9 +28,9 @@
             <span class="inline-block text-[13px] font-semibold uppercase tracking-[0.22em] text-[#00346f] mb-5">
                 AGC Assessors
             </span>
-            <h1 class="font-headline text-[40px] md:text-[56px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-5">
-                {{ __('messages.offices.title') }}
-            </h1>
+                <h1 class="font-headline text-[40px] md:text-[56px] font-semibold text-[#1E293B] leading-[1.05] tracking-tight mb-5 text-balance">
+                    {{ __('messages.offices.title') }}
+                </h1>
             <p class="text-[18px] text-[#64748B] leading-relaxed font-light max-w-xl mx-auto">
                 {{ __('messages.offices.subtitle') }}
             </p>
@@ -87,63 +88,95 @@
 </section>
 @endif
 
-{{-- Divider --}}
+{{-- Per-office semantic blocks with H2 + <address> + unique content + service area --}}
 @if(!empty($offices))
-<div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 mb-12">
-    <div class="flex items-center gap-4">
-        <div class="h-px flex-1 bg-[#E2E8F0]"></div>
-        <span class="text-[13px] font-semibold tracking-[0.12em] uppercase text-[#64748B]">
-            {{ count($offices) }} {{ __('messages.offices.offices_count') }}
-        </span>
-        <div class="h-px flex-1 bg-[#E2E8F0]"></div>
-    </div>
-</div>
-
-{{-- Offices Grid --}}
 <section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pb-28">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @foreach($offices as $office)
-        <div id="office-{{ $office->id() }}" class="group bg-white rounded-[1.5rem] border border-[#E2E8F0] overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-            {{-- Image --}}
+        @php
+            // Resolve the active locale from the URL via the SeoComposer (which
+            // also fixes the switcher state). config('app.locale') cannot be used
+            // here because the package mutates it to the active locale at
+            // runtime; we compare against the package's defaultLocale instead.
+            $activeLocale = $activeLocale ?? (string) config('app.locale');
+            $defaultLocale = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+            $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+            $officePath = function (string $slug) use ($activeLocale, $defaultLocale, $hideDefault): string {
+                if ($activeLocale === $defaultLocale && $hideDefault) {
+                    return '/oficines/' . $slug;
+                }
+                return '/' . $activeLocale . '/oficines/' . $slug;
+            };
+            $locale = $activeLocale;
+            $altText = $office->imageAlt()?->get($locale)
+                ?? $office->imageAlt()?->get('ca')
+                ?? $office->name()->get($locale);
+            $description = $office->description()->get($locale)
+                ?? $office->description()->get('ca')
+                ?? '';
+            $hours = $office->openingHours()?->get($locale)
+                ?? $office->openingHours()?->get('ca')
+                ?? '';
+            $serviceArea = $office->serviceAreaList($locale);
+        @endphp
+        <article id="office-{{ $office->id() }}" itemscope itemtype="https://schema.org/LocalBusiness" class="group bg-white rounded-[1.5rem] border border-[#E2E8F0] overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+            <meta itemprop="@id" content="{{ $officePath('#office-'.$office->id()) }}">
+            <meta itemprop="name" content="{{ $office->name()->get($locale) }} - {{ $office->city()->get($locale) }}">
+
+            {{-- Image with proper alt text --}}
             <div class="relative h-[220px] overflow-hidden">
                 @if($office->coverUrl())
                     <img src="{{ $office->coverUrl() }}"
-                         alt="{{ $office->name()->get(app()->getLocale()) }}"
+                         alt="{{ $altText }}"
+                         itemprop="image"
+                         width="800"
+                         height="600"
+                         loading="lazy"
+                         decoding="async"
                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 @else
-                    <div class="w-full h-full bg-gradient-to-br from-[#00346f]/10 to-[#00B4D8]/20 flex items-center justify-center">
+                    <div class="w-full h-full bg-gradient-to-br from-[#00346f]/10 to-[#00B4D8]/20 flex items-center justify-center" aria-hidden="true">
                         <span class="font-headline text-[80px] font-bold text-[#00346f]/10 select-none">
-                            {{ mb_substr($office->city()->get(app()->getLocale()), 0, 1) }}
+                            {{ mb_substr($office->city()->get($locale), 0, 1) }}
                         </span>
                     </div>
                 @endif
-                {{-- City badge --}}
                 <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm">
                     <span class="text-[13px] font-semibold text-[#00346f]">
-                        {{ $office->city()->get(app()->getLocale()) }}
+                        {{ $office->city()->get($locale) }}
                     </span>
                 </div>
             </div>
 
             {{-- Content --}}
             <div class="p-6">
-                <h3 class="font-headline text-[20px] font-semibold text-[#1E293B] mb-3 leading-tight">
-                    {{ $office->name()->get(app()->getLocale()) }}
-                </h3>
+                {{-- H2 = one per office — required for SEO local differentiation --}}
+                <h2 class="font-headline text-[22px] font-semibold text-[#1E293B] mb-3 leading-tight">
+                    <a href="{{ $officePath($office->publicSlug($locale)) }}"
+                       class="hover:text-[#00346f] transition-colors">
+                        {{ __('messages.offices.office_in') }} {{ $office->city()->get($locale) }}
+                    </a>
+                </h2>
 
-                {{-- Contact info --}}
-                <div class="flex flex-col gap-2.5 mb-6">
+                {{-- Semantic <address> with full NAP — strong local SEO signal --}}
+                <address itemprop="address" itemscope itemtype="https://schema.org/PostalAddress" class="not-italic flex flex-col gap-2.5 mb-4">
+                    <meta itemprop="streetAddress" content="{{ $office->address()->get($locale) }}">
+                    <meta itemprop="addressLocality" content="{{ $office->city()->get($locale) }}">
+                    <meta itemprop="addressRegion" content="Barcelona">
+                    <meta itemprop="addressCountry" content="ES">
+
                     <div class="flex items-start gap-2.5">
-                        <span class="material-symbols-outlined text-[18px] text-[#00B4D8] mt-0.5 flex-shrink-0">location_on</span>
+                        <span class="material-symbols-outlined text-[18px] text-[#00B4D8] mt-0.5 flex-shrink-0" aria-hidden="true">location_on</span>
                         <span class="text-[14px] text-[#424751] leading-snug">
-                            {{ $office->address()->get(app()->getLocale()) }}
+                            {{ $office->address()->get($locale) }}
                         </span>
                     </div>
 
                     @if($office->phone())
                     <div class="flex items-center gap-2.5">
-                        <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0">call</span>
+                        <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0" aria-hidden="true">call</span>
                         <a href="tel:{{ $office->phone() }}"
+                           itemprop="telephone"
                            class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors">
                             {{ $office->phone() }}
                         </a>
@@ -152,26 +185,67 @@
 
                     @if($office->email())
                     <div class="flex items-center gap-2.5">
-                        <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0">mail</span>
+                        <span class="material-symbols-outlined text-[18px] text-[#64748B] flex-shrink-0" aria-hidden="true">mail</span>
                         <a href="mailto:{{ $office->email() }}"
+                           itemprop="email"
                            class="text-[14px] text-[#424751] hover:text-[#00346f] transition-colors">
                             {{ $office->email() }}
                         </a>
                     </div>
                     @endif
-                </div>
 
-                {{-- CTA --}}
-                @if($office->lat() !== null && $office->lng() !== null)
-                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
-                   target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
-                    {{ __('messages.offices.directions') }}
-                    <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5">&#xf8ce;</span>
-                </a>
+                    @if($hours !== '')
+                    <div class="flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-[18px] text-[#64748B] mt-0.5 flex-shrink-0" aria-hidden="true">schedule</span>
+                        <span class="text-[14px] text-[#64748B] leading-snug whitespace-pre-line">
+                            {{ $hours }}
+                        </span>
+                    </div>
+                    @endif
+                </address>
+
+                {{-- Unique content per office (min 100-150 words) --}}
+                @if($description !== '')
+                <p class="text-[14px] text-[#424751] leading-relaxed mb-4" itemprop="description">
+                    {{ $description }}
+                </p>
                 @endif
+
+                {{-- Service area — long-tail local SEO --}}
+                @if($serviceArea !== [])
+                <div class="mb-5">
+                    <p class="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#64748B] mb-2">
+                        {{ __('messages.offices.also_serving') }}
+                    </p>
+                    <ul class="flex flex-wrap gap-1.5">
+                        @foreach($serviceArea as $area)
+                        <li class="text-[12px] text-[#00346f] bg-[#00346f]/8 px-2.5 py-1 rounded-full border border-[#00346f]/15">
+                            {{ $area }}
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                {{-- CTA: Ver oficina + Cómo llegar --}}
+                <div class="flex flex-col gap-2">
+                    <a href="{{ $officePath($office->publicSlug($locale)) }}"
+                       class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] pb-0.5 transition-colors w-fit group/link">
+                        {{ __('messages.offices.see_office') }}
+                        <span class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-0.5" aria-hidden="true">arrow_forward</span>
+                    </a>
+                    @if($office->lat() !== null && $office->lng() !== null)
+                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $office->lat() }},{{ $office->lng() }}"
+                       target="_blank" rel="noopener noreferrer"
+                       itemprop="hasMap"
+                       class="inline-flex items-center gap-2 text-[13px] text-[#64748B] hover:text-[#00346f] transition-colors w-fit group/link">
+                        {{ __('messages.offices.directions') }}
+                        <span class="material-symbols-outlined text-[14px]" aria-hidden="true">&#xf8ce;</span>
+                    </a>
+                    @endif
+                </div>
             </div>
-        </div>
+        </article>
         @endforeach
     </div>
 </section>

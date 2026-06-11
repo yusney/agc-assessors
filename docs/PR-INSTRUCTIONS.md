@@ -1,67 +1,69 @@
-# Pull Request
+# Pull Request — feat/local-seo-offices
 
-> **Status**: rama `feat/local-seo-offices` pusheada al remote. PR pendiente de creación manual (token de `gh` sin scope `public_repo`).
+> **Status**: rama pusheada al remote. PR pendiente de creación manual (no automática).
 
-## URL para crear el PR
+## ⚠ Por qué no se pudo crear automáticamente
+
+El token de GitHub configurado en el entorno (`GH_TOKEN=ghp_****…****`) es un PAT clásico **sin los scopes `public_repo` ni `repo`** necesarios para crear PRs via API. `gh pr create` falla con:
+
+```
+pull request create failed: GraphQL: Your token has not been granted the required scopes to execute this query.
+The 'createPullRequest' field requires one of the following scopes: ['public_repo']
+```
+
+La solución más limpia es crear el PR desde el navegador (1 click) usando la URL de abajo. Si querés habilitar la creación automática para futuras PRs, regenera el PAT en https://github.com/settings/tokens con scope `public_repo` (o `repo` si es privado) y configuralo con `gh auth login --with-token`.
+
+## 🚀 Crear el PR (recomendado, 1 click)
+
+**URL para crear el PR:**
 
 https://github.com/yusney/agc-assessors/pull/new/feat/local-seo-offices
 
-> GitHub te mostrará un formulario pre-rellenado con la rama de origen (`feat/local-seo-offices`) y destino (`master`). Hacé clic en **Create pull request**.
+GitHub te muestra un formulario pre-rellenado con la rama de origen (`feat/local-seo-offices`) y destino (`master`). Hacé clic en **Create pull request**.
 
-## Título sugerido
+**Título sugerido** (pegar tal cual):
 
 ```
-feat(seo): local multi-office SEO + i18n switcher fixes (12 commits)
+feat(seo): local multi-office SEO + i18n fixes (13 commits)
 ```
 
-## Descripción sugerida (copiá y pegá)
+**Descripción sugerida** (pegar tal cual en el cuerpo del PR):
 
 ````markdown
 ## Summary
 
-Implementación completa de SEO local multi-sede para AGC Assessors más tres
-fixes de i18n encontrados durante la verificación. Cada una de las 6
-oficinas (Caldes de Montbui, Sant Celoni, Mollet del Vallès, Granollers,
+Implementación completa de SEO local multi-sede para AGC Assessors más
+cuatro fixes de i18n encontrados durante la verificación. Cada una de las
+6 oficinas (Caldes de Montbui, Sant Celoni, Mollet del Vallès, Granollers,
 Prats de Lluçanès, Manlleu) tiene ahora su propia URL con schema
 `LocalBusiness` válido, NAP semántico, horarios estructurados, área de
 servicio y hreflang en 3 idiomas. El switcher de idioma de la navbar
-mantiene la página actual al cambiar de idioma y ya no inyecta el
-locale como query string en los links internos.
+mantiene la página actual al cambiar de idioma y el `<html lang>` se
+corresponde con la URL en los 3 locales.
 
 ## What changed
 
-### Architecture (feature principal)
-- **8 commits** sobre `master`, 24 archivos, +1.801 / -120 líneas
-- Clean Architecture respetada: cambios en
-  `Domain/Offices/Entities/Office`, `Repositories/OfficeRepositoryInterface`,
-  `Infrastructure/Persistence/Eloquent/{Models,Repositories}/EloquentOffice`,
-  `Filament/Resources/OfficeResource`, `Http/Controllers/Public/OfficesController`,
-  `Http/View/Composers/SeoComposer`, `Http/Middleware/SetLocaleFromUrl`
-- 3 migraciones nuevas (`add_local_seo_fields_to_offices`, `add_slug_to_offices`,
-  `add_manager_fields_to_offices`)
-- 1 seeder nuevo (`OfficeSeoSeeder`) que carga datos plausibles desde
-  `storage/backups/offices_seo_content.json`
-
-### New URLs
-- `/es/oficinas` — hub con 6 cards (cards ya muestran toda la info
-  de cada oficina; la tabla resumen fue removida por redundancia)
-- `/es/oficinas/{slug}` — página individual de cada oficina
-- Mismas rutas con prefijo `/ca` y `/en` con hreflang automático
-
-### Schema markup
-- `LocalBusiness` schema × 1 por página individual con: NAP completo,
-  geo, telephone, email, priceRange, `openingHoursSpecification` parseado
-  desde texto libre (formato HH:MM), `areaServed` con 5-8 pueblos por
-  oficina, `parentOrganization` jerárquico
-- `ItemList` schema × 1 por hub listando las 6 oficinas
+### Feature principal: SEO local multi-oficina
+- 3 migraciones nuevas (opening_hours + service_area + image_alt, slug, manager_*)
+- Nueva entidad de dominio `Office` con 6 getters adicionales + `publicSlug()`
+- Nuevo repositorio `OfficeRepositoryInterface::findActiveBySlug()`
+- `OfficeResource` (Filament admin) con secciones SEO: horarios, pueblos, slug, responsable
+- Nuevo `OfficesController::show($slug)` para páginas individuales
+- Nuevo schema `LocalBusiness` × 1 por página individual con: NAP, geo, telephone, email, priceRange, openingHoursSpecification parseado, areaServed, parentOrganization
+- Nuevo schema `ItemList` × 1 por hub listando las 6 oficinas
 - Hreflang alternates × 4 (ca, es, en, x-default) en todas las páginas
-
-### UX
-- Hero split 2-columnas (título + imagen de portada) en cada oficina
-- Placeholder elegante con inicial y hint para subir foto
+- Hero split 2-columnas (título + imagen) en cada oficina con placeholder
 - Mapa Leaflet con marker por oficina
 - Card "Conoce AGC Assessors" con CTAs a contenido común
-- Breadcrumb accesible (aria-label traducido a ca/es/en)
+- Breadcrumb accesible (aria-label traducido)
+- Seeder `OfficeSeoSeeder` que carga datos plausibles desde JSON
+- i18n: 11+ claves nuevas en ca/es/en
+
+### Fixes de i18n (3 issues resueltos)
+- **Switcher preserves the current page**: `/es/oficinas/granollers` → click "EN" → `/en/oficinas/granollers` (antes 404)
+- **Switcher highlights the active locale**: `<html lang>` y la opción highlighted coinciden con la URL en los 3 locales
+- **Zero `?locale=` query strings**: en todas las URLs internas (hubs, cards, individuales, breadcrumb, navbar). Antes había 9 ocurrencias por página
+- **Tabla resumen removida** del hub de oficinas (redundante con las cards)
 
 ### a11y
 - 12 elementos con `focus-visible:ring-2` añadido
@@ -69,52 +71,40 @@ locale como query string en los links internos.
 - `text-wrap: balance` en H1
 - aria-labels traducidos (breadcrumb, mobile menu, search)
 
-### i18n fixes (3 commits)
-- **Switcher preserves the current page**: `/es/oficinas/granollers`
-  → click en "EN" → `/en/oficinas/granollers` (antes 404).
-- **Switcher highlights the active locale**: `<html lang>` and the
-  highlighted option now match the URL across all 3 locales.
-- **Zero `?locale=` on internal links**: replaced `route('offices.show',
-  ['locale' => …, 'slug' => …])` with a URL builder that uses
-  `LaravelLocalization::getDefaultLocale()` (not `config('app.locale')`,
-  which the package mutates at runtime). Before: URLs like
-  `/en/oficines/granollers?locale=es`. After: clean `/es/oficines/granollers`.
-
 ## Audit results
 
 Resultado del audit script `docs/SEO-AUDIT-SCRIPT.py` (simula Google
-Rich Results Test) sobre 11 páginas:
+Rich Results Test) sobre 12 páginas:
 
 | Check | Resultado |
 |---|---|
-| HTTP 200 | ✓ 11/11 |
-| Title length (≤ 60) | ✓ 11/11 |
-| Description length (100-160) | ✓ 11/11 |
-| Canonical URL | ✓ 11/11 |
-| Hreflang alternates (4) | ✓ 11/11 |
-| H1 único | ✓ 11/11 |
-| H2+ presentes | ✓ 11/11 |
+| HTTP 200 | ✓ 12/12 |
+| Title length (≤ 60) | ✓ 12/12 |
+| Description length (100-160) | ✗ 1/12 (Mollet — placeholder de prueba) |
+| Canonical URL | ✓ 12/12 |
+| Hreflang alternates (4) | ✓ 12/12 |
+| H1 único | ✓ 12/12 |
+| H2+ presentes | ✓ 12/12 |
+| `<html lang>` matching URL | ✓ 12/12 |
+| Switcher active = URL locale | ✓ 12/12 |
+| `?locale=` en links internos | ✓ 12/12 (0 ocurrencias) |
 | `LocalBusiness` schema válido | ✓ 5/6 (Manlleu sin phone) |
 | `ItemList` schema válido | ✓ 3/3 |
 | `openingHoursSpecification` HH:MM | ✓ 6/6 |
-| `?locale=` en links internos | ✓ 0 |
 
 ## Known issues (no bloqueantes, post-merge)
 
-1. **Manlleu sin teléfono** (en BD desde el seed inicial). El schema
-   `LocalBusiness` no emite `telephone` para esa oficina. Solución:
-   añadir teléfono real vía `/admin/offices`.
-2. **6 oficinas sin `image`** (campo `cover_media_id` vacío). La página
-   muestra un placeholder. Solución: subir foto real en Filament.
-3. **Datos plausibles pero inventados** (responsables, horarios,
-   pueblos). El seeder cargó estos datos como placeholder. Solución:
-   revisar y reemplazar con datos reales en `/admin/offices`.
+1. **Manlleu sin teléfono** (en BD desde el seed inicial). El schema `LocalBusiness` no emite `telephone` para esa oficina. **Solución**: añadir teléfono real vía `/admin/offices`.
+2. **6 oficinas sin `image`** (campo `cover_media_id` vacío). La página muestra un placeholder con la inicial. **Solución**: subir foto real en Filament.
+3. **Datos plausibles pero inventados** (responsables, horarios, pueblos). El seeder cargó estos datos como placeholder. **Solución**: revisar y reemplazar con datos reales en `/admin/offices`. Hay un valor de descripción "prueba de descricio" en Mollet que también es dato de prueba.
+4. **Token de `gh` sin scopes** — no afecta al código, solo a la automatización de PRs.
 
 ## Action items post-merge (no-code, marketing)
 
 - Crear 6 fichas de Google Business Profile (uno por oficina)
 - Pedir reseñas de clientes reales en cada GBP — factor #1 de ranking local
 - Backlinks desde directorios locales (Páginas Amarillas, Cámaras de Comercio)
+- Regenerar el token de GitHub con scope `public_repo` para automatizar futuros PRs
 
 ## Test plan
 
@@ -122,47 +112,67 @@ Rich Results Test) sobre 11 páginas:
 # Re-run audit any time:
 python3 docs/SEO-AUDIT-SCRIPT.py
 
-# Verify pages render:
-curl -I http://localhost:8080/es/oficinas
-curl -I http://localhost:8080/es/oficinas/granollers
-curl -I http://localhost:8080/en/oficines/granollers
+# Verify pages render with correct lang and zero ?locale=:
+for path in "" "es" "en" "es/oficines" "es/oficines/granollers" "oficines" "oficines/granollers"; do
+  curl -sL "http://localhost:8080/$path" | \
+    grep -oE '<html lang="[^"]+"' && \
+    curl -sL "http://localhost:8080/$path" | grep -c 'locale=' || true
+done
 
-# Verify i18n switcher (visual test):
+# Manual switcher test:
 # 1. Open /es/oficinas/granollers
 # 2. Click "CA" in the navbar
 # 3. URL should become /oficines/granollers (no ?locale=)
 # 4. CA option should be highlighted in the switcher
+# 5. <html lang> should be "ca"
 ```
 
 ## Files changed (24 archivos)
 
-- `database/migrations/2026_06_10_153327_add_local_seo_fields_to_offices.php` (new)
-- `database/migrations/2026_06_10_160339_add_slug_to_offices.php` (new)
-- `database/migrations/2026_06_10_160355_add_manager_fields_to_offices.php` (new)
-- `database/seeders/OfficeSeoSeeder.php` (new)
-- `app/Http/Controllers/Public/OfficesController.php` (+29 -0)
-- `app/Http/Middleware/SetLocaleFromUrl.php` (new, 39 lines)
-- `app/Http/View/Composers/SeoComposer.php` (+231 -0)
-- `resources/lang/{ca,es,en}/messages.php` (i18n keys)
-- `resources/views/public/components/navbar.blade.php` (i18n aria-labels)
-- `resources/views/public/home-sections/offices_map.blade.php` (i18n fixes)
-- `resources/views/public/pages/offices/index.blade.php` (table removed,
-  URL builder, defaultLocale-aware)
-- `resources/views/public/pages/offices/show.blade.php` (individual page)
-- `routes/web.php` (per-locale route groups)
+### Migraciones (3 nuevos)
+- `database/migrations/2026_06_10_153327_add_local_seo_fields_to_offices.php`
+- `database/migrations/2026_06_10_160339_add_slug_to_offices.php`
+- `database/migrations/2026_06_10_160355_add_manager_fields_to_offices.php`
+
+### Capa de dominio
 - `src/Domain/Offices/Entities/Office.php` (entity)
 - `src/Domain/Offices/Repositories/OfficeRepositoryInterface.php`
-- `src/Filament/Resources/OfficeResource.php` (admin form)
+
+### Capa de infraestructura
 - `src/Infrastructure/Persistence/Eloquent/Models/EloquentOffice.php`
 - `src/Infrastructure/Persistence/Eloquent/Repositories/EloquentOfficeRepository.php`
-- `docs/SEO-GUIDE.md` (new)
-- `docs/SEO-OFFICES-PLAN.md` (new)
-- `docs/SEO-AUDIT-SCRIPT.py` (new)
-- `docs/SEO-AUDIT-REPORT.txt` (new)
 
-## Commit list
+### Capa de aplicación
+- `app/Http/Controllers/Public/OfficesController.php` (+show method)
+- `app/Http/Middleware/SetLocaleFromUrl.php` (nuevo, 39 lines)
+- `app/Http/View/Composers/SeoComposer.php` (LocalBusiness, ItemList, helpers)
+- `app/Http/View/Composers/SeoComposer.php` ($localizedUrl global helper)
+
+### Capa de presentación
+- `resources/views/public/components/navbar.blade.php` (i18n aria-labels, $localizedUrl)
+- `resources/views/public/home-sections/offices_map.blade.php` (links limpios)
+- `resources/views/public/pages/offices/index.blade.php` (cards sin tabla, $officePath)
+- `resources/views/public/pages/offices/show.blade.php` (página individual)
+
+### Capa de rutas y traducciones
+- `routes/web.php` (3 grupos por locale, orden correcto, middleware setLocaleFromUrl)
+- `resources/lang/{ca,es,en}/messages.php` (i18n keys)
+
+### Seeder y datos
+- `database/seeders/OfficeSeoSeeder.php` (nuevo)
+- `storage/backups/offices_seo_content.json` (datos plausibles)
+
+### Documentación
+- `docs/SEO-GUIDE.md` (nuevo, manual de SEO para el cliente)
+- `docs/SEO-OFFICES-PLAN.md` (nuevo, plan técnico original)
+- `docs/SEO-AUDIT-SCRIPT.py` (nuevo, script de auditoría reutilizable)
+- `docs/SEO-AUDIT-REPORT.txt` (nuevo, output de la auditoría)
+- `docs/PR-INSTRUCTIONS.md` (este archivo)
+
+## Commit list (13 commits)
 
 ```
+6f6a764 fix(i18n): zero ?locale= query strings on every page (final sweep)
 a403e99 fix(i18n): stop appending ?locale= to internal office links
 4e02f01 refactor(offices): remove redundant summary table from offices index
 3377599 fix(i18n): switcher now highlights locale matching the URL
@@ -176,25 +186,37 @@ e571c6a feat(home): link office cards and map popups to individual office pages
 ea9aecb feat(seo): individual office pages with LocalBusiness per location
 fc3df51 feat(seo): local multi-office schema + summary table for /oficinas
 ```
-
-## Por qué la creación automática no funcionó
-
-El token de GitHub configurado para `gh` no tiene los scopes
-necesarios (`public_repo`). El workaround más limpio es crear el PR
-desde el navegador usando la URL de arriba. El push ya está hecho,
-así que la URL funciona directamente.
 ````
 
-## Notas para vos
+## Comando para regenerar el token y automatizar
 
-- Cuando hagas el PR, **revisá la rama base** — el push es a `master` (no a `main`).
-- El título sugerido ya menciona los **12 commits** y los **3 fixes de i18n**, no solo el feature de SEO.
-- La descripción está pensada para que un revisor entienda todo el alcance sin tener que ir commit por commit.
+Si querés habilitar la creación automática de PRs para futuras ramas:
 
-## Documentation entregada
+1. Ir a https://github.com/settings/tokens
+2. **Generate new token** → tipo **Fine-grained** (recomendado) o **Classic**
+3. Para Fine-grained: en "Repository access" seleccionar `yusney/agc-assessors`, en "Permissions" añadir `Contents: Read and write` y `Pull requests: Read and write`
+4. Para Classic: seleccionar scope `public_repo` (o `repo` si el repo es privado)
+5. Guardar el token y exportarlo: `export GH_TOKEN=ghp_NUEVOTOKEN`
+6. Reintentar: `gh pr create --base master --head feat/local-seo-offices --title "..." --body "..."`
 
-- `docs/SEO-GUIDE.md` — Manual de SEO para el cliente (qué rellenar, dónde, cómo)
-- `docs/SEO-OFFICES-PLAN.md` — Plan técnico original (referencia histórica)
-- `docs/SEO-AUDIT-SCRIPT.py` — Script de auditoría reutilizable
-- `docs/SEO-AUDIT-REPORT.txt` — Output completo de la auditoría actual
-- `docs/PR-INSTRUCTIONS.md` — Este archivo
+## Estado del push
+
+```
+$ git log --oneline master..feat/local-seo-offices
+6f6a764 fix(i18n): zero ?locale= query strings on every page (final sweep)
+a403e99 fix(i18n): stop appending ?locale= to internal office links
+4e02f01 refactor(offices): remove redundant summary table from offices index
+3377599 fix(i18n): switcher now highlights locale matching the URL
+5011dc7 fix(i18n): preserve current page in locale switcher and register routes per locale
+1f861d3 docs: add PR creation instructions and full PR description
+135d0f5 fix(seo): normalize opening hours to HH:MM in LocalBusiness schema
+0d4d781 feat(offices): populate 6 offices with plausible SEO data and trim titles
+007a422 fix(a11y): web interface guidelines compliance for office pages
+9b33a01 feat(offices): add hero cover image to individual office pages
+e571c6a feat(home): link office cards and map popups to individual office pages
+ea9aecb feat(seo): individual office pages with LocalBusiness per location
+fc3df51 feat(seo): local multi-office schema + summary table for /oficinas
+
+$ git diff --stat master..feat/local-seo-offices | tail -1
+ 24 files changed, 2166 insertions(+), 94 deletions(-)
+```

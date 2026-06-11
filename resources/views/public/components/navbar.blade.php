@@ -23,14 +23,14 @@
             $ctaTarget = $navbarCta['target'] ?? '_self';
         } else {
             $ctaLabel  = __('messages.nav.cta');
-            $ctaUrl    = LaravelLocalization::getLocalizedURL(app()->getLocale(), '/area-client');
+            $ctaUrl    = $localizedUrl('/area-client');
             $ctaTarget = '_self';
         }
     @endphp
     <div class="flex justify-between items-center h-20 w-full px-6 md:px-8 max-w-[1280px] mx-auto">
 
         {{-- Brand --}}
-        <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), '/') }}"
+        <a href="{{ $localizedUrl('/') }}"
            class="flex items-center flex-shrink-0 mr-6">
             <img src="{{ asset('images/logo.webp') }}"
                  alt="AGC Assessors"
@@ -127,7 +127,7 @@
                                      class="absolute left-0 top-full mt-2 w-48 bg-white rounded-xl
                                             border border-[#E2E8F0] shadow-lg overflow-hidden z-50">
                                     @foreach($item->children as $child)
-                                        <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
+                                        <a href="{{ $localizedUrl($child->url_path) }}"
                                            target="{{ $child->target }}"
                                            class="block px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
                                             {{ $child->getTranslation('label', app()->getLocale()) }}
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                         @else
-                               <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
+                            <a href="{{ $localizedUrl($item->url_path) }}"
                                target="{{ $item->target }}"
                                class="nav-link px-4 whitespace-nowrap">
                                 {{ $item->getTranslation('label', app()->getLocale()) }}
@@ -178,7 +178,7 @@
                                              x-transition:enter-end="opacity-100 translate-y-0"
                                              class="bg-[#f9f9ff] py-1">
                                             @foreach($item->children as $child)
-                                                <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
+                                                <a href="{{ $localizedUrl($child->url_path) }}"
                                                    target="{{ $child->target }}"
                                                    class="block px-8 py-2 text-[13px] text-[#1E293B] hover:text-[#00346f] transition-colors">
                                                     {{ $child->getTranslation('label', app()->getLocale()) }}
@@ -187,7 +187,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
+                                    <a href="{{ $localizedUrl($item->url_path) }}"
                                        target="{{ $item->target }}"
                                        class="block px-4 py-2.5 text-[14px] text-[#1E293B] hover:text-[#00346f] hover:bg-[#f9f9ff] transition-colors">
                                         {{ $item->getTranslation('label', app()->getLocale()) }}
@@ -368,7 +368,7 @@
                                  x-transition:enter-end="opacity-100 translate-y-0"
                                  class="pl-4 flex flex-col gap-1">
                                 @foreach($item->children as $child)
-                                    <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $child->url_path) }}"
+                                    <a href="{{ $localizedUrl($child->url_path) }}"
                                        target="{{ $child->target }}"
                                        class="block py-2 text-[14px] text-[#1E293B] hover:text-[#00346f] transition-colors">
                                         {{ $child->getTranslation('label', app()->getLocale()) }}
@@ -377,7 +377,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ LaravelLocalization::getLocalizedURL(app()->getLocale(), $item->url_path) }}"
+                        <a href="{{ $localizedUrl($item->url_path) }}"
                            target="{{ $item->target }}"
                            class="block py-2.5 text-[#1E293B] hover:text-[#00346f] font-medium font-headline transition-colors">
                             {{ $item->getTranslation('label', app()->getLocale()) }}

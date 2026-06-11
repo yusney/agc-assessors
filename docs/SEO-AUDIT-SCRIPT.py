@@ -196,6 +196,24 @@ def audit_page(path: str) -> dict:
     canonical = canonical_m.group(1) if canonical_m else None
     hreflangs = re.findall(r'<link rel="alternate"[^>]+hreflang="([^"]+)"[^>]+href="([^"]+)"', html)
 
+    # <html lang> attribute (browser-level locale signal)
+    html_lang_m = re.search(r'<html lang="([^"]+)"', html)
+    html_lang = html_lang_m.group(1) if html_lang_m else None
+
+    # Internal office links (any link containing /oficines/ or /oficinas/ or /offices/ slug)
+    office_links = re.findall(r'href="([^"]*(?:oficines|oficinas|offices)/[a-z0-9-]+/?)"', html)
+
+    # ?locale= query string count (bug indicator — should always be 0).
+    # We use a leading separator (?, &, or =) to avoid matching the
+    # 'switch-locale/{locale}' path segment in the navbar.
+    locale_query_count = len(re.findall(r"[?&]locale=[a-z]+", html))
+
+    # Active locale in the language switcher (the one marked as active via text-[#00346f] font-semibold)
+    switcher_active = re.findall(
+        r'href="[^"]*switch-locale/([a-z]+)"[^>]*class="[^"]*text-\[#00346f\] font-semibold',
+        html,
+    )
+
     # Detect LocalBusiness
     localbusinesses = [s for s in schemas if s.get("@type") == "LocalBusiness"]
     itemlists = [s for s in schemas if s.get("@type") == "ItemList"]
@@ -208,25 +226,36 @@ def audit_page(path: str) -> dict:
         "description_len": len(description) if description else 0,
         "canonical": canonical,
         "hreflangs": [{"lang": l, "url": u} for l, u in hreflangs],
+        "html_lang": html_lang,
+        "office_links": office_links,
+        "locale_query_count": locale_query_count,
+        "switcher_active": switcher_active,
         "localbusinesses": localbusinesses,
         "itemlists": itemlists,
         "schema_count": len(schemas),
     }
 
 
+def url_to_locale(path: str) -> str | None:
+    """Extract the locale from the URL path: '/es/oficinas/...' -> 'es'."""
+    parts = [p for p in path.split("/") if p]
+    return parts[0] if parts and parts[0] in ("ca", "es", "en") else None
+
+
 def main():
     pages = [
-        ("/es/oficinas", "Hub (es)"),
-        ("/es/oficinas/caldes-de-montbui", "Caldes (es)"),
-        ("/es/oficinas/sant-celoni", "Sant Celoni (es)"),
-        ("/es/oficinas/mollet-del-valles", "Mollet (es)"),
-        ("/es/oficinas/granollers", "Granollers (es)"),
-        ("/es/oficinas/prats-de-llucanes", "Prats (es)"),
-        ("/es/oficinas/manlleu", "Manlleu (es)"),
+        ("/es/oficines", "Hub (es)"),
+        ("/es/oficines/caldes-de-montbui", "Caldes (es)"),
+        ("/es/oficines/sant-celoni", "Sant Celoni (es)"),
+        ("/es/oficines/mollet-del-valles", "Mollet (es)"),
+        ("/es/oficines/granollers", "Granollers (es)"),
+        ("/es/oficines/prats-de-llucanes", "Prats (es)"),
+        ("/es/oficines/manlleu", "Manlleu (es)"),
         ("/oficines", "Hub (ca)"),
         ("/oficines/granollers", "Granollers (ca)"),
-        ("/en/offices", "Hub (en)"),
-        ("/en/offices/granollers", "Granollers (en)"),
+        ("/en/oficines", "Hub (en)"),
+        ("/en/oficines/granollers", "Granollers (en)"),
+        ("/", "Home (default locale)"),
     ]
 
     grand_errors = 0
@@ -264,9 +293,37 @@ def main():
         hreflang_status = "✓" if len(result["hreflangs"]) == 4 else f"✗ ({len(result['hreflangs'])})"
         print(f"  {hreflang_status} Hreflang alternates: {len(result['hreflangs'])} (ca/es/en/x-default expected)")
 
+        # <html lang> matching the URL locale
+        url_locale = url_to_locale(path) or 'ca'
+        html_lang_ok = result['html_lang'] == url_locale
+        html_lang_status = "✓" if html_lang_ok else f"✗ (expected '{url_locale}', got '{result['html_lang']}')"
+        print(f"  {html_lang_status} <html lang>: '{result['html_lang']}' (URL is /{url_locale}/...)")
+
+        # ?locale= in internal links (the bug we just fixed)
+        if result['locale_query_count'] == 0:
+            print(f"  ✓ No ?locale= query strings in internal links (0 found)")
+        else:
+            print(f"  ✗ ?locale= in HTML: {result['locale_query_count']} occurrences (must be 0)")
+
+        # Switcher highlights the correct locale
+        if path == '/':
+            expected_active = 'ca'
+        else:
+            expected_active = url_locale
+        active_match = expected_active in result['switcher_active']
+        active_status = "✓" if active_match else f"✗ (expected '{expected_active}', found {result['switcher_active']})"
+        print(f"  {active_status} Switcher active locale: {result['switcher_active']} (expected '{expected_active}')")
+
         # LocalBusiness validation
         page_errors = 0
         page_warnings = 0
+        if result["locale_query_count"] > 0:
+            page_errors += result["locale_query_count"]
+            print(f"    ✗ {result['locale_query_count']} internal links have ?locale= query")
+        if not html_lang_ok:
+            page_errors += 1
+        if not active_match:
+            page_errors += 1
         if result["localbusinesses"]:
             print(f"\n  📍 LocalBusiness schema ({len(result['localbusinesses'])} found):")
             for lb in result["localbusinesses"]:

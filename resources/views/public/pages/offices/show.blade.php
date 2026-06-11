@@ -14,7 +14,25 @@
 @section('content')
 
 @php
-    $locale = app()->getLocale();
+    // Resolve the active locale from the URL via the SeoComposer. Using
+    // app()->getLocale() would be stale at view-render time.
+    $activeLocale = $activeLocale ?? (string) config('app.locale');
+    $defaultLocale = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+    $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+
+    /**
+     * Build a localized URL for a given path. Avoids route() because
+     * the package has three route groups sharing the same name (one
+     * per locale) and route() would emit ?locale= query strings.
+     */
+    $localized = function (string $path) use ($activeLocale, $defaultLocale, $hideDefault): string {
+        if ($activeLocale === $defaultLocale && $hideDefault) {
+            return $path;
+        }
+        return '/' . $activeLocale . $path;
+    };
+
+    $locale = $activeLocale;
     $city = $office->city()->get($locale) ?? $office->city()->get('ca');
     $address = $office->address()->get($locale) ?? $office->address()->get('ca');
     $altText = $office->imageAlt()?->get($locale) ?? $office->imageAlt()?->get('ca') ?? $city;
@@ -32,9 +50,9 @@
         {{-- Breadcrumb --}}
         <nav aria-label="{{ __('messages.breadcrumb.label') }}" class="mb-6 text-[13px] text-[#64748B]">
             <ol class="flex flex-wrap items-center gap-1.5">
-                <li><a href="{{ route('home', ['locale' => $locale]) }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.nav.home') }}</a></li>
+                <li><a href="{{ $localized('/') }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.nav.home') }}</a></li>
                 <li aria-hidden="true">/</li>
-                <li><a href="{{ route('offices.index', ['locale' => $locale]) }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.offices.title') }}</a></li>
+                <li><a href="{{ $localized('/oficines') }}" class="hover:text-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded">{{ __('messages.offices.title') }}</a></li>
                 <li aria-hidden="true">/</li>
                 <li aria-current="page" class="text-[#1E293B] font-semibold">{{ $city }}</li>
             </ol>
@@ -241,22 +259,22 @@
                     {{ __('messages.offices.common_content_heading') }}
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <a href="{{ route('services.index', ['locale' => $locale]) }}"
+                    <a href="{{ $localized('/serveis') }}"
                        class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">business_center</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.services') }}</span>
                     </a>
-                    <a href="{{ route('team', ['locale' => $locale]) }}"
+                    <a href="{{ $localized('/equip') }}"
                        class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">groups</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.team') }}</span>
                     </a>
-                    <a href="{{ route('news.index', ['locale' => $locale]) }}"
+                    <a href="{{ $localized('/actualitat') }}"
                        class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">article</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.news') }}</span>
                     </a>
-                    <a href="{{ route('contact', ['locale' => $locale]) }}"
+                    <a href="{{ $localized('/contacte') }}"
                        class="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:border-[#00346f] hover:bg-[#F8FAFC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] transition-colors">
                         <span class="material-symbols-outlined text-[24px] text-[#00B4D8]" aria-hidden="true">mail</span>
                         <span class="text-[14px] font-semibold text-[#1E293B]">{{ __('messages.nav.contact') }}</span>
@@ -264,7 +282,7 @@
                 </div>
 
                 <div class="mt-5 pt-5 border-t border-[#E2E8F0]">
-                    <a href="{{ route('offices.index', ['locale' => $locale]) }}"
+                    <a href="{{ $localized('/oficines') }}"
                        class="inline-flex items-center gap-2 text-[14px] font-semibold text-[#00346f] border-b-2 border-[#00346f]/30 hover:border-[#00346f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00346f] rounded pb-0.5 transition-colors">
                         <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
                         {{ __('messages.offices.back_to_all') }}

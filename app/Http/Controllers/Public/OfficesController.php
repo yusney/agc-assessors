@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Public;
 use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class OfficesController extends Controller
 {
@@ -58,8 +59,8 @@ final class OfficesController extends Controller
             : [];
 
         $breadcrumbs = [
-            ['name' => __('messages.nav.home'), 'url' => route('home', ['locale' => $locale])],
-            ['name' => __('messages.offices.title'), 'url' => route('offices.index', ['locale' => $locale])],
+            ['name' => __('messages.nav.home'), 'url' => LaravelLocalization::getLocalizedURL($locale, '/')],
+            ['name' => __('messages.offices.title'), 'url' => LaravelLocalization::getLocalizedURL($locale, '/oficines')],
             ['name' => $office->city()->get($locale), 'url' => null],
         ];
 

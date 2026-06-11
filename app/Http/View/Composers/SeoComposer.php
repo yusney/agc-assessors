@@ -79,6 +79,20 @@ final class SeoComposer
         $view->with('globalDefaultTitle', $this->getGlobalDefaultTitle());
         $view->with('globalDefaultDescription', $this->getGlobalDefaultDescription());
         $view->with('activeLocale', $this->resolveActiveLocale());
+
+        // Global helper available in all views: build a localized URL from
+        // a bare path without route() (which would emit ?locale= because
+        // the three per-locale route groups share the same name).
+        $view->with('localizedUrl', function (string $path) {
+            $active = $this->resolveActiveLocale();
+            $default = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
+            $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+
+            if ($active === $default && $hideDefault) {
+                return $path;
+            }
+            return '/' . $active . $path;
+        });
     }
 
     private function getCanonicalUrl(): string
@@ -99,12 +113,16 @@ final class SeoComposer
     {
         $alternates = [];
 
+        // Build from a bare path so the package doesn't append ?locale=
+        // when re-localizing a URL it received as input.
+        $path = '/' . ltrim(parse_url(url()->current(), PHP_URL_PATH) ?? '/', '/');
+
         foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
             $alternates[] = [
                 'locale' => (string) $locale,
                 'url'    => LaravelLocalization::getLocalizedURL(
                     (string) $locale,
-                    url()->current(),
+                    $path,
                     []
                 ),
             ];

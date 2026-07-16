@@ -16,9 +16,9 @@ class HomeSectionSeeder extends Seeder
                 'slug' => 'home-hero',
                 'type' => 'hero',
                 'title' => [
-                    'ca' => 'La teva <span class="text-[#00346f]">assessoria</span> de confiança',
-                    'es' => 'Tu <span class="text-[#00346f]">asesoría</span> de confianza',
-                    'en' => 'Your trusted <span class="text-[#00346f]">advisory</span> firm',
+                    'ca' => 'La teva assessoria de confiança',
+                    'es' => 'Tu asesoría de confianza',
+                    'en' => 'Your trusted advisory firm',
                 ],
                 'subtitle' => [
                     'ca' => 'Experts en gestió fiscal, laboral i comptable. T\'acompanyem en cada pas del teu negoci.',

@@ -30,7 +30,7 @@ return [
     'home' => [
         'seo_title' => 'AGC Assessors – Tax, Labour & Accounting Advisory',
         'seo_description' => 'Professional advisory services in Catalonia. Tax, labour, accounting and legal for businesses and freelancers.',
-        'hero_title_html' => 'Your trusted <span class="text-[#00346f]">advisory</span> firm',
+        'hero_title_html' => 'Your trusted advisory firm',
         'hero_title' => 'Your trusted advisory firm in Catalonia',
         'hero_subtitle' => 'Experts in tax, labour and accounting management. We support you at every step of your business.',
         'hero_cta_primary' => 'Request consultation',

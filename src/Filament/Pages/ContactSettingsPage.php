@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Filament\Pages;
 
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -122,7 +123,7 @@ final class ContactSettingsPage extends Page
                             ->placeholder('info@agcassessors.com, direccion2@agcassessors.com')
                             ->helperText('Separa múltiples direcciones con coma. Todos recibirán el mensaje.')
                             ->rules([
-                                function (string $attribute, mixed $value, \Closure $fail): void {
+                                fn (): Closure => function (string $attribute, mixed $value, Closure $fail): void {
                                     $emails = collect(explode(',', (string) $value))
                                         ->map(fn (string $e) => trim($e))
                                         ->filter(fn (string $e) => $e !== '')

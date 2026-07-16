@@ -30,7 +30,7 @@ return [
     'home' => [
         'seo_title' => 'AGC Assessors – Asesoría fiscal, laboral y contable',
         'seo_description' => 'Servicios de asesoría profesional en Cataluña. Fiscal, laboral, contable y jurídico para empresas y autónomos.',
-        'hero_title_html' => 'Tu <span class="text-[#00346f]">asesoría</span> de confianza',
+        'hero_title_html' => 'Tu asesoría de confianza',
         'hero_title' => 'Tu asesoría de confianza en Cataluña',
         'hero_subtitle' => 'Expertos en gestión fiscal, laboral y contable. Te acompañamos en cada paso de tu negocio.',
         'hero_cta_primary' => 'Solicitar consulta',

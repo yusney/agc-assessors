@@ -84,4 +84,21 @@ final class OfficesControllerTest extends TestCase
         $this->assertArrayHasKey('lat', $geoJson[0]);
         $this->assertArrayHasKey('lng', $geoJson[0]);
     }
+
+    public function test_office_show_renders_service_area_by_default(): void
+    {
+        EloquentOffice::create([
+            'name' => ['ca' => 'Oficina Barcelona'],
+            'address' => ['ca' => 'Carrer Central 1'],
+            'city' => ['ca' => 'Barcelona'],
+            'slug' => ['ca' => 'barcelona'],
+            'service_area' => ['ca' => 'Sentmenat'],
+            'is_active' => true,
+        ]);
+
+        $response = $this->get('/oficines/barcelona', $this->headers);
+
+        $response->assertOk()->assertSee('També atenem a');
+    }
+
 }

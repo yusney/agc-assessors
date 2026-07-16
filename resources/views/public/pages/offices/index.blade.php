@@ -88,7 +88,7 @@
 </section>
 @endif
 
-{{-- Per-office semantic blocks with H2 + <address> + unique content + service area --}}
+{{-- Per-office semantic blocks with H2 + <address> + unique content --}}
 @if(!empty($offices))
 <section class="w-full max-w-[1280px] mx-auto px-6 md:px-8 pb-28">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -117,7 +117,6 @@
             $hours = $office->openingHours()?->get($locale)
                 ?? $office->openingHours()?->get('ca')
                 ?? '';
-            $serviceArea = $office->serviceAreaList($locale);
         @endphp
         <article id="office-{{ $office->id() }}" itemscope itemtype="https://schema.org/LocalBusiness" class="group bg-white rounded-[1.5rem] border border-[#E2E8F0] overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
             <meta itemprop="@id" content="{{ $officePath('#office-'.$office->id()) }}">
@@ -209,22 +208,6 @@
                 <p class="text-[14px] text-[#424751] leading-relaxed mb-4" itemprop="description">
                     {{ $description }}
                 </p>
-                @endif
-
-                {{-- Service area — long-tail local SEO --}}
-                @if($serviceArea !== [])
-                <div class="mb-5">
-                    <p class="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#64748B] mb-2">
-                        {{ __('messages.offices.also_serving') }}
-                    </p>
-                    <ul class="flex flex-wrap gap-1.5">
-                        @foreach($serviceArea as $area)
-                        <li class="text-[12px] text-[#00346f] bg-[#00346f]/8 px-2.5 py-1 rounded-full border border-[#00346f]/15">
-                            {{ $area }}
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
                 @endif
 
                 {{-- CTA: Ver oficina + Cómo llegar --}}

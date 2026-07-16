@@ -48,7 +48,7 @@
 <p class="text-[#424751] text-[16px] leading-[1.7] mb-8">{{ $formIntro }}</p>
 @endif
 
-<form method="POST" action="{{ route('careers.store') }}" enctype="multipart/form-data"
+<form method="POST" action="{{ request()->getPathInfo() }}" enctype="multipart/form-data"
       x-data="{
           name: @js(old('name', '')),
           lastName: @js(old('last_name', '')),

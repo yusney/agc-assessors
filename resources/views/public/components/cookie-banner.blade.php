@@ -92,7 +92,7 @@ $cookiePolicyUrl = route('pages.show', ['slug' => 'cookie-policy']);
                             <p class="text-[13px] text-[#64748B] leading-relaxed">{{ __('messages.cookies.analytics_text') }}</p>
                         </div>
                         <button
-                            @click="preferences.analytics = !preferences.analytics"
+                            @click="toggleAnalytics()"
                             class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0"
                             :class="preferences.analytics ? 'bg-[#00346f]' : 'bg-[#CBD5E1]"
                         >
@@ -110,7 +110,7 @@ $cookiePolicyUrl = route('pages.show', ['slug' => 'cookie-policy']);
                             <p class="text-[13px] text-[#64748B] leading-relaxed">{{ __('messages.cookies.marketing_text') }}</p>
                         </div>
                         <button
-                            @click="preferences.marketing = !preferences.marketing"
+                            @click="toggleMarketing()"
                             class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0"
                             :class="preferences.marketing ? 'bg-[#00346f]' : 'bg-[#CBD5E1]"
                         >
@@ -178,6 +178,12 @@ function cookieBanner() {
         savePreferences() {
             this.saveConsent();
             this.visible = false;
+        },
+        toggleAnalytics() {
+            this.preferences.analytics = !this.preferences.analytics;
+        },
+        toggleMarketing() {
+            this.preferences.marketing = !this.preferences.marketing;
         },
         saveConsent() {
             const consent = {

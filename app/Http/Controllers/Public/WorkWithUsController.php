@@ -10,10 +10,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Mail\JobApplicationMail;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class WorkWithUsController extends Controller
 {
@@ -56,14 +56,18 @@ final class WorkWithUsController extends Controller
         // Send email
         try {
             Mail::send(new JobApplicationMail($application, $settings));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            Log::error('Career application email notification failed.', [
+                'application_id' => $application->getKey(),
+                'exception' => $e::class,
+            ]);
             report($e);
 
             $successMessage = $settings['form_success_message'][$locale]
                 ?? __('messages.careers.form_success');
 
             return redirect()
-                ->to(LaravelLocalization::getLocalizedURL($locale, route('careers.index')))
+                ->to($request->url())
                 ->with('success', $successMessage)
                 ->with('warning', __('messages.careers.email_notification_failed'))
                 ->withInput();
@@ -74,7 +78,7 @@ final class WorkWithUsController extends Controller
             ?? __('messages.careers.form_success');
 
         return redirect()
-            ->to(LaravelLocalization::getLocalizedURL($locale, route('careers.index')))
+            ->to($request->url())
             ->with('success', $successMessage);
     }
 }

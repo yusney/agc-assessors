@@ -100,7 +100,7 @@ foreach ($localesToRegister as $localeCode) {
             'prefix' => $prefix,
             'middleware' => ['setLocaleFromUrl', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
         ],
-        function () {
+        function () use ($localeCode) {
             Route::get('/', HomeController::class)->name('home');
 
             Route::get('/search', SearchController::class)->name('search');
@@ -124,8 +124,9 @@ foreach ($localesToRegister as $localeCode) {
             Route::get('/oficines', [OfficesController::class, 'index'])->name('offices.index');
             Route::get('/oficines/{slug}', [OfficesController::class, 'show'])->name('offices.show');
 
-            Route::get('/treballa-amb-nosaltres', [WorkWithUsController::class, 'index'])->name('careers.index');
-            Route::post('/treballa-amb-nosaltres', [WorkWithUsController::class, 'store'])->name('careers.store')->middleware('spam', 'throttle:3,60');
+            $careersPath = (string) trans('routes.careers', [], $localeCode);
+            Route::get('/'.$careersPath, [WorkWithUsController::class, 'index'])->name('careers.index.'.$localeCode);
+            Route::post('/'.$careersPath, [WorkWithUsController::class, 'store'])->name('careers.store.'.$localeCode)->middleware('spam', 'throttle:3,60');
 
             Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
         }

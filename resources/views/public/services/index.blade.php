@@ -34,7 +34,7 @@
             $name        = addslashes($service->name()->get(app()->getLocale()));
             $description = addslashes(strip_tags(Str::limit($service->description()->get(app()->getLocale()), 200)));
             $coverUrl    = $service->coverUrl() ?? '';
-            $url         = route('services.show', $service->slug());
+            $url         = $localizedUrl('/serveis/' . $service->slug()->value());
         @endphp
         <a href="{{ $url }}"
             class="group flex flex-col rounded-[1.5rem] border border-[#E2E8F0]

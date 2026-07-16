@@ -46,7 +46,7 @@
 <section class="w-full bg-[#f9f9ff] border-b border-[#E2E8F0]">
     <div class="w-full max-w-[1280px] mx-auto px-6 md:px-8 py-16 md:py-24">
         {{-- Breadcrumb --}}
-        <a href="{{ route('services.index') }}"
+        <a href="{{ $localizedUrl('/serveis') }}"
            class="inline-flex items-center text-[#64748B] hover:text-[#00346f] text-[14px]
                   transition-colors group mb-10 animate-fade-in">
             <span class="material-symbols-outlined text-[18px] mr-1.5
@@ -146,7 +146,7 @@
             <p class="text-[#64748B] text-[18px] leading-relaxed font-light mb-10 max-w-[560px] mx-auto">
                 {{ __('messages.home.hero_subtitle') }}
             </p>
-            <a href="{{ route('contact') }}"
+            <a href="{{ $localizedUrl('/contacte') }}"
                class="inline-flex items-center gap-2 bg-[#00346f] text-white
                       px-10 py-4 rounded-xl font-semibold text-[16px]
                       hover:bg-[#004a99]

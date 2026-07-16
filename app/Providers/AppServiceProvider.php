@@ -27,7 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('layouts.public', SeoComposer::class);
+        View::composer([
+            'layouts.public',
+            'public.services.index',
+            'public.services.show',
+        ], SeoComposer::class);
 
         // Super-admin bypass: any user bearing the 'super_admin' role is granted
         // every authorization check unconditionally before policies are evaluated.

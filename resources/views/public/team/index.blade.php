@@ -19,7 +19,7 @@
     @if(empty($members))
         <p class="text-[#64748B] text-center py-16">{{ __('messages.team.empty') }}</p>
     @else
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
         @foreach($members as $member)
         <div class="group flex flex-col items-center text-center">
             {{-- Avatar --}}

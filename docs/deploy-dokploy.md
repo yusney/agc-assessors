@@ -7,11 +7,11 @@ Guía completa para desplegar AGC Assessors en producción usando Dokploy con im
 ## Arquitectura
 
 ```
-GitHub (push a master)
+GitHub (push a master protegido)
     ↓
-GitHub Actions CI
-    ↓ build + push
-GHCR (ghcr.io/yusney/agc-assessors:latest)
+GitHub Actions: quality gates
+    ↓ build + scan + push
+GHCR (tag de trazabilidad `sha-<commit SHA completo>`)
     ↓ pull
 Dokploy (VPS)
     ↓
@@ -36,15 +36,17 @@ Traefik → contenedor PHP+Nginx (puerto 8080)
 
 ## Paso 1 — Configurar GitHub Actions (CI)
 
-El archivo `.github/workflows/docker-build.yml` buildea y pushea la imagen a GHCR en cada push a `master`.
+El archivo `.github/workflows/docker-build.yml` ejecuta los quality gates (Composer, tests de Laravel, Pint, pnpm y Vite) antes de publicar en GHCR. La publicación solo ocurre en un push a `master` o `main` protegido; mientras no exista protección de rama, queda deshabilitada.
 
-Variables necesarias en **GitHub → Settings → Secrets and variables → Actions**:
+No hace falta crear un secret `GHCR_TOKEN`: el workflow usa el `GITHUB_TOKEN` automático, con `contents: read`, `packages: write` e `id-token: write` únicamente en el job de publicación.
 
-| Secret | Descripción |
-|--------|-------------|
-| `GHCR_TOKEN` | Personal Access Token con permisos `write:packages` |
+La imagen resultante puede consumirse con el tag de trazabilidad `ghcr.io/yusney/agc-assessors:sha-<COMMIT_SHA_COMPLETO>`, que identifica el commit pero puede volver a publicarse si se reejecuta el workflow. Para garantizar la inmutabilidad en producción, se debe usar el digest de imagen `ghcr.io/yusney/agc-assessors@sha256:...`. `latest` es solo un alias informativo del branch por defecto protegido y no debe usarse en producción.
 
-La imagen resultante: `ghcr.io/yusney/agc-assessors:latest`
+Configuración pendiente en GitHub (este cambio no modifica repository settings):
+
+- Proteger `master` (y `main` si se mantiene) y exigir el check `Quality gates` antes de hacer merge.
+- Crear el environment `production` con reviewers obligatorios y una regla de branches permitidas.
+- Permitir que el `GITHUB_TOKEN` del repositorio publique paquetes y conceder al paquete GHCR acceso al repositorio mediante `packages: write`.
 
 ---
 
@@ -52,7 +54,7 @@ La imagen resultante: `ghcr.io/yusney/agc-assessors:latest`
 
 1. Dokploy → **Create Application**
 2. **Type**: Docker Image
-3. **Image**: `ghcr.io/yusney/agc-assessors:latest`
+3. **Image**: `ghcr.io/yusney/agc-assessors@sha256:...` (el digest publicado para el tag de trazabilidad `sha-<COMMIT_SHA_COMPLETO>`)
 4. **Registry**: GitHub Container Registry
    - Username: `yusney`
    - Token: Personal Access Token con `read:packages`
@@ -138,7 +140,7 @@ Si creamos `public/storage` durante el `docker build`, al arrancar el contenedor
 
 ## Paso 6 — Entrypoint (no es necesario configurar)
 
-> **Nota**: La imagen `ghcr.io/yusney/agc-assessors:latest` ya incluye un startup script que se ejecuta automáticamente al arrancar el contenedor. No hace falta configurar nada en Dokploy → Advanced → Command / Entrypoint.
+> **Nota**: La imagen fijada por digest ya incluye un startup script que se ejecuta automáticamente al arrancar el contenedor. No hace falta configurar nada en Dokploy → Advanced → Command / Entrypoint.
 >
 > Si dejaste un entrypoint manual de una versión anterior, **borralo** para que no interfiera con el script automático.
 >
@@ -239,10 +241,11 @@ psql -U $POSTGRES_USER -d agc < /tmp/agc_backup_local.sql
 
 ## Deploys automáticos (CD)
 
-Cada push a `master`:
+Cada push a `main` o `master` protegido:
 
-1. GitHub Actions buildea la nueva imagen y la pushea a GHCR (~1-2 min)
-2. En Dokploy hacer **Redeploy** para que tome la nueva imagen
+1. GitHub Actions ejecuta los quality gates, escanea la imagen y la publica a GHCR (~1-2 min)
+2. En Dokploy actualizar la referencia al digest de imagen y hacer **Redeploy**. El tag SHA completo solo sirve para localizar y trazar la publicación, porque puede republicarse en un rerun.
+3. No usar `latest` en producción: no es una referencia inmutable
 
 Para automatizar el redeploy, Dokploy soporta **Webhooks**. Configurar en Dokploy → tu app → **Webhooks** y agregar la URL en GitHub → Settings → Webhooks.
 
@@ -338,4 +341,4 @@ docker exec -it $(docker ps -q -f name=agc) sh -c "chown -R www-data:www-data /v
 |---------|-----|
 | Sitio público | https://agc.donduque.dev |
 | Panel admin | https://agc.donduque.dev/admin |
-| Imagen GHCR | `ghcr.io/yusney/agc-assessors:latest` |
+| Imagen GHCR | Tag de trazabilidad: `ghcr.io/yusney/agc-assessors:sha-<COMMIT_SHA_COMPLETO>`; producción: `ghcr.io/yusney/agc-assessors@sha256:...` |

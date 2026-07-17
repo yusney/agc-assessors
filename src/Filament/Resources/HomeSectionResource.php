@@ -155,9 +155,9 @@ class HomeSectionResource extends Resource
                                 ])
                                 ->columnSpanFull(),
 
-                            // ── Botones (hero, news_highlight, contact_cta) ─
+                            // ── Botones (hero, intro, news_highlight, contact_cta) ─
                             Section::make('Botones')
-                                ->hidden(fn (Get $get): bool => ! in_array($get('type'), ['hero', 'news_highlight', 'contact_cta']))
+                                ->hidden(fn (Get $get): bool => ! in_array($get('type'), ['hero', 'intro', 'news_highlight', 'contact_cta']))
                                 ->schema([
                                     Grid::make(2)->schema([
                                         UrlPickerField::make('cta_url')
@@ -337,9 +337,7 @@ class HomeSectionResource extends Resource
                                                     ->orderBy('sort_order')
                                                     ->get(['slug', 'name'])
                                                     ->mapWithKeys(fn (ServiceModel $s): array => [
-                                                        $s->slug => is_array($s->name)
-                                                            ? ($s->name['ca'] ?? $s->name['es'] ?? reset($s->name))
-                                                            : $s->name,
+                                                        $s->slug => $s->getTranslation('name', 'ca', useFallbackLocale: true),
                                                     ])
                                                     ->all()
                                                 )
@@ -466,10 +464,10 @@ class HomeSectionResource extends Resource
                 ->rows(5)
                 ->hidden(fn (Get $get): bool => $get('type') !== 'intro'),
 
-            // cta_label: hero, news_highlight, contact_cta
+            // cta_label: hero, intro, news_highlight, contact_cta
             TextInput::make("cta_label.{$locale}")
                 ->label("Texto botón principal ({$locale})")
-                ->hidden(fn (Get $get): bool => ! in_array($get('type'), ['hero', 'news_highlight', 'contact_cta'])),
+                ->hidden(fn (Get $get): bool => ! in_array($get('type'), ['hero', 'intro', 'news_highlight', 'contact_cta'])),
 
             // secondary_cta_label: hero only
             TextInput::make("secondary_cta_label.{$locale}")

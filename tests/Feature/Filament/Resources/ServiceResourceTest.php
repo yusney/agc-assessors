@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Filament\Resources;
 
 use AGC\Filament\Resources\ServiceResource;
+use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
 use Filament\Forms\Components\Field;
 use Filament\Schemas\Schema;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -144,6 +147,26 @@ final class ServiceResourceTest extends TestCase
             $flat,
             "Field '{$fieldName}' toolbar must include 'attachCuratorMedia'"
         );
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function test_service_table_name_column_reads_the_catalan_translation(): void
+    {
+        $table = ServiceResource::table(Table::make($this->createMock(HasTable::class)));
+        $column = $table->getColumns()['name'];
+
+        $record = new ServiceModel();
+        $record->setAttribute('name', [
+            'ca' => 'Servei català',
+            'es' => 'Servicio español',
+        ]);
+
+        $column->record($record);
+
+        $this->assertSame('name', $column->getName());
+        $this->assertSame('Nombre (ca)', $column->getLabel());
+        $this->assertSame(40, $column->getCharacterLimit());
+        $this->assertSame('Servei català', $column->getState());
     }
 
     /** @return array<string, array{0: string}> */

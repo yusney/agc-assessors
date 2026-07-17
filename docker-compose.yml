@@ -35,7 +35,7 @@ services:
       PHP_XDEBUG_CLIENT_HOST: "host.docker.internal"
       PHP_XDEBUG_CLIENT_PORT: "9003"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/up"]
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8080/up') === false ? 1 : 0);"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -92,6 +92,7 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: agc-queue
+    user: www-data
     working_dir: /var/www/html
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
     volumes:
@@ -110,6 +111,7 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: agc-scheduler
+    user: www-data
     working_dir: /var/www/html
     command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
     volumes:

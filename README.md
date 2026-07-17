@@ -64,8 +64,17 @@ docker compose exec php composer install
 # Clau d'aplicació
 docker compose exec php php artisan key:generate
 
-# Migracions i dades inicials
-docker compose exec php php artisan migrate --seed
+# Migracions
+docker compose exec php php artisan migrate
+
+# Permisos de Filament Shield
+docker compose exec php php artisan shield:generate --all --panel=admin --ignore-existing-policies
+
+# Rols i permisos de l'aplicació
+docker compose exec php php artisan db:seed --class=RolesAndPermissionsSeeder
+
+# Administrador (la contrasenya es demana de forma oculta)
+docker compose exec php php artisan app:create-admin '<ADMIN_EMAIL>' --name='<ADMIN_NAME>'
 
 # Permisos d'emmagatzematge
 docker run --rm -v "$(pwd):/work" -u root alpine sh -c "chown -R 33:33 /work/storage /work/bootstrap/cache"
@@ -88,7 +97,7 @@ pnpm install && pnpm build
 | Servei | URL | Credencials |
 |---|---|---|
 | **Web pública** | http://localhost:8080 | — |
-| **Panell admin (Filament)** | http://localhost:8080/admin | `admin@agcassessors.com` / `Admin*123` |
+| **Panell admin (Filament)** | http://localhost:8080/admin | Crear l'usuari explícitament amb `php artisan app:create-admin` |
 | **Mailpit (correu de dev)** | http://localhost:8025 | — |
 
 ---

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -34,6 +33,22 @@ final class RolesAndPermissionsSeeder extends Seeder
     /** Abilities that constitute read-only access. */
     private const READ_ABILITIES = ['ViewAny', 'View'];
 
+    /** All abilities generated for content resources by Shield. */
+    private const MANAGER_ABILITIES = [
+        'ViewAny',
+        'View',
+        'Create',
+        'Update',
+        'Delete',
+        'DeleteAny',
+        'ForceDelete',
+        'ForceDeleteAny',
+        'Restore',
+        'RestoreAny',
+        'Replicate',
+        'Reorder',
+    ];
+
     /** Abilities that constitute full content CRUD (no hard-delete variants). */
     private const EDITOR_ABILITIES = ['ViewAny', 'View', 'Create', 'Update', 'Delete'];
 
@@ -42,18 +57,25 @@ final class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions between runs (important for tests).
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Defensive check: permissions must exist before we can assign them.
-        if (Permission::count() === 0) {
-            throw new \RuntimeException(
-                'No permissions found. Run "php artisan shield:generate --all --panel=admin" before seeding roles.'
-            );
+        $requiredPermissionNames = $this->requiredPermissionNames();
+        $existingPermissionNames = Permission::query()
+            ->where('guard_name', 'web')
+            ->whereIn('name', $requiredPermissionNames)
+            ->pluck('name')
+            ->all();
+        $missingPermissionNames = array_values(array_diff($requiredPermissionNames, $existingPermissionNames));
+
+        if ($missingPermissionNames !== []) {
+            throw new \RuntimeException(sprintf(
+                'Missing required permissions: %s. Run "php artisan shield:generate --all --panel=admin" before seeding roles.',
+                implode(', ', $missingPermissionNames),
+            ));
         }
 
         $this->seedSuperAdmin();
         $this->seedManager();
         $this->seedEditor();
         $this->seedViewer();
-        $this->assignSuperAdminToDefaultAdmin();
     }
 
     private function seedSuperAdmin(): void
@@ -114,17 +136,27 @@ final class RolesAndPermissionsSeeder extends Seeder
         $viewer->syncPermissions($permissions);
     }
 
-    private function assignSuperAdminToDefaultAdmin(): void
+    /**
+     * Return the permission names required by the role assignments below.
+     *
+     * @return list<string>
+     */
+    private function requiredPermissionNames(): array
     {
-        $admin = User::where('email', 'admin@agcassessors.com')->first();
+        $permissionNames = [];
 
-        if ($admin === null) {
-            return;
+        foreach (self::CONTENT_RESOURCES as $resource) {
+            foreach (self::MANAGER_ABILITIES as $ability) {
+                $permissionNames[] = "{$ability}:{$resource}";
+            }
         }
 
-        // assignRole is idempotent — does not create duplicate pivot rows.
-        if (! $admin->hasRole('super_admin')) {
-            $admin->assignRole('super_admin');
+        foreach (self::STRUCTURAL_RESOURCES as $resource) {
+            foreach (self::READ_ABILITIES as $ability) {
+                $permissionNames[] = "{$ability}:{$resource}";
+            }
         }
+
+        return $permissionNames;
     }
 }

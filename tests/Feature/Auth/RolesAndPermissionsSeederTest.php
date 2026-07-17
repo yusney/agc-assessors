@@ -41,14 +41,25 @@ final class RolesAndPermissionsSeederTest extends TestCase
         $this->assertDatabaseHas('roles', ['name' => 'viewer']);
     }
 
-    public function test_seeder_assigns_super_admin_role_to_admin_user(): void
+    public function test_seeder_fails_when_permissions_are_non_empty_but_incomplete(): void
+    {
+        Permission::query()->where('name', 'Update:NewsModel')->delete();
+
+        $this->assertGreaterThan(0, Permission::count());
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Update:NewsModel');
+
+        $this->seed(RolesAndPermissionsSeeder::class);
+    }
+
+    public function test_seeder_does_not_assign_super_admin_role_to_matching_email(): void
     {
         User::factory()->create(['email' => 'admin@agcassessors.com']);
 
         $this->seed(RolesAndPermissionsSeeder::class);
 
         $admin = User::where('email', 'admin@agcassessors.com')->firstOrFail();
-        $this->assertTrue($admin->hasRole('super_admin'));
+        $this->assertFalse($admin->hasRole('super_admin'));
     }
 
     public function test_seeder_is_idempotent_no_duplicate_roles(): void
@@ -64,7 +75,7 @@ final class RolesAndPermissionsSeederTest extends TestCase
         $this->assertSame(1, Role::where('name', 'viewer')->count());
     }
 
-    public function test_seeder_is_idempotent_no_duplicate_role_assignments(): void
+    public function test_seeder_is_idempotent_without_assigning_roles_to_users(): void
     {
         User::factory()->create(['email' => 'admin@agcassessors.com']);
 
@@ -72,7 +83,7 @@ final class RolesAndPermissionsSeederTest extends TestCase
         $this->seed(RolesAndPermissionsSeeder::class);
 
         $admin = User::where('email', 'admin@agcassessors.com')->firstOrFail();
-        $this->assertSame(1, $admin->roles()->where('name', 'super_admin')->count());
+        $this->assertSame(0, $admin->roles()->count());
     }
 
     public function test_editor_role_has_no_home_section_permissions(): void

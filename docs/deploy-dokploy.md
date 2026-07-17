@@ -89,7 +89,7 @@ TRUSTED_PROXIES=*
 APP_KEY=base64:...
 
 # Curator (gestor de medios)
-CURATOR_GLIDE_TOKEN=f7XFY7wJBASjyQiw9OBUmwwolxTOcFsT
+CURATOR_GLIDE_TOKEN=<CURATOR_GLIDE_TOKEN>
 
 # Mail (configurar proveedor real)
 MAIL_MAILER=smtp
@@ -102,6 +102,8 @@ MAIL_FROM_NAME="AGC Assessors"
 ```
 
 > **IMPORTANTE**: `TRUSTED_PROXIES=*` es obligatorio. Sin esto, Laravel genera URLs HTTP en lugar de HTTPS porque no detecta que está detrás de Traefik.
+>
+> Los valores entre `<...>` son marcadores. Sustituirlos por secretos gestionados en Dokploy; no guardar valores reales en el repositorio ni en esta guía.
 
 ---
 
@@ -139,6 +141,8 @@ Si creamos `public/storage` durante el `docker build`, al arrancar el contenedor
 > **Nota**: La imagen `ghcr.io/yusney/agc-assessors:latest` ya incluye un startup script que se ejecuta automáticamente al arrancar el contenedor. No hace falta configurar nada en Dokploy → Advanced → Command / Entrypoint.
 >
 > Si dejaste un entrypoint manual de una versión anterior, **borralo** para que no interfiera con el script automático.
+>
+> El startup automático solo prepara el enlace `public/storage → storage/app/public`. No ejecuta migraciones, seeders, Shield, Tinker ni comandos de autenticación, y no modifica la base de datos.
 
 ---
 
@@ -171,38 +175,44 @@ Dokploy genera las credenciales automáticamente. Copiarlas a las variables de e
 
 ---
 
-## Paso 10 — Inicializar la base de datos
+## Paso 10 — Inicializar la base de datos y el acceso admin
 
-Una vez el contenedor esté corriendo, ejecutar via **Terminal** en Dokploy o SSH:
+Una vez el contenedor esté corriendo, ejecutar via **Terminal** en Dokploy o SSH los siguientes comandos, en este orden:
 
+1. Ejecutar las migraciones:
 ```bash
 docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan migrate --force"
 ```
 
-Luego correr los seeders:
+2. Generar los permisos de Filament Shield:
 
 ```bash
-docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan db:seed --force"
+docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan shield:generate --all --panel=admin --ignore-existing-policies"
 ```
+
+3. Crear los roles y permisos de la aplicación:
+
+```bash
+docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan db:seed --class=RolesAndPermissionsSeeder --force"
+```
+
+4. Crear el administrador de forma explícita e interactiva. Sustituir los marcadores por valores reales; la contraseña se solicita de forma oculta y nunca se pasa como argumento:
+
+```bash
+docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan app:create-admin '<ADMIN_EMAIL>' --name='<ADMIN_NAME>'"
+```
+
+`DatabaseSeeder` es intencionadamente un no-op. No uses `php artisan db:seed` como bootstrap de producción: los seeders de permisos y el administrador deben invocarse explícitamente como se muestra arriba.
 
 ---
 
-## Paso 11 — Crear usuario admin
+## Advertencia de rollback de seguridad (P0)
 
-```bash
-docker exec -it $(docker ps -q -f name=agc) sh -c "cd /var/www/html && php artisan tinker --execute=\"
-\\App\\Models\\User::create([
-    'name' => 'Admin',
-    'email' => 'admin@agcassessors.com',
-    'password' => bcrypt('Admin*123'),
-    'email_verified_at' => now(),
-]);
-\""
-```
+Nunca reviertas a imágenes anteriores a P0 hasta haber rotado o revocado la credencial fija conocida y haber verificado que la cuenta de administrador heredada es segura. Después de esta corrección, promueve únicamente imágenes posteriores a P0.
 
 ---
 
-## Paso 12 — Restaurar backup de base de datos (opcional)
+## Paso 11 — Restaurar backup de base de datos (opcional)
 
 Si tenés un backup local (`agc_backup_local.sql`), podés restaurarlo usando DBeaver conectado a la base de datos remota:
 
@@ -299,7 +309,7 @@ Síntoma: las imágenes subidas desde el panel de admin (Filament/Curator) se ve
    ```
    Debería ver:
    ```
-   🔗 Created symlink: /var/www/html/public/storage -> /var/www/html/storage/app/public
+    Storage symlink created: /var/www/html/public/storage -> /var/www/html/storage/app/public
    ```
 
 4. **Si el symlink no existe**, ejecutar manualmente:

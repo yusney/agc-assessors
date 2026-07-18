@@ -6,10 +6,11 @@
 
 services:
   php:
-    # Imagen pre-compilada por GitHub Actions CI → GitHub Container Registry (GHCR)
-    # Actualizarse automáticamente con cada push a main
-    image: ghcr.io/yusney/agc-assessors:latest
+    # Required immutable GHCR manifest digest, for example sha256:abc123...
+    image: ghcr.io/yusney/agc-assessors@${AGC_IMAGE_DIGEST:?Set AGC_IMAGE_DIGEST to the published sha256 digest}
     restart: unless-stopped
+    env_file:
+      - ${AGC_ENV_FILE:?Set AGC_ENV_FILE to an external production environment file}
     ports:
       - "8080:8080"
     environment:
@@ -18,17 +19,24 @@ services:
       PHP_POST_MAX_SIZE: "64M"
       PHP_MAX_EXECUTION_TIME: "300"
       PHP_OPCACHE_ENABLE: "1"
+      # Keep all database/auth changes as explicit deployment operations.
+      AUTORUN_ENABLED: "false"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/up"]
+      test: ["CMD", "php", "/usr/local/bin/agc-healthcheck.php"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
     volumes:
-      # Solo persistimos storage (CVs, uploads, logs) y cache fuera del contenedor
+      # Only storage persists across deployments.
       - agc-storage:/var/www/html/storage
-      - agc-cache:/var/www/html/bootstrap/cache
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+      - /var/www/html/bootstrap/cache:rw,noexec,nosuid,nodev,size=16m,uid=33,gid=33,mode=0770
 
 volumes:
   agc-storage:
-  agc-cache:

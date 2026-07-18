@@ -1,17 +1,10 @@
-# =============================================================================
-# AGC Assessors - Dockerfile (Producción)
-# PHP 8.4 + Nginx + Node 24 + pnpm
-# Compila assets durante el build. Sin Xdebug. Sin dev dependencies.
-# =============================================================================
+# syntax=docker/dockerfile:1
 
-FROM serversideup/php:8.4-fpm-nginx
-
-LABEL org.opencontainers.image.source="https://github.com/yusney/agc-assessors"
-LABEL org.opencontainers.image.description="AGC Assessors - Laravel production image"
+# Human-readable tag: serversideup/php:8.4-fpm-nginx (v4.5.0 at pin time)
+FROM serversideup/php:8.4-fpm-nginx@sha256:8eec7ce8d9d6a38bbc6f0f70ef439aab2279646bc01d74cbe538dbeada4da828 AS php-base
 
 USER root
 
-# 1. Extensiones PHP necesarias para producción
 RUN install-php-extensions \
     intl \
     gd \
@@ -19,39 +12,113 @@ RUN install-php-extensions \
     exif \
     xsl \
     sockets \
-    pdo_pgsql
+    pdo_pgsql \
+    && apt-get purge -y --auto-remove $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Instalar Node.js 24 + pnpm (para compilar assets Vite/Tailwind)
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g pnpm
-
-# 3. Copiar todo el proyecto
-# Usamos --chown para que www-data sea dueño desde el inicio
-COPY --chown=www-data:www-data . /var/www/html
+FROM php-base AS vendor
 
 WORKDIR /var/www/html
 
-# 4. Instalar dependencias PHP (solo producción, optimizadas)
+COPY composer.json composer.lock ./
+
 RUN composer install \
     --no-dev \
-    --optimize-autoloader \
     --no-interaction \
+    --no-progress \
+    --no-scripts \
+    --optimize-autoloader \
     --prefer-dist
 
-# 5. Instalar dependencias Node y compilar assets
-# --frozen-lockfile asegura usar exactamente pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile \
-    && pnpm build
+COPY app ./app
+COPY artisan ./artisan
+COPY bootstrap ./bootstrap
+COPY config ./config
+COPY database ./database
+COPY public ./public
+COPY resources ./resources
+COPY routes ./routes
+COPY src ./src
 
-# 6. Permisos finales para directorios que Laravel escribe en runtime
-RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views \
+# Run the application's post-autoload scripts only after its source is present.
+RUN mkdir -p \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && composer dump-autoload \
+    --no-dev \
+    --classmap-authoritative \
+    --no-interaction \
+    && php artisan --version
+
+# Human-readable tag: node:24-alpine
+FROM node:24-alpine@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd AS assets
+
+WORKDIR /app
+
+RUN corepack enable \
+    && corepack prepare pnpm@10.32.1 --activate
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Filament's Tailwind theme imports and scans PHP files from vendor and the app.
+COPY --from=vendor /var/www/html/vendor ./vendor
+COPY app ./app
+COPY resources ./resources
+COPY src ./src
+COPY vite.config.js ./vite.config.js
+
+RUN pnpm run build
+
+FROM php-base AS runtime
+
+LABEL org.opencontainers.image.source="https://github.com/yusney/agc-assessors"
+LABEL org.opencontainers.image.description="AGC Assessors - Laravel production image"
+
+WORKDIR /var/www/html
+
+COPY --chown=root:root app ./app
+COPY --chown=root:root artisan ./artisan
+COPY --chown=root:root bootstrap ./bootstrap
+COPY --chown=root:root config ./config
+COPY --chown=root:root composer.json composer.lock ./
+COPY --chown=root:root database ./database
+COPY --chown=root:root public ./public
+COPY --chown=root:root resources ./resources
+COPY --chown=root:root routes ./routes
+COPY --chown=root:root src ./src
+COPY --from=vendor --chown=root:root /var/www/html/vendor ./vendor
+COPY --from=assets --chown=root:root /app/public/build ./public/build
+
+# The link is immutable application code. Its absolute target remains valid when
+# Docker mounts the persistent storage volume over /var/www/html/storage.
+RUN mkdir -p \
+        storage/app/public \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && ln -s /var/www/html/storage/app/public public/storage \
+    && php artisan package:discover --ansi \
+    && php artisan filament:upgrade \
+    && php artisan --version \
+    && test -f public/build/manifest.json \
+    && chown -R root:root /var/www/html \
+    && chmod -R a-w /var/www/html \
     && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && find storage bootstrap/cache -type d -exec chmod 0770 {} + \
+    && find storage bootstrap/cache -type f -exec chmod 0660 {} +
 
-# 7. Startup script: recrea el symlink public/storage en cada arranque.
-#    La imagen base serversideup/php ejecuta automáticamente todos los
-#    scripts .sh de /etc/entrypoint.d/ al arrancar el contenedor.
-COPY --chmod=755 docker/php/entrypoint.d/ /etc/entrypoint.d/
+# ServerSideUp v4 executes executable scripts here before starting S6 services.
+COPY --chown=root:root --chmod=0555 docker/php/entrypoint.d/ /etc/entrypoint.d/
+COPY --chown=root:root --chmod=0555 docker/php/healthcheck.php /usr/local/bin/agc-healthcheck.php
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD ["php", "/usr/local/bin/agc-healthcheck.php"]
 
+# Production intentionally inherits ServerSideUp's generated Nginx v4 defaults.
+# docker/nginx targets an older topology (port 80 and a separate php:9000 host).
 USER www-data

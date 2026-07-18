@@ -124,7 +124,7 @@ MAIL_FROM_ADDRESS=noreply@agcassessors.com
 MAIL_FROM_NAME="AGC Assessors"
 ```
 
-> **IMPORTANTE**: `TRUSTED_PROXIES=*` es obligatorio. Sin esto, Laravel genera URLs HTTP en lugar de HTTPS porque no detecta que está detrás de Traefik.
+> Laravel confía en el proxy de Dokploy desde `bootstrap/app.php`. Mantén `APP_URL` en HTTPS y verifica que Traefik envíe correctamente `X-Forwarded-Proto`.
 >
 > Los valores entre `<...>` son marcadores. Sustituirlos por secretos gestionados en Dokploy; no guardar valores reales en el repositorio ni en esta guía.
 >
@@ -350,10 +350,10 @@ curl -I https://agc.donduque.dev/storage/XXXX-XXXX-XXXX-XXXX.jpg
 ## Troubleshooting
 
 ### 403 Forbidden en el panel admin
-El modelo `User` debe implementar `FilamentUser` con `canAccessPanel()` retornando `true`. Ver `app/Models/User.php`.
+Verifica que el usuario tenga uno de los roles autorizados (`super_admin`, `manager`, `editor` o `viewer`). No desactives el control de `canAccessPanel()`. Si falta el administrador, sigue el bootstrap explícito del Paso 10.
 
 ### Assets cargando en HTTP (mixed content)
-Verificar que `TRUSTED_PROXIES=*` está configurado en las variables de entorno. Sin esto, Laravel no detecta que está detrás de Traefik y genera URLs HTTP.
+Verifica que `APP_URL` use `https://` y que Traefik envíe `X-Forwarded-Proto: https`. La aplicación ya confía en el proxy desde `bootstrap/app.php`.
 
 ### Imágenes de la biblioteca no se ven en el frontend
 

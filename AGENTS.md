@@ -153,7 +153,7 @@ docker compose run --rm node sh -c "npm install -g pnpm && pnpm build"
 ### Admin panel
 
 - URL: `http://localhost:8080/admin`
-- Login: `admin@agcassessors.com` / `Admin*123`
+- Create an admin explicitly with `php artisan app:create-admin '<ADMIN_EMAIL>' --name='<ADMIN_NAME>'`; never rely on fixed credentials.
 - Provider: `app/Providers/Filament/AdminPanelProvider.php`
 
 ---

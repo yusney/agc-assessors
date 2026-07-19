@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 final class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
+    /**
+     * Keep the default entrypoint explicit and side-effect free.
+     *
+     * Authentication and permission setup must be invoked manually in the
+     * documented order. In particular, this seeder never creates or changes
+     * users or roles.
+     */
     public function run(): void
     {
-        $this->call([
-            AdminUserSeeder::class,
-            RolesAndPermissionsSeeder::class,
-        ]);
+        $this->command?->info(
+            'No default seeders run. Invoke RolesAndPermissionsSeeder and app:create-admin explicitly.',
+        );
     }
 }

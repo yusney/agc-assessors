@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ViewComposers;
 
+use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use AGC\Domain\Service\Entities\Service;
 use AGC\Domain\Shared\ValueObjects\SEOData;
 use AGC\Domain\Shared\ValueObjects\Slug;
 use AGC\Domain\Shared\ValueObjects\TranslatableString;
+use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use App\Http\View\Composers\SeoComposer;
+use Awcodes\Curator\Models\Media;
 use Tests\TestCase;
 
 /**
@@ -25,6 +28,11 @@ use Tests\TestCase;
  */
 final class SeoComposerTest extends TestCase
 {
+    private function makeComposer(): SeoComposer
+    {
+        return new SeoComposer($this->createMock(OfficeRepositoryInterface::class));
+    }
+
     // ---------------------------------------------------------------------------
     // Task 1.4 — getHreflangAlternates()
     // ---------------------------------------------------------------------------
@@ -32,7 +40,7 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_hreflang_alternates_returns_three_locales(): void
     {
-        $composer   = new SeoComposer();
+        $composer = $this->makeComposer();
         $alternates = $composer->getHreflangAlternates();
 
         $this->assertCount(3, $alternates);
@@ -41,8 +49,8 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_hreflang_alternates_contains_ca_es_en(): void
     {
-        $composer = new SeoComposer();
-        $locales  = array_column($composer->getHreflangAlternates(), 'locale');
+        $composer = $this->makeComposer();
+        $locales = array_column($composer->getHreflangAlternates(), 'locale');
 
         $this->assertContains('ca', $locales);
         $this->assertContains('es', $locales);
@@ -52,20 +60,20 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_hreflang_alternates_each_entry_has_locale_and_url(): void
     {
-        $composer   = new SeoComposer();
+        $composer = $this->makeComposer();
         $alternates = $composer->getHreflangAlternates();
 
         foreach ($alternates as $alt) {
             $this->assertArrayHasKey('locale', $alt, 'Each alternate must have a locale key');
             $this->assertArrayHasKey('url', $alt, 'Each alternate must have a url key');
-            $this->assertNotEmpty($alt['url'], 'URL for locale ' . $alt['locale'] . ' must not be empty');
+            $this->assertNotEmpty($alt['url'], 'URL for locale '.$alt['locale'].' must not be empty');
         }
     }
 
     /** @test */
     public function test_get_hreflang_alternates_ca_url_has_no_locale_prefix(): void
     {
-        $composer   = new SeoComposer();
+        $composer = $this->makeComposer();
         $alternates = $composer->getHreflangAlternates();
 
         $caEntry = collect($alternates)->firstWhere('locale', 'ca');
@@ -80,7 +88,7 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_hreflang_alternates_secondary_locales_have_prefix(): void
     {
-        $composer   = new SeoComposer();
+        $composer = $this->makeComposer();
         $alternates = $composer->getHreflangAlternates();
 
         $esEntry = collect($alternates)->firstWhere('locale', 'es');
@@ -90,9 +98,9 @@ final class SeoComposerTest extends TestCase
         $this->assertNotNull($enEntry, 'en alternate must be present');
         // Secondary locales must include their prefix
         $this->assertStringContainsString('/es', (string) $esEntry['url'],
-            "Spanish hreflang URL must include /es prefix");
+            'Spanish hreflang URL must include /es prefix');
         $this->assertStringContainsString('/en', (string) $enEntry['url'],
-            "English hreflang URL must include /en prefix");
+            'English hreflang URL must include /en prefix');
     }
 
     // ---------------------------------------------------------------------------
@@ -102,33 +110,43 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_og_locale_alternates_returns_non_active_locales(): void
     {
+        $previousLocale = app()->getLocale();
         app()->setLocale('ca');
 
-        $composer   = new SeoComposer();
-        $alternates = $composer->getOgLocaleAlternates();
+        try {
+            $composer = $this->makeComposer();
+            $alternates = $composer->getOgLocaleAlternates();
 
-        // Active locale 'ca' (ca_ES) must NOT appear in alternates
-        $this->assertNotContains('ca_ES', $alternates);
+            // Active locale 'ca' (ca_ES) must NOT appear in alternates
+            $this->assertNotContains('ca_ES', $alternates);
 
-        // Non-active locales must be present
-        $this->assertContains('es_ES', $alternates);
-        $this->assertContains('en_GB', $alternates);
+            // Non-active locales must be present
+            $this->assertContains('es_ES', $alternates);
+            $this->assertContains('en_GB', $alternates);
+        } finally {
+            app()->setLocale($previousLocale);
+        }
     }
 
     /** @test */
     public function test_get_og_locale_alternates_excludes_only_active_locale(): void
     {
+        $previousLocale = app()->getLocale();
         app()->setLocale('en');
 
-        $composer   = new SeoComposer();
-        $alternates = $composer->getOgLocaleAlternates();
+        try {
+            $composer = $this->makeComposer();
+            $alternates = $composer->getOgLocaleAlternates();
 
-        // Active locale en_GB must NOT appear
-        $this->assertNotContains('en_GB', $alternates);
+            // Active locale en_GB must NOT appear
+            $this->assertNotContains('en_GB', $alternates);
 
-        // ca and es must appear
-        $this->assertContains('ca_ES', $alternates);
-        $this->assertContains('es_ES', $alternates);
+            // ca and es must appear
+            $this->assertContains('ca_ES', $alternates);
+            $this->assertContains('es_ES', $alternates);
+        } finally {
+            app()->setLocale($previousLocale);
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -140,7 +158,7 @@ final class SeoComposerTest extends TestCase
     {
         // SiteSetting::get returns null for unknown keys — this exercises the fallback path.
         // In test environment the DB may not have SEO settings; method must never throw.
-        $composer = new SeoComposer();
+        $composer = $this->makeComposer();
 
         $result = $composer->getGlobalDefaultTitle('ca');
 
@@ -151,7 +169,7 @@ final class SeoComposerTest extends TestCase
     /** @test */
     public function test_get_global_default_description_returns_null_when_no_setting(): void
     {
-        $composer = new SeoComposer();
+        $composer = $this->makeComposer();
 
         $result = $composer->getGlobalDefaultDescription('ca');
 
@@ -207,7 +225,7 @@ final class SeoComposerTest extends TestCase
         );
 
         $seoTitle = $service->seo()->title()->get('ca');
-        $name     = $service->name()->get('ca');
+        $name = $service->name()->get('ca');
 
         // When seo title is empty, the view fallback ($service->seo()->title()->get($locale) ?: $service->name())
         // must resolve to name().
@@ -233,13 +251,13 @@ final class SeoComposerTest extends TestCase
     {
         $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
 
-        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+        SiteSetting::set(
             'seo.global.ca.title',
             'AGC Assessors – Fiscal i Laboral'
         );
 
-        $composer = new \App\Http\View\Composers\SeoComposer();
-        $result   = $composer->getGlobalDefaultTitle('ca');
+        $composer = $this->makeComposer();
+        $result = $composer->getGlobalDefaultTitle('ca');
 
         $this->assertSame(
             'AGC Assessors – Fiscal i Laboral',
@@ -257,13 +275,13 @@ final class SeoComposerTest extends TestCase
     {
         $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
 
-        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+        SiteSetting::set(
             'seo.global.ca.description',
             'Assessoria fiscal, laboral i comptable.'
         );
 
-        $composer = new \App\Http\View\Composers\SeoComposer();
-        $result   = $composer->getGlobalDefaultDescription('ca');
+        $composer = $this->makeComposer();
+        $result = $composer->getGlobalDefaultDescription('ca');
 
         $this->assertSame(
             'Assessoria fiscal, laboral i comptable.',
@@ -284,7 +302,7 @@ final class SeoComposerTest extends TestCase
         $this->artisan('migrate:fresh', ['--env' => 'testing'])->run();
 
         // Create a media entry for testing
-        $media = \Awcodes\Curator\Models\Media::create([
+        $media = Media::create([
             'name' => 'og-test',
             'path' => 'og-test.webp',
             'type' => 'image/webp',
@@ -296,12 +314,12 @@ final class SeoComposerTest extends TestCase
             'ext' => 'webp',
         ]);
 
-        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+        SiteSetting::set(
             'seo.global.og_image_media_id',
             $media->id
         );
 
-        $composer = new \App\Http\View\Composers\SeoComposer();
+        $composer = $this->makeComposer();
         // getOgImage() is private — use reflection to call it
         $method = new \ReflectionMethod($composer, 'getOgImage');
         $method->setAccessible(true);

@@ -1,67 +1,115 @@
-# =============================================================================
-# AGC Assessors - .dockerignore
-# Evita copiar archivos innecesarios a la imagen Docker
-# =============================================================================
-
-# Variables de entorno (Dokploy las inyecta)
+# Environment and common secret files
 .env
 .env.*
 !.env.example
+**/.env
+**/.env.*
+*.secret
+*.secrets
+secrets/
+.secrets/
+.npmrc
+.yarnrc
+auth.json
+credentials.json
 
-# Git
+# Keys, certificates, and signing material
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.csr
+id_rsa*
+id_ed25519*
+
+# Databases, dumps, and backups
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.db
+*.db3
+*.sql
+*.sql.gz
+*.dump
+*.backup
+*.bak
+*.tar
+*.tar.gz
+backups/
+
+# Source control and local code intelligence
 .git
 .gitignore
 .gitattributes
+.codegraph/
 
-# Dependencias (se instalan DENTRO del contenedor)
-node_modules
-vendor
+# Dependencies and generated frontend output
+node_modules/
+vendor/
+public/build/
+public/hot
+public/storage
 
-# Tests
+# Runtime state and user uploads
+storage/**
+bootstrap/cache/**
+
+# Tests and local quality tooling
+tests/
+testsuite/
 phpunit.xml
 phpunit.xml.dist
 pest.xml
-tests/
-testsuite/
-
-# Caches locales
-.phpunit.cache
+.phpunit.cache/
 .phpunit.result.cache
 .php-cs-fixer.cache
 psalm.xml
 phpstan.neon
 phpstan.neon.dist
 
-# IDEs / Editores
-.idea
-.vscode
+# Local audit, review, and specification artifacts
+openspec/
+.opencode/
+.claude/
+.agents/
+artifacts/
+audit/
+audits/
+review/
+reviews/
+*-audit.json
+*-review.json
+*-evidence.json
+
+# Editors and operating-system metadata
+.idea/
+.vscode/
+.devcontainer/
 *.swp
 *.swo
 *~
+.DS_Store
+Thumbs.db
 
-# Docker local (no producción)
+# Logs and temporary files
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+tmp/
+temp/
+
+# Deployment-only files that are not application build inputs
 docker-compose.yml
 docker-compose.*.yml
-.devcontainer/
-
-# Logs y archivos temporales
-*.log
-npm-debug.log
-pnpm-debug.log
-yarn-error.log
-storage/logs/*
-storage/framework/cache/*
-storage/framework/sessions/*
-storage/framework/views/*
-bootstrap/cache/*
-
-# Documentación (no necesaria en runtime)
+.github/
+docs/
 README.md
 CHANGELOG.md
 CONTRIBUTING.md
 LICENSE
 *.md
-
-# Otros
-.github
-openspec/

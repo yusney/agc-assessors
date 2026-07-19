@@ -147,7 +147,10 @@ class ServiceResource extends Resource
                     ->label('Imagen')
                     ->size(72),
                 Tables\Columns\TextColumn::make('slug')->sortable(),
-                Tables\Columns\TextColumn::make('name.ca')->label('Nombre (ca)')->limit(40),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre (ca)')
+                    ->getStateUsing(fn (ServiceModel $record): string => $record->getTranslation('name', 'ca'))
+                    ->limit(40),
                 Tables\Columns\TextColumn::make('sort_order')->label('Orden')->sortable(),
                 Tables\Columns\IconColumn::make('active')->label('Activo')->boolean(),
             ])

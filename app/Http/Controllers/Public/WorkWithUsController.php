@@ -9,6 +9,7 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Mail\JobApplicationMail;
+use App\Support\LocalizedUrl;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -67,7 +68,7 @@ final class WorkWithUsController extends Controller
                 ?? __('messages.careers.form_success');
 
             return redirect()
-                ->to($request->url())
+                ->to(LocalizedUrl::to(LocalizedUrl::stripLocalePrefix(), $locale))
                 ->with('success', $successMessage)
                 ->with('warning', __('messages.careers.email_notification_failed'))
                 ->withInput();
@@ -78,7 +79,7 @@ final class WorkWithUsController extends Controller
             ?? __('messages.careers.form_success');
 
         return redirect()
-            ->to($request->url())
+            ->to(LocalizedUrl::to(LocalizedUrl::stripLocalePrefix(), $locale))
             ->with('success', $successMessage);
     }
 }

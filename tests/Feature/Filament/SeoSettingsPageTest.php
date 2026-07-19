@@ -7,6 +7,9 @@ namespace Tests\Feature\Filament;
 use AGC\Filament\Pages\SeoSettingsPage;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
@@ -18,7 +21,7 @@ use Tests\TestCase;
  * Tests for SeoSettingsPage:
  *   - The form schema contains no field with 'keywords' in its name
  *   - Fields for per-locale title/description exist
- *   - Shared og_image field exists (not per-locale)
+ *   - Shared og_image_media_id field exists (not per-locale)
  *   - Save persists to SiteSetting keys
  *
  * Uses Schema::make(null) to inspect the form schema without HTTP overhead,
@@ -35,6 +38,7 @@ final class SeoSettingsPageTest extends TestCase
     private function makeAdminUser(): User
     {
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+
         return User::factory()->withRole('super_admin')->create();
     }
 
@@ -54,7 +58,7 @@ final class SeoSettingsPageTest extends TestCase
      */
     private function getAllFieldNames(): array
     {
-        $page   = new SeoSettingsPage();
+        $page = new SeoSettingsPage;
         $schema = Schema::make(null);
         $page->form($schema);
 
@@ -71,9 +75,9 @@ final class SeoSettingsPageTest extends TestCase
         $names = [];
 
         foreach ($this->readRawChildren($container) as $component) {
-            if ($component instanceof \Filament\Forms\Components\Field) {
+            if ($component instanceof Field) {
                 $names[] = $component->getName();
-            } elseif ($component instanceof \Filament\Schemas\Components\Component) {
+            } elseif ($component instanceof Component) {
                 $names = array_merge($names, $this->extractFieldNamesFromRaw($component));
             }
         }
@@ -85,11 +89,11 @@ final class SeoSettingsPageTest extends TestCase
      * Read the raw child components from a Schema or Component via Reflection.
      * Bypasses Filament's getComponents()/getChildComponents() which trigger getLivewire().
      *
-     * @return array<\Filament\Schemas\Components\Component|\Filament\Actions\Action>
+     * @return array<Component|Action>
      */
     private function readRawChildren(object $obj): array
     {
-        $ref   = new \ReflectionObject($obj);
+        $ref = new \ReflectionObject($obj);
         $props = $ref->getProperties();
 
         foreach ($props as $prop) {
@@ -147,11 +151,11 @@ final class SeoSettingsPageTest extends TestCase
         $names = $this->getAllFieldNames();
 
         // Must have at least title.ca, title.es, title.en,
-        // description.ca, description.es, description.en, og_image = 7 fields
+        // description.ca, description.es, description.en, og_image_media_id = 7 fields
         $this->assertGreaterThanOrEqual(
             7,
             count($names),
-            'Form must have at least 7 fields (title×3 + description×3 + og_image)'
+            'Form must have at least 7 fields (title×3 + description×3 + og_image_media_id)'
         );
     }
 
@@ -180,20 +184,20 @@ final class SeoSettingsPageTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------
-    // Section A — Schema inspection: single shared og_image (NOT per-locale)
+    // Section A — Schema inspection: single shared og_image_media_id (NOT per-locale)
     // ---------------------------------------------------------------------------
 
     /** @test */
-    public function test_seo_settings_page_form_has_single_shared_og_image_field(): void
+    public function test_seo_settings_page_form_has_single_shared_og_image_media_id_field(): void
     {
         $names = $this->getAllFieldNames();
 
-        $this->assertContains('og_image', $names, 'Form must have a shared og_image field');
+        $this->assertContains('og_image_media_id', $names, 'Form must have a shared og_image_media_id field');
 
-        // og_image must NOT appear per-locale (no og_image.ca, og_image.es, etc.)
-        $this->assertNotContains('og_image.ca', $names, 'og_image must NOT be per-locale');
-        $this->assertNotContains('og_image.es', $names, 'og_image must NOT be per-locale');
-        $this->assertNotContains('og_image.en', $names, 'og_image must NOT be per-locale');
+        // og_image_media_id must NOT appear per-locale (no og_image_media_id.ca, etc.)
+        $this->assertNotContains('og_image_media_id.ca', $names, 'og_image_media_id must NOT be per-locale');
+        $this->assertNotContains('og_image_media_id.es', $names, 'og_image_media_id must NOT be per-locale');
+        $this->assertNotContains('og_image_media_id.en', $names, 'og_image_media_id must NOT be per-locale');
     }
 
     // ---------------------------------------------------------------------------
@@ -201,7 +205,7 @@ final class SeoSettingsPageTest extends TestCase
     // ---------------------------------------------------------------------------
 
     /**
-     * Proves that save() stores title/description per locale AND og_image
+     * Proves that save() stores title/description per locale AND og_image_media_id
      * under the correct SiteSetting keys (seo.global.{locale}.{field}).
      *
      * This test exercises the save() method directly by setting $page->data
@@ -211,11 +215,11 @@ final class SeoSettingsPageTest extends TestCase
      */
     public function test_seo_settings_page_save_persists_to_site_setting_keys(): void
     {
-        $page       = new SeoSettingsPage();
+        $page = new SeoSettingsPage;
         $page->data = [
-            'title'       => ['ca' => 'Títol CA', 'es' => 'Título ES', 'en' => 'Title EN'],
+            'title' => ['ca' => 'Títol CA', 'es' => 'Título ES', 'en' => 'Title EN'],
             'description' => ['ca' => 'Desc CA', 'es' => 'Desc ES', 'en' => 'Desc EN'],
-            'og_image'    => 'https://cdn.agc.com/og.jpg',
+            'og_image_media_id' => 123,
         ];
 
         $page->save();
@@ -224,7 +228,7 @@ final class SeoSettingsPageTest extends TestCase
         $this->assertSame('Título ES', SiteSetting::get('seo.global.es.title'));
         $this->assertSame('Title EN', SiteSetting::get('seo.global.en.title'));
         $this->assertSame('Desc CA', SiteSetting::get('seo.global.ca.description'));
-        $this->assertSame('https://cdn.agc.com/og.jpg', SiteSetting::get('seo.global.og_image'));
+        $this->assertSame(123, SiteSetting::get('seo.global.og_image_media_id'));
     }
 
     // ---------------------------------------------------------------------------

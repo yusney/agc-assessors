@@ -5,10 +5,17 @@ declare(strict_types=1);
 namespace Tests\Feature\Filament\Resources;
 
 use AGC\Filament\Resources\ServiceResource;
+use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
@@ -25,8 +32,6 @@ final class ServiceResourceTest extends TestCase
 
     /**
      * Find a RichEditor field by name in the schema using Reflection traversal.
-     *
-     * @return Field|null
      */
     private function findFieldInSchema(Schema $schema, string $name): ?Field
     {
@@ -41,11 +46,11 @@ final class ServiceResourceTest extends TestCase
     }
 
     /**
-     * @return array<\Filament\Schemas\Components\Component|\Filament\Actions\Action>
+     * @return array<Component|Action>
      */
     private function readRawChildren(object $obj): array
     {
-        $ref   = new \ReflectionObject($obj);
+        $ref = new \ReflectionObject($obj);
         $props = $ref->getProperties();
 
         foreach ($props as $prop) {
@@ -67,9 +72,6 @@ final class ServiceResourceTest extends TestCase
         return [];
     }
 
-    /**
-     * @return Field|null
-     */
     private function searchComponentForField(object $component, string $name): ?Field
     {
         foreach ($this->readRawChildren($component) as $child) {
@@ -77,7 +79,7 @@ final class ServiceResourceTest extends TestCase
                 return $child;
             }
 
-            if ($child instanceof \Filament\Schemas\Components\Component) {
+            if ($child instanceof Component) {
                 $found = $this->searchComponentForField($child, $name);
                 if ($found !== null) {
                     return $found;
@@ -88,12 +90,12 @@ final class ServiceResourceTest extends TestCase
         return null;
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('descriptionFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('descriptionFieldNamesProvider')]
     public function test_service_description_fields_have_curator_plugin(string $fieldName): void
     {
         $schema = ServiceResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in ServiceResource form");
 
@@ -112,12 +114,12 @@ final class ServiceResourceTest extends TestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('descriptionFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('descriptionFieldNamesProvider')]
     public function test_service_description_fields_have_attach_curator_media_in_toolbar(string $fieldName): void
     {
         $schema = ServiceResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in ServiceResource form");
 
@@ -144,6 +146,26 @@ final class ServiceResourceTest extends TestCase
             $flat,
             "Field '{$fieldName}' toolbar must include 'attachCuratorMedia'"
         );
+    }
+
+    #[Test]
+    public function test_service_table_name_column_reads_the_catalan_translation(): void
+    {
+        $table = ServiceResource::table(Table::make($this->createMock(HasTable::class)));
+        $column = $table->getColumns()['name'];
+
+        $record = new ServiceModel;
+        $record->setAttribute('name', [
+            'ca' => 'Servei català',
+            'es' => 'Servicio español',
+        ]);
+
+        $column->record($record);
+
+        $this->assertSame('name', $column->getName());
+        $this->assertSame('Nombre (ca)', $column->getLabel());
+        $this->assertSame(40, $column->getCharacterLimit());
+        $this->assertSame('Servei català', $column->getState());
     }
 
     /** @return array<string, array{0: string}> */

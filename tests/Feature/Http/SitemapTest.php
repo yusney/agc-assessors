@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Tests\TestCase;
 
 /**
@@ -20,7 +21,7 @@ final class SitemapTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(\Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class);
+        $this->withoutMiddleware(LaravelLocalizationRedirectFilter::class);
     }
 
     // ---------------------------------------------------------------------------
@@ -76,8 +77,9 @@ final class SitemapTest extends TestCase
 
         $locales = ['ca' => '', 'es' => 'es', 'en' => 'en'];
 
+        $baseUrl = rtrim((string) config('app.url'), '/');
+
         foreach ($locales as $locale => $prefix) {
-            $baseUrl = 'http://localhost:8080';
             $url = $prefix === '' ? $baseUrl : "{$baseUrl}/{$prefix}";
 
             $found = false;
@@ -97,10 +99,11 @@ final class SitemapTest extends TestCase
         $response = $this->get('/sitemap.xml');
         $xml = simplexml_load_string($response->getContent());
 
+        $baseUrl = rtrim((string) config('app.url'), '/');
         $urls = [
-            'http://localhost:8080/serveis',
-            'http://localhost:8080/es/serveis',
-            'http://localhost:8080/en/serveis',
+            "{$baseUrl}/serveis",
+            "{$baseUrl}/es/serveis",
+            "{$baseUrl}/en/serveis",
         ];
 
         foreach ($urls as $url) {
@@ -121,10 +124,11 @@ final class SitemapTest extends TestCase
         $response = $this->get('/sitemap.xml');
         $xml = simplexml_load_string($response->getContent());
 
+        $baseUrl = rtrim((string) config('app.url'), '/');
         $urls = [
-            'http://localhost:8080/contacte',
-            'http://localhost:8080/es/contacte',
-            'http://localhost:8080/en/contacte',
+            "{$baseUrl}/contacte",
+            "{$baseUrl}/es/contacte",
+            "{$baseUrl}/en/contacte",
         ];
 
         foreach ($urls as $url) {
@@ -145,10 +149,11 @@ final class SitemapTest extends TestCase
         $response = $this->get('/sitemap.xml');
         $xml = simplexml_load_string($response->getContent());
 
+        $baseUrl = rtrim((string) config('app.url'), '/');
         $urls = [
-            'http://localhost:8080/search',
-            'http://localhost:8080/es/search',
-            'http://localhost:8080/en/search',
+            "{$baseUrl}/search",
+            "{$baseUrl}/es/search",
+            "{$baseUrl}/en/search",
         ];
 
         foreach ($urls as $url) {

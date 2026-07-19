@@ -1,59 +1,223 @@
-name: Build and Push Docker Image
+name: Build and Publish Docker Image
 
 on:
+  pull_request:
+    branches:
+      - main
+      - master
   push:
     branches:
       - main
       - master
-    paths-ignore:
-      - 'openspec/**'
-      - '**.md'
-      - '.github/**'
+
+permissions: {}
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  CANDIDATE_TAG: candidate-${{ github.sha }}
 
 jobs:
-  build-and-push:
-    name: Build and push Docker image
+  quality:
+    name: Quality gates
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
+      # actions/checkout v7.0.0
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
+      # shivammathur/setup-php 2.37.2
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, sqlite3, pdo_sqlite, pdo_pgsql, bcmath, exif, gd, xsl, sockets, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Create CI environment file
+        run: cp .env.example .env
+
+      - name: Validate Composer manifest and lockfile
+        run: composer validate --no-check-publish
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Generate application key
+        run: php artisan key:generate --force
+
+      # pnpm/action-setup v6.0.9
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+        with:
+          version: 10.32.1
+
+      # actions/setup-node v7.0.0
+      - name: Set up Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend assets with Vite
+        run: pnpm run build
+
+      - name: Run Laravel test suite
+        run: php artisan test
+
+      - name: Check changed PHP files with Pint
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            changed_files=$(git diff --name-only --diff-filter=ACMRTUXB "$BASE_SHA...$HEAD_SHA" -- '*.php' ':(top)artisan')
+          elif [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            changed_files=$(git ls-files --cached -- '*.php' ':(top)artisan')
+          else
+            changed_files=$(git diff --name-only --diff-filter=ACMRTUXB "$BEFORE_SHA" "$HEAD_SHA" -- '*.php' ':(top)artisan')
+          fi
+
+          mapfile -t php_files < <(
+            while IFS= read -r file; do
+              [[ "$file" == *.php || "$file" == "artisan" ]] && printf '%s\n' "$file"
+            done <<< "$changed_files"
+          )
+
+          if ((${#php_files[@]} == 0)); then
+            echo 'No changed PHP files; Pint check skipped.'
+          else
+            ./vendor/bin/pint --test "${php_files[@]}"
+          fi
+
+  publish:
+    name: Build, scan, and publish Docker image
+    needs: quality
+    # This is intentionally fail-closed until main/master has branch protection.
+    if: >-
+      github.event_name == 'push' &&
+      github.ref_protected == true &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    # Configure required reviewers and branch rules for this production environment
+    # in repository settings before relying on it as an approval boundary.
+    environment:
+      name: production
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    concurrency:
+      group: ghcr-production-${{ github.repository }}
+      cancel-in-progress: true
+
+    steps:
+      # actions/checkout v7.0.0
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      # docker/setup-buildx-action v4.2.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
+      # docker/metadata-action v6.2.0
+      - name: Extract image metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=long
+            # latest is generated only for the protected default branch by the job guard above.
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # docker/login-action v4.4.0; GHCR access uses only the job-scoped GITHUB_TOKEN.
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+      # Build and push one deterministic candidate tag. Its digest is the only
+      # artifact that the scan and the final tag promotion are allowed to use.
+      # docker/build-push-action v7.3.0
+      - name: Build and push candidate image
+        id: candidate
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: .
           file: docker/php/Dockerfile.production
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.CANDIDATE_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
+          provenance: mode=max
+          sbom: true
+
+      # aquasecurity/trivy-action v0.36.0
+      - name: Scan candidate image digest for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          scan-type: image
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.candidate.outputs.digest }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          scanners: vuln
+
+      # Promote only the scanned digest; carbon-copy mode keeps every alias on
+      # that exact digest instead of creating another executable image artifact.
+      # Metadata supplies branch, full-SHA, and latest.
+      - name: Promote scanned image digest to release tags
+        shell: bash
+        env:
+          IMAGE_REPOSITORY: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          IMAGE_DIGEST: ${{ steps.candidate.outputs.digest }}
+          IMAGE_TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$IMAGE_DIGEST" =~ ^sha256:[[:xdigit:]]+$ ]]; then
+            echo 'Build did not return a valid image digest.' >&2
+            exit 1
+          fi
+
+          declare -a promote_args=()
+          while IFS= read -r tag; do
+            [[ -n "$tag" ]] || continue
+            promote_args+=(--tag "$tag")
+          done <<< "$IMAGE_TAGS"
+
+          if ((${#promote_args[@]} == 0)); then
+            echo 'Metadata action did not produce any final image tags.' >&2
+            exit 1
+          fi
+
+          docker buildx imagetools create \
+            --prefer-index=false \
+            "${promote_args[@]}" \
+            "$IMAGE_REPOSITORY@$IMAGE_DIGEST"

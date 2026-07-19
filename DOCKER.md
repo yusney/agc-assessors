@@ -250,39 +250,39 @@ Este entorno está **optimizado para desarrollo**. Para producción:
 5. Configurar un disk de almacenamiento de producción (S3, etc.)
 6. Usar Redis para cache/sessions en producción
 7. Configurar certificados SSL en Nginx
-8. **Montar volúmenes persistentes** para `storage/` y `bootstrap/cache/` (ver abajo)
+8. **Montar un volumen persistente** para `storage/` (ver abajo)
 
 ### Volúmenes obligatorios en producción
 
-En producción con Docker, **dos volúmenes son obligatorios**:
+En producción con Docker, **solo `storage` debe persistir**:
 
 | Volumen | Mount Path | Propósito |
 |---------|-----------|-----------|
 | `agc-storage` | `/var/www/html/storage` | Persiste imágenes subidas, logs, cache de archivos, sessions de archivo |
-| `agc-cache` | `/var/www/html/bootstrap/cache` | Persiste caché compilada de Laravel (rutas, config, views) |
 
 > **Sin `agc-storage`**: las imágenes subidas por el panel de admin (Filament/Curator) se pierden en cada redeploy porque el contenedor se destruye y se recrea desde la imagen.
+>
+> **No persistas `bootstrap/cache`**: es efímero y se recrea para cada contenedor, evitando que manifiestos de una versión anterior sobrevivan al deploy.
 
-### Symlink público automático (`public/storage`)
+### Symlink público de storage (`public/storage`)
 
-La imagen de producción (`docker/php/Dockerfile.production`) incluye un **startup script** (`docker/php/entrypoint.d/99-storage-link.sh`) que se ejecuta automáticamente al arrancar el contenedor.
+La imagen de producción crea durante el build el enlace inmutable `public/storage → /var/www/html/storage/app/public`.
 
-Este script:
-1. Verifica si existe el symlink `public/storage → storage/app/public`
-2. Si no existe o está roto, lo recrea
-3. Luego deja que S6 Overlay arranque Nginx + PHP-FPM
+En cada arranque, `docker/php/entrypoint.d/60-runtime-prepare.sh`:
 
-**¿Por qué no se hace en el Dockerfile?**
+1. Crea dentro del volumen los directorios de destino necesarios.
+2. Valida que `public/storage` siga siendo el enlace incluido en la imagen y apunte al destino esperado.
+3. Falla antes de servir tráfico si el enlace o los directorios escribibles no son válidos.
 
-Si creamos `public/storage` durante `docker build`, al arrancar el contenedor el volumen `agc-storage` se monta **sobre** `/var/www/html/storage` y reemplaza el directorio destino del symlink. El symlink queda roto apuntando a un directorio que ya no existe. Por eso se debe crear **en runtime** (cuando el contenedor ya arrancó y los volúmenes están montados), no en build time.
+El volumen reemplaza el contenido de `/var/www/html/storage`, no el enlace situado en `public`; por eso el script prepara el destino en runtime, pero no recrea el symlink.
 
 **Verificar que funciona:**
 ```bash
 docker exec -it nombre-contenedor ls -la /var/www/html/public/storage
 # → lrwxrwxrwx ... storage -> /var/www/html/storage/app/public
 
-docker logs nombre-contenedor | grep -i "symlink"
-# → 🔗 Created symlink: /var/www/html/public/storage -> /var/www/html/storage/app/public
+docker logs nombre-contenedor | grep "Runtime storage"
+# → Runtime storage and Laravel package manifest are ready.
 ```
 
 ## Licencia

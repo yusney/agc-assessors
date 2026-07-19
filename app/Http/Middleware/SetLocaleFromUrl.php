@@ -32,6 +32,9 @@ final class SetLocaleFromUrl
 
         if (in_array($first, $supported, true)) {
             app()->setLocale($first);
+            // Keep LaravelLocalization in sync; otherwise package helpers such
+            // as getLocalizedURL() may still base decisions on the default locale.
+            LaravelLocalization::setLocale($first);
         }
 
         return $next($request);

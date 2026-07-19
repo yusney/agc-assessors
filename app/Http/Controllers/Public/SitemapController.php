@@ -8,6 +8,7 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\NewsModel;
 use AGC\Infrastructure\Persistence\Eloquent\Models\PageModel;
 use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use App\Http\Controllers\Controller;
+use App\Support\LocalizedUrl;
 use Illuminate\Http\Response;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -91,9 +92,9 @@ final class SitemapController extends Controller
 
     private function localizedUrl(string $path, string $locale): string
     {
-        $url = LaravelLocalization::getLocalizedURL($locale, $path, [], false);
-
-        return rtrim($url, '/');
+        // Sitemap URLs must not have a trailing slash; the home page in the
+        // default locale is emitted as "http://localhost:8080", not ".../".
+        return rtrim(LocalizedUrl::to($path, $locale), '/');
     }
 
     private function buildUrlEntry(string $url, string $priority, string $changeFreq): string

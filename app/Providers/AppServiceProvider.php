@@ -27,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Disable locale negotiation from the Accept-Language header while
+        // running tests. LaravelLocalization's LocaleSessionRedirect otherwise
+        // redirects every un-prefixed URL to /en/... in CI/images whose default
+        // locale differs from the test intent, producing 302s instead of 200s.
+        if ($this->app->environment('testing')) {
+            config(['laravellocalization.useAcceptLanguageHeader' => false]);
+        }
+
         View::composer([
             'layouts.public',
             'public.services.index',

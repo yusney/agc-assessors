@@ -6,6 +6,7 @@ namespace App\Http\View\Composers;
 
 use AGC\Domain\Offices\Repositories\OfficeRepositoryInterface;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
+use App\Support\LocalizedUrl;
 use Awcodes\Curator\Models\Media;
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -84,23 +85,17 @@ final class SeoComposer
         // a bare path without route() (which would emit ?locale= because
         // the three per-locale route groups share the same name).
         $view->with('localizedUrl', function (string $path) {
-            $active = $this->resolveActiveLocale();
-            $default = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getDefaultLocale();
-            $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
+            $active = LocalizedUrl::activeLocaleFromUrl();
 
-            if ($active === $default && $hideDefault) {
-                return $path;
-            }
-            return '/' . $active . $path;
+            return LocalizedUrl::path($path, $active);
         });
     }
 
     private function getCanonicalUrl(): string
     {
-        return LaravelLocalization::getLocalizedURL(
-            app()->getLocale(),
-            url()->current(),
-            []
+        return LocalizedUrl::to(
+            LocalizedUrl::stripLocalePrefix(),
+            app()->getLocale()
         );
     }
 
@@ -111,20 +106,13 @@ final class SeoComposer
      */
     public function getHreflangAlternates(): array
     {
+        $path = LocalizedUrl::stripLocalePrefix();
         $alternates = [];
-
-        // Build from a bare path so the package doesn't append ?locale=
-        // when re-localizing a URL it received as input.
-        $path = '/' . ltrim(parse_url(url()->current(), PHP_URL_PATH) ?? '/', '/');
 
         foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
             $alternates[] = [
                 'locale' => (string) $locale,
-                'url'    => LaravelLocalization::getLocalizedURL(
-                    (string) $locale,
-                    $path,
-                    []
-                ),
+                'url'    => LocalizedUrl::to($path, (string) $locale),
             ];
         }
 
@@ -389,11 +377,7 @@ final class SeoComposer
      */
     private function resolveActiveLocale(): string
     {
-        $supported = array_keys(LaravelLocalization::getSupportedLocales());
-        $segments = request()->segments();
-        $first = $segments[0] ?? '';
-
-        return in_array($first, $supported, true) ? $first : (string) config('app.locale');
+        return LocalizedUrl::activeLocaleFromUrl();
     }
 
     private function getLogoUrl(): string

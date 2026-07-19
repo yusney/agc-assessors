@@ -6,9 +6,13 @@ namespace Tests\Feature\Filament\Resources;
 
 use AGC\Filament\Resources\NewsResource;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
@@ -29,8 +33,6 @@ final class NewsResourceTest extends TestCase
      * The schema tree is: Grid → Section → Tabs → Tab → [RichEditor, ...]
      * Components store children in $childComponents['default'] (HasChildComponents trait).
      * Fields store their name in getName().
-     *
-     * @return Field|null
      */
     private function findFieldInSchema(Schema $schema, string $name): ?Field
     {
@@ -45,11 +47,11 @@ final class NewsResourceTest extends TestCase
     }
 
     /**
-     * @return array<\Filament\Schemas\Components\Component|\Filament\Actions\Action>
+     * @return array<Component|Action>
      */
     private function readRawChildren(object $obj): array
     {
-        $ref   = new \ReflectionObject($obj);
+        $ref = new \ReflectionObject($obj);
         $props = $ref->getProperties();
 
         foreach ($props as $prop) {
@@ -71,9 +73,6 @@ final class NewsResourceTest extends TestCase
         return [];
     }
 
-    /**
-     * @return Field|null
-     */
     private function searchComponentForField(object $component, string $name): ?Field
     {
         foreach ($this->readRawChildren($component) as $child) {
@@ -81,7 +80,7 @@ final class NewsResourceTest extends TestCase
                 return $child;
             }
 
-            if ($child instanceof \Filament\Schemas\Components\Component) {
+            if ($child instanceof Component) {
                 $found = $this->searchComponentForField($child, $name);
                 if ($found !== null) {
                     return $found;
@@ -92,12 +91,12 @@ final class NewsResourceTest extends TestCase
         return null;
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('bodyFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('bodyFieldNamesProvider')]
     public function test_news_body_fields_have_curator_plugin(string $fieldName): void
     {
         $schema = NewsResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in NewsResource form");
 
@@ -115,8 +114,8 @@ final class NewsResourceTest extends TestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('bodyFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('bodyFieldNamesProvider')]
     public function test_news_body_fields_have_attach_curator_media_in_toolbar(string $fieldName): void
     {
         // The AttachCuratorMediaPlugin v5.0.7 does NOT implement HasToolbarButtons,
@@ -127,7 +126,7 @@ final class NewsResourceTest extends TestCase
         // We assert by reading the toolbarButtons property directly via Reflection
         // and verifying 'attachCuratorMedia' appears in one of its groups.
         $schema = NewsResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in NewsResource form");
 

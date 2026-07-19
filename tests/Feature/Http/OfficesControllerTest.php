@@ -100,5 +100,4 @@ final class OfficesControllerTest extends TestCase
 
         $response->assertOk()->assertSee('També atenem a');
     }
-
 }

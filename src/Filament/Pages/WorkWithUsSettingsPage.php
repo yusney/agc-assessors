@@ -160,6 +160,7 @@ final class WorkWithUsSettingsPage extends Page
 
                                     if ($emails === []) {
                                         $fail('Debes introducir al menos una dirección de email.');
+
                                         return;
                                     }
 

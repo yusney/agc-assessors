@@ -10,12 +10,13 @@ use AGC\Filament\Resources\Curator\Pages\CustomListMedia;
 use AGC\Filament\Resources\Curator\Tables\CustomMediaTable;
 use Awcodes\Curator\Resources\Media\MediaResource;
 use Exception;
+use Filament\Panel;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 
 class CustomMediaResource extends MediaResource
 {
-    public static function getSlug(?\Filament\Panel $panel = null): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'media';
     }

@@ -2,12 +2,13 @@
 
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
-use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\OfficesController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\ServicesController;
+use App\Http\Controllers\Public\SitemapController;
 use App\Http\Controllers\Public\TeamController;
 use App\Http\Controllers\Public\WorkWithUsController;
 use Illuminate\Support\Facades\Route;
@@ -44,8 +45,8 @@ Route::get('/switch-locale/{locale}', function (string $locale) {
     // Strip the current locale prefix so we don't double-prefix the URL.
     $locales = $supported;
     foreach ($locales as $loc) {
-        $prefix = '/' . $loc;
-        if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+        $prefix = '/'.$loc;
+        if ($path === $prefix || str_starts_with($path, $prefix.'/')) {
             $path = substr($path, strlen($prefix));
             if ($path === '') {
                 $path = '/';
@@ -60,14 +61,14 @@ Route::get('/switch-locale/{locale}', function (string $locale) {
     $target = LaravelLocalization::getLocalizedURL($locale, $path);
     if ($query) {
         $separator = str_contains($target, '?') ? '&' : '?';
-        $target .= $separator . $query;
+        $target .= $separator.$query;
     }
 
     return redirect($target);
 })->name('locale.switch');
 
 // Sitemap — must be outside the locale group so /sitemap.xml is accessible without locale prefix
-Route::get('/sitemap.xml', [\App\Http\Controllers\Public\SitemapController::class, 'index'])
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])
     ->name('sitemap');
 
 // We register public routes for each supported locale explicitly because the

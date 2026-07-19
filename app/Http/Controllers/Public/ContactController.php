@@ -17,15 +17,15 @@ final class ContactController extends Controller
     public function index(): View
     {
         $settings = SiteSetting::get('contact_settings', []);
-        $locale   = app()->getLocale();
+        $locale = app()->getLocale();
 
         $contact = [
-            'title'    => $settings['title'][$locale]    ?? __('messages.contact.title'),
+            'title' => $settings['title'][$locale] ?? __('messages.contact.title'),
             'subtitle' => $settings['subtitle'][$locale] ?? __('messages.contact.subtitle'),
-            'address'  => $settings['address']           ?? __('messages.contact.address'),
-            'phone'    => $settings['phone']             ?? __('messages.contact.phone_value'),
-            'email'    => $settings['email_public']      ?? __('messages.contact.email_value'),
-            'hours'    => $settings['hours'][$locale]    ?? __('messages.contact.hours_value'),
+            'address' => $settings['address'] ?? __('messages.contact.address'),
+            'phone' => $settings['phone'] ?? __('messages.contact.phone_value'),
+            'email' => $settings['email_public'] ?? __('messages.contact.email_value'),
+            'hours' => $settings['hours'][$locale] ?? __('messages.contact.hours_value'),
         ];
 
         return view('public.contact.index', compact('contact'));
@@ -42,8 +42,8 @@ final class ContactController extends Controller
             'privacy' => ['accepted'],
         ]);
 
-        $settings    = SiteSetting::get('contact_settings', []);
-        $raw         = $settings['contact_destination_email'] ?? config('mail.from.address');
+        $settings = SiteSetting::get('contact_settings', []);
+        $raw = $settings['contact_destination_email'] ?? config('mail.from.address');
         $destinations = collect(explode(',', (string) $raw))
             ->map(fn (string $e) => trim($e))
             ->filter(fn (string $e) => filter_var($e, FILTER_VALIDATE_EMAIL))

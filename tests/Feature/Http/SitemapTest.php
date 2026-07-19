@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Tests\TestCase;
 
 /**
@@ -20,7 +21,7 @@ final class SitemapTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(\Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class);
+        $this->withoutMiddleware(LaravelLocalizationRedirectFilter::class);
     }
 
     // ---------------------------------------------------------------------------

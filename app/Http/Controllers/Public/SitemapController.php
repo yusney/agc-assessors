@@ -10,7 +10,6 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\ServiceModel;
 use App\Http\Controllers\Controller;
 use App\Support\LocalizedUrl;
 use Illuminate\Http\Response;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class SitemapController extends Controller
 {
@@ -46,7 +45,7 @@ final class SitemapController extends Controller
         foreach ($newsArticles as $article) {
             foreach (['ca', 'es', 'en'] as $locale) {
                 $urls[] = $this->buildUrlEntry(
-                    $this->localizedUrl('/actualitat/' . $article->slug, $locale),
+                    $this->localizedUrl('/actualitat/'.$article->slug, $locale),
                     '0.8',
                     'weekly'
                 );
@@ -61,7 +60,7 @@ final class SitemapController extends Controller
         foreach ($pages as $page) {
             foreach (['ca', 'es', 'en'] as $locale) {
                 $urls[] = $this->buildUrlEntry(
-                    $this->localizedUrl('/pages/' . $page->slug, $locale),
+                    $this->localizedUrl('/pages/'.$page->slug, $locale),
                     '0.7',
                     'monthly'
                 );
@@ -76,7 +75,7 @@ final class SitemapController extends Controller
         foreach ($services as $service) {
             foreach (['ca', 'es', 'en'] as $locale) {
                 $urls[] = $this->buildUrlEntry(
-                    $this->localizedUrl('/serveis/' . $service->slug, $locale),
+                    $this->localizedUrl('/serveis/'.$service->slug, $locale),
                     '0.8',
                     'weekly'
                 );

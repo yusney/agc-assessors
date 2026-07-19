@@ -26,18 +26,18 @@ final class LocalizedUrl
     public static function to(string $path, ?string $locale = null): string
     {
         $locale ??= app()->getLocale();
-        $path = '/' . ltrim($path, '/');
+        $path = '/'.ltrim($path, '/');
 
         $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
         $defaultLocale = LaravelLocalization::getDefaultLocale();
 
         $prefix = ($locale === $defaultLocale && $hideDefault)
             ? ''
-            : '/' . $locale;
+            : '/'.$locale;
 
         $base = rtrim((string) config('app.url'), '/');
 
-        return $base . $prefix . $path;
+        return $base.$prefix.$path;
     }
 
     /**
@@ -49,16 +49,16 @@ final class LocalizedUrl
     public static function path(string $path, ?string $locale = null): string
     {
         $locale ??= app()->getLocale();
-        $path = '/' . ltrim($path, '/');
+        $path = '/'.ltrim($path, '/');
 
         $hideDefault = (bool) config('laravellocalization.hideDefaultLocaleInURL', false);
         $defaultLocale = LaravelLocalization::getDefaultLocale();
 
         $prefix = ($locale === $defaultLocale && $hideDefault)
             ? ''
-            : '/' . $locale;
+            : '/'.$locale;
 
-        return $prefix . $path;
+        return $prefix.$path;
     }
 
     /**
@@ -80,15 +80,15 @@ final class LocalizedUrl
      */
     public static function stripLocalePrefix(): string
     {
-        $path = '/' . ltrim((string) request()->path(), '/');
+        $path = '/'.ltrim((string) request()->path(), '/');
         $supported = array_keys(LaravelLocalization::getSupportedLocales());
 
         foreach ($supported as $locale) {
-            $prefix = '/' . $locale;
+            $prefix = '/'.$locale;
             if ($path === $prefix) {
                 return '/';
             }
-            if (str_starts_with($path, $prefix . '/')) {
+            if (str_starts_with($path, $prefix.'/')) {
                 return substr($path, strlen($prefix));
             }
         }

@@ -112,7 +112,7 @@ final class SeoComposer
         foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
             $alternates[] = [
                 'locale' => (string) $locale,
-                'url'    => LocalizedUrl::to($path, (string) $locale),
+                'url' => LocalizedUrl::to($path, (string) $locale),
             ];
         }
 
@@ -128,7 +128,7 @@ final class SeoComposer
     public function getOgLocaleAlternates(): array
     {
         $activeLocale = app()->getLocale();
-        $alternates   = [];
+        $alternates = [];
 
         foreach (LaravelLocalization::getSupportedLocales() as $locale => $properties) {
             if ($locale !== $activeLocale) {
@@ -148,10 +148,10 @@ final class SeoComposer
      */
     public function getActiveOgLocale(): string
     {
-        $locale     = app()->getLocale();
-        $locales    = LaravelLocalization::getSupportedLocales();
+        $locale = app()->getLocale();
+        $locales = LaravelLocalization::getSupportedLocales();
         $properties = $locales[$locale] ?? [];
-        $regional   = $properties['regional'] ?? $locale;
+        $regional = $properties['regional'] ?? $locale;
 
         return is_string($regional) && $regional !== '' ? $regional : $locale;
     }
@@ -311,7 +311,7 @@ final class SeoComposer
                 '@type' => 'SearchAction',
                 'target' => [
                     '@type' => 'EntryPoint',
-                    'urlTemplate' => rtrim(route('search'), '/') . '?q={search_term_string}',
+                    'urlTemplate' => rtrim(route('search'), '/').'?q={search_term_string}',
                 ],
                 'query-input' => 'required name=search_term_string',
             ],
@@ -423,7 +423,7 @@ final class SeoComposer
         }
 
         $slug = $office->publicSlug($locale);
-        $pageUrl = $siteUrl . '/' . $locale . '/oficinas/' . $slug;
+        $pageUrl = $siteUrl.'/'.$locale.'/oficinas/'.$slug;
 
         $description = $office->description()->get($locale) !== ''
             ? $office->description()->get($locale)
@@ -433,7 +433,7 @@ final class SeoComposer
             '@context' => 'https://schema.org',
             '@type' => 'LocalBusiness',
             '@id' => $pageUrl,
-            'name' => $baseName . ' - ' . $city,
+            'name' => $baseName.' - '.$city,
             'url' => $pageUrl,
             'description' => $description,
             'telephone' => $office->phone(),
@@ -519,8 +519,8 @@ final class SeoComposer
             $items[] = [
                 '@type' => 'ListItem',
                 'position' => $position++,
-                'name' => 'AGC Assessors - ' . $city,
-                'url' => $siteUrl . '/' . $locale . '/oficinas/' . $slug,
+                'name' => 'AGC Assessors - '.$city,
+                'url' => $siteUrl.'/'.$locale.'/oficinas/'.$slug,
             ];
         }
 
@@ -577,7 +577,7 @@ final class SeoComposer
                 continue;
             }
 
-            if (!preg_match('/^(.+?):\s*(\d{1,2}:\d{2})\s*[–\-—to]+\s*(\d{1,2}:\d{2})/iu', $line, $m)) {
+            if (! preg_match('/^(.+?):\s*(\d{1,2}:\d{2})\s*[–\-—to]+\s*(\d{1,2}:\d{2})/iu', $line, $m)) {
                 continue;
             }
 

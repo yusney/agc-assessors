@@ -9,6 +9,7 @@ use AGC\Infrastructure\Persistence\Eloquent\Models\HomeSection;
 use Filament\Forms\Components\Field;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -46,7 +47,7 @@ final class HomeSectionResourceTest extends TestCase
             app()->setLocale('ca');
             $expectedCtaUrl = LaravelLocalization::getLocalizedURL(app()->getLocale(), '/pages/qui-som', [], false);
 
-            $section = new HomeSection();
+            $section = new HomeSection;
             $section->setAttribute('title', ['ca' => 'Qui som']);
             $section->setAttribute('body', ['ca' => 'Coneix el nostre equip.']);
             $section->setAttribute('cta_label', ['ca' => 'Sobre nosaltres']);
@@ -152,7 +153,7 @@ final class HomeSectionResourceTest extends TestCase
             return (bool) $hidden;
         }
 
-        $get = new class($type) extends \Filament\Schemas\Components\Utilities\Get
+        $get = new class($type) extends Get
         {
             public function __construct(private readonly string $type) {}
 

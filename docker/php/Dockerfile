@@ -20,6 +20,9 @@ RUN install-php-extensions \
     xsl \
     sockets
 
+# Development-only dependency volumes must be writable by the Dev Container user.
+COPY --chown=root:root --chmod=0555 docker/php/entrypoint.d-dev/ /etc/entrypoint.d/
+
 # ServerSideUp must start as root so its entrypoint can configure Nginx.
 # VS Code still opens the workspace as www-data via devcontainer.json.
 USER root

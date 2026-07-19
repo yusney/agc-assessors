@@ -21,18 +21,18 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 
-# APP_KEY
-if grep -q "^APP_KEY=$" .env || ! grep -q "^APP_KEY=" .env; then
-    echo -e "${YELLOW}▸ Generando APP_KEY...${NC}"
-    php artisan key:generate
-fi
-
 # Composer
 if [ ! -f vendor/autoload.php ]; then
     echo -e "${YELLOW}▸ Instalando dependencias PHP...${NC}"
     composer install --no-interaction --prefer-dist --optimize-autoloader
 else
     echo -e "${GREEN}✓ vendor/ ya existe${NC}"
+fi
+
+# APP_KEY
+if grep -q "^APP_KEY=$" .env || ! grep -q "^APP_KEY=" .env; then
+    echo -e "${YELLOW}▸ Generando APP_KEY...${NC}"
+    php artisan key:generate
 fi
 
 # Node

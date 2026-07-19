@@ -27,6 +27,7 @@ final class WorkWithUsControllerTest extends TestCase
             '/es/work-with-us' => 'es',
             '/en/work-with-us' => 'en',
         ] as $path => $locale) {
+            app()->setLocale($locale);
             $response = $this->get($path, ['Accept-Language' => $locale]);
 
             $response->assertOk()->assertSee('action="'.$path.'"', false);
@@ -49,6 +50,7 @@ final class WorkWithUsControllerTest extends TestCase
             '/es/work-with-us' => 'es',
             '/en/work-with-us' => 'en',
         ] as $path => $locale) {
+            app()->setLocale($locale);
             $this->post($path, $this->validPayload(), ['Accept-Language' => $locale])
                 ->assertRedirect($path);
         }

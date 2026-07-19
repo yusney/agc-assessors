@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     'breadcrumb' => [
@@ -162,17 +163,17 @@ return [
         'learn_more' => 'Política de cookies',
     ],
     'search' => [
-        'title'            => 'Búsqueda',
-        'placeholder'      => 'Buscar...',
-        'results_for'      => 'Resultados para',
-        'results_count'    => ':count resultado|:count resultados',
-        'no_results'       => 'No encontramos nada',
+        'title' => 'Búsqueda',
+        'placeholder' => 'Buscar...',
+        'results_for' => 'Resultados para',
+        'results_count' => ':count resultado|:count resultados',
+        'no_results' => 'No encontramos nada',
         'no_results_subtitle' => 'Prueba con otras palabras o',
-        'contact_link'     => 'contáctanos directamente',
-        'source_news'      => 'Actualidad',
-        'source_service'   => 'Servicio',
-        'source_page'      => 'Página',
-        'min_chars'        => 'Escribe al menos 3 caracteres para buscar',
+        'contact_link' => 'contáctanos directamente',
+        'source_news' => 'Actualidad',
+        'source_service' => 'Servicio',
+        'source_page' => 'Página',
+        'min_chars' => 'Escribe al menos 3 caracteres para buscar',
     ],
     'trust' => [
         'une_title' => 'UNE 420001',

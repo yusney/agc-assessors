@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 class CustomCreateMedia extends CreateMedia
 {
     protected static string $resource = CustomMediaResource::class;
+
     protected function afterCreate(): void
     {
         $record = $this->record;

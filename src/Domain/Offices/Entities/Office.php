@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AGC\Domain\Offices\Entities;
 
 use AGC\Domain\Shared\ValueObjects\TranslatableString;
+use Illuminate\Support\Str;
 
 final class Office
 {
@@ -132,7 +133,7 @@ final class Office
             }
         }
 
-        return \Illuminate\Support\Str::slug($this->city()->get($locale) ?: $this->city()->get('ca'));
+        return Str::slug($this->city()->get($locale) ?: $this->city()->get('ca'));
     }
 
     /**

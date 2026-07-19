@@ -40,6 +40,7 @@ final class OfficeSeoSeeder extends Seeder
             if ($office === null) {
                 $this->command?->warn("Office not found for key '{$cityKey}'. Skipping.");
                 $skipped++;
+
                 continue;
             }
 
@@ -65,12 +66,12 @@ final class OfficeSeoSeeder extends Seeder
     {
         return match ($cityKey) {
             'caldes-de-montbui' => ['ca' => 'Caldes de Montbui', 'es' => 'Caldes de Montbui', 'en' => 'Caldes de Montbui'],
-            'sant-celoni'       => ['ca' => 'Sant Celoni',       'es' => 'Sant Celoni',       'en' => 'Sant Celoni'],
+            'sant-celoni' => ['ca' => 'Sant Celoni',       'es' => 'Sant Celoni',       'en' => 'Sant Celoni'],
             'mollet-del-valles' => ['ca' => 'Mollet del Vallès', 'es' => 'Mollet del Vallès', 'en' => 'Mollet del Vallès'],
-            'granollers'        => ['ca' => 'Granollers',        'es' => 'Granollers',        'en' => 'Granollers'],
+            'granollers' => ['ca' => 'Granollers',        'es' => 'Granollers',        'en' => 'Granollers'],
             'prats-de-llucanes' => ['ca' => 'Prats de Lluçanès', 'es' => 'Prats de Lluçanès', 'en' => 'Prats de Lluçanès'],
-            'manlleu'           => ['ca' => 'Manlleu',           'es' => 'Manlleu',           'en' => 'Manlleu'],
-            default             => [],
+            'manlleu' => ['ca' => 'Manlleu',           'es' => 'Manlleu',           'en' => 'Manlleu'],
+            default => [],
         };
     }
 

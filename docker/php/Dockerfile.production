@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Human-readable tag: serversideup/php:8.4-fpm-nginx (v4.5.0 at pin time)
-FROM serversideup/php:8.4-fpm-nginx@sha256:8eec7ce8d9d6a38bbc6f0f70ef439aab2279646bc01d74cbe538dbeada4da828 AS php-base
+# Human-readable tag: serversideup/php:8.4-fpm-nginx-alpine (v4.5.0 at pin time)
+FROM serversideup/php:8.4-fpm-nginx-alpine@sha256:87fa19088bf7230ccdd64594cbe6039a54aa5b8a5ed3e8cb5fbaf140ba0cf260 AS php-base
 
 USER root
 
@@ -13,8 +13,11 @@ RUN install-php-extensions \
     xsl \
     sockets \
     pdo_pgsql \
-    && apt-get purge -y --auto-remove $PHPIZE_DEPS \
-    && rm -rf /var/lib/apt/lists/*
+    && apk add --no-cache c-ares=1.34.8-r0 \
+    && sed -i 's/^www-data:x:82:82:/www-data:x:33:33:/' /etc/passwd \
+    && sed -i 's/^www-data:x:82:/www-data:x:33:/' /etc/group \
+    && find / -xdev -user 82 -exec chown 33 {} + \
+    && find / -xdev -group 82 -exec chgrp 33 {} +
 
 FROM php-base AS vendor
 

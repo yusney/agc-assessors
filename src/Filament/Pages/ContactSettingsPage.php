@@ -7,7 +7,6 @@ namespace AGC\Filament\Pages;
 use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use Closure;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -132,6 +131,7 @@ final class ContactSettingsPage extends Page
 
                                     if ($emails === []) {
                                         $fail('Debes introducir al menos una dirección de email.');
+
                                         return;
                                     }
 

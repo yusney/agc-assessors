@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     'breadcrumb' => [
@@ -162,17 +163,17 @@ return [
         'learn_more' => 'Cookie policy',
     ],
     'search' => [
-        'title'            => 'Search',
-        'placeholder'      => 'Search...',
-        'results_for'      => 'Results for',
-        'results_count'    => ':count result|:count results',
-        'no_results'       => 'Nothing found',
+        'title' => 'Search',
+        'placeholder' => 'Search...',
+        'results_for' => 'Results for',
+        'results_count' => ':count result|:count results',
+        'no_results' => 'Nothing found',
         'no_results_subtitle' => 'Try different keywords or',
-        'contact_link'     => 'contact us directly',
-        'source_news'      => 'News',
-        'source_service'   => 'Service',
-        'source_page'      => 'Page',
-        'min_chars'        => 'Type at least 3 characters to search',
+        'contact_link' => 'contact us directly',
+        'source_news' => 'News',
+        'source_service' => 'Service',
+        'source_page' => 'Page',
+        'min_chars' => 'Type at least 3 characters to search',
     ],
     'trust' => [
         'une_title' => 'UNE 420001',

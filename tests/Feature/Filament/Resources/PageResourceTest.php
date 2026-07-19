@@ -6,9 +6,13 @@ namespace Tests\Feature\Filament\Resources;
 
 use AGC\Filament\Resources\PageResource;
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
@@ -25,8 +29,6 @@ final class PageResourceTest extends TestCase
 
     /**
      * Find a RichEditor field by name in the schema using Reflection traversal.
-     *
-     * @return Field|null
      */
     private function findFieldInSchema(Schema $schema, string $name): ?Field
     {
@@ -41,11 +43,11 @@ final class PageResourceTest extends TestCase
     }
 
     /**
-     * @return array<\Filament\Schemas\Components\Component|\Filament\Actions\Action>
+     * @return array<Component|Action>
      */
     private function readRawChildren(object $obj): array
     {
-        $ref   = new \ReflectionObject($obj);
+        $ref = new \ReflectionObject($obj);
         $props = $ref->getProperties();
 
         foreach ($props as $prop) {
@@ -67,9 +69,6 @@ final class PageResourceTest extends TestCase
         return [];
     }
 
-    /**
-     * @return Field|null
-     */
     private function searchComponentForField(object $component, string $name): ?Field
     {
         foreach ($this->readRawChildren($component) as $child) {
@@ -77,7 +76,7 @@ final class PageResourceTest extends TestCase
                 return $child;
             }
 
-            if ($child instanceof \Filament\Schemas\Components\Component) {
+            if ($child instanceof Component) {
                 $found = $this->searchComponentForField($child, $name);
                 if ($found !== null) {
                     return $found;
@@ -88,12 +87,12 @@ final class PageResourceTest extends TestCase
         return null;
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('contentFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('contentFieldNamesProvider')]
     public function test_page_content_fields_have_curator_plugin(string $fieldName): void
     {
         $schema = PageResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in PageResource form");
 
@@ -112,12 +111,12 @@ final class PageResourceTest extends TestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\DataProvider('contentFieldNamesProvider')]
+    #[Test]
+    #[DataProvider('contentFieldNamesProvider')]
     public function test_page_content_fields_have_attach_curator_media_in_toolbar(string $fieldName): void
     {
         $schema = PageResource::form(Schema::make());
-        $field  = $this->findFieldInSchema($schema, $fieldName);
+        $field = $this->findFieldInSchema($schema, $fieldName);
 
         $this->assertNotNull($field, "Field '{$fieldName}' must exist in PageResource form");
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Filament\Forms;
 
 use Awcodes\Curator\Components\Forms\RichEditor\AttachCuratorMediaPlugin;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\Plugins\Contracts\RichContentPlugin;
 use Tests\TestCase;
 
@@ -50,7 +51,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
     public function test_plugin_provides_exactly_one_editor_tool(): void
     {
         $plugin = AttachCuratorMediaPlugin::make();
-        $tools  = $plugin->getEditorTools();
+        $tools = $plugin->getEditorTools();
 
         $this->assertCount(
             1,
@@ -62,7 +63,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
     public function test_toolbar_tool_is_named_attach_curator_media(): void
     {
         $plugin = AttachCuratorMediaPlugin::make();
-        $tools  = $plugin->getEditorTools();
+        $tools = $plugin->getEditorTools();
 
         $this->assertSame(
             'attachCuratorMedia',
@@ -74,7 +75,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
     public function test_toolbar_tool_uses_photo_icon(): void
     {
         $plugin = AttachCuratorMediaPlugin::make();
-        $tools  = $plugin->getEditorTools();
+        $tools = $plugin->getEditorTools();
 
         $this->assertSame(
             'heroicon-o-photo',
@@ -89,9 +90,9 @@ final class AttachCuratorMediaPluginTest extends TestCase
 
     public function test_plugin_provides_attach_curator_media_action(): void
     {
-        $plugin  = AttachCuratorMediaPlugin::make();
+        $plugin = AttachCuratorMediaPlugin::make();
         $actions = $plugin->getEditorActions();
-        $names   = array_map(fn ($action) => $action->getName(), $actions);
+        $names = array_map(fn ($action) => $action->getName(), $actions);
 
         $this->assertContains(
             'attachCuratorMedia',
@@ -102,7 +103,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
 
     public function test_modal_settings_use_single_select(): void
     {
-        $plugin  = AttachCuratorMediaPlugin::make();
+        $plugin = AttachCuratorMediaPlugin::make();
         $actions = $plugin->getEditorActions();
 
         $action = null;
@@ -119,14 +120,14 @@ final class AttachCuratorMediaPluginTest extends TestCase
         // The modalContent is a Closure that accepts (RichEditor $component, array $arguments)
         // and returns a View. The settings are passed to the view.
         $reflection = new \ReflectionObject($action);
-        $prop       = $reflection->getProperty('modalContent');
+        $prop = $reflection->getProperty('modalContent');
         $prop->setAccessible(true);
         $modalContent = $prop->getValue($action);
 
         $this->assertInstanceOf(\Closure::class, $modalContent);
 
         // Invoke the closure with a mock RichEditor component to capture the settings
-        $mockComponent = $this->createMock(\Filament\Forms\Components\RichEditor::class);
+        $mockComponent = $this->createMock(RichEditor::class);
         $mockComponent->method('getKey')->willReturn('test-key');
         $mockComponent->method('getStatePath')->willReturn('test.state.path');
         $mockComponent->method('getFileAttachmentsAcceptedFileTypes')->willReturn(null);
@@ -155,7 +156,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
 
     public function test_modal_has_no_submit_action(): void
     {
-        $plugin  = AttachCuratorMediaPlugin::make();
+        $plugin = AttachCuratorMediaPlugin::make();
         $actions = $plugin->getEditorActions();
 
         $action = null;
@@ -171,7 +172,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
         // modalSubmitAction(false) means no submit button is rendered.
         // Inspect via Reflection to avoid triggering Livewire evaluation.
         $reflection = new \ReflectionObject($action);
-        $prop       = $reflection->getProperty('modalSubmitAction');
+        $prop = $reflection->getProperty('modalSubmitAction');
         $prop->setAccessible(true);
         $modalSubmitAction = $prop->getValue($action);
 
@@ -183,7 +184,7 @@ final class AttachCuratorMediaPluginTest extends TestCase
 
     public function test_modal_state_path_is_editor_state_path(): void
     {
-        $plugin  = AttachCuratorMediaPlugin::make();
+        $plugin = AttachCuratorMediaPlugin::make();
         $actions = $plugin->getEditorActions();
 
         $action = null;
@@ -197,11 +198,11 @@ final class AttachCuratorMediaPluginTest extends TestCase
         $this->assertNotNull($action, 'attachCuratorMedia action must exist');
 
         $reflection = new \ReflectionObject($action);
-        $prop       = $reflection->getProperty('modalContent');
+        $prop = $reflection->getProperty('modalContent');
         $prop->setAccessible(true);
         $modalContent = $prop->getValue($action);
 
-        $mockComponent = $this->createMock(\Filament\Forms\Components\RichEditor::class);
+        $mockComponent = $this->createMock(RichEditor::class);
         $mockComponent->method('getKey')->willReturn('test-key');
         $mockComponent->method('getStatePath')->willReturn('body.ca');
         $mockComponent->method('getFileAttachmentsAcceptedFileTypes')->willReturn(null);

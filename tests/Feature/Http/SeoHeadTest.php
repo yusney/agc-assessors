@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http;
 
+use AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -53,7 +54,7 @@ final class SeoHeadTest extends TestCase
     public function test_seo_partial_hreflang_x_default_equals_ca_url(): void
     {
         $caUrl = 'https://agcassessors.com/serveis/comptabilitat';
-        $data  = $this->baseSeoData([
+        $data = $this->baseSeoData([
             'hreflangAlternates' => [
                 ['locale' => 'ca', 'url' => $caUrl],
                 ['locale' => 'es', 'url' => 'https://agcassessors.com/es/serveis/comptabilitat'],
@@ -65,7 +66,7 @@ final class SeoHeadTest extends TestCase
 
         // x-default must point to the Catalan (unprefixed) URL — exact attribute match
         $this->assertStringContainsString(
-            'hreflang="x-default" href="' . $caUrl . '"',
+            'hreflang="x-default" href="'.$caUrl.'"',
             $html
         );
     }
@@ -87,7 +88,7 @@ final class SeoHeadTest extends TestCase
     public function test_seo_partial_renders_og_locale_alternates_for_other_locales(): void
     {
         $data = $this->baseSeoData([
-            'ogLocale'           => 'en_GB',
+            'ogLocale' => 'en_GB',
             'ogLocaleAlternates' => ['ca_ES', 'es_ES'],
         ]);
 
@@ -108,7 +109,7 @@ final class SeoHeadTest extends TestCase
     public function test_seo_partial_renders_twitter_card_tags(): void
     {
         $view = $this->view('public.partials.seo', $this->baseSeoData([
-            'seoTitle'       => 'Test SEO Title',
+            'seoTitle' => 'Test SEO Title',
             'seoDescription' => 'Test SEO description text',
         ]));
 
@@ -123,32 +124,32 @@ final class SeoHeadTest extends TestCase
     /** @test */
     public function test_seo_partial_twitter_values_mirror_og_values_exactly(): void
     {
-        $title       = 'OG and Twitter Title';
+        $title = 'OG and Twitter Title';
         $description = 'OG and Twitter Description';
 
         $html = (string) $this->view('public.partials.seo', $this->baseSeoData([
-            'seoTitle'       => $title,
+            'seoTitle' => $title,
             'seoDescription' => $description,
         ]));
 
         // Exact tag assertions — not just count, but actual attribute+content pairs
         $this->assertStringContainsString(
-            '<meta property="og:title" content="' . $title . '">',
+            '<meta property="og:title" content="'.$title.'">',
             $html,
             'og:title must contain the exact seoTitle value'
         );
         $this->assertStringContainsString(
-            '<meta name="twitter:title" content="' . $title . '">',
+            '<meta name="twitter:title" content="'.$title.'">',
             $html,
             'twitter:title must mirror og:title exactly'
         );
         $this->assertStringContainsString(
-            '<meta property="og:description" content="' . $description . '">',
+            '<meta property="og:description" content="'.$description.'">',
             $html,
             'og:description must contain the exact seoDescription value'
         );
         $this->assertStringContainsString(
-            '<meta name="twitter:description" content="' . $description . '">',
+            '<meta name="twitter:description" content="'.$description.'">',
             $html,
             'twitter:description must mirror og:description exactly'
         );
@@ -168,7 +169,7 @@ final class SeoHeadTest extends TestCase
         ]));
 
         $this->assertStringContainsString(
-            'rel="canonical" href="' . $canonical . '"',
+            'rel="canonical" href="'.$canonical.'"',
             $html
         );
     }
@@ -186,7 +187,7 @@ final class SeoHeadTest extends TestCase
             'canonicalUrl' => $canonical,
         ]));
 
-        $this->assertStringContainsString('<meta property="og:url" content="' . $canonical . '">', $html);
+        $this->assertStringContainsString('<meta property="og:url" content="'.$canonical.'">', $html);
         $this->assertStringContainsString('<meta property="og:type" content="website">', $html);
     }
 
@@ -226,10 +227,10 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         $html = (string) $this->view('public.pages.home', [
-            'sections'   => collect([]),
-            'services'   => collect([]),
-            'news'       => collect([]),
-            'offices'    => collect([]),
+            'sections' => collect([]),
+            'services' => collect([]),
+            'news' => collect([]),
+            'offices' => collect([]),
             'mapsApiKey' => '',
         ]);
 
@@ -321,15 +322,15 @@ final class SeoHeadTest extends TestCase
         // Insert via DB::table to bypass the Eloquent boot hook (which runs
         // PostgreSQL tsvector SQL unsupported by SQLite).
         DB::table('services')->insert([
-            'slug'            => 'assessoria-fiscal',
-            'name'            => json_encode(['ca' => 'Assessoria Fiscal', 'es' => 'Asesoría Fiscal', 'en' => 'Tax Advisory']),
-            'description'     => json_encode(['ca' => '<p>Descripció del servei fiscal.</p>']),
-            'seo_title'       => json_encode(['ca' => 'Test SEO Title – AGC Assessors']),
+            'slug' => 'assessoria-fiscal',
+            'name' => json_encode(['ca' => 'Assessoria Fiscal', 'es' => 'Asesoría Fiscal', 'en' => 'Tax Advisory']),
+            'description' => json_encode(['ca' => '<p>Descripció del servei fiscal.</p>']),
+            'seo_title' => json_encode(['ca' => 'Test SEO Title – AGC Assessors']),
             'seo_description' => json_encode(['ca' => 'Test SEO description per a la pàgina de serveis.']),
-            'active'          => 1,
-            'sort_order'      => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/assessoria-fiscal');
@@ -358,15 +359,15 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         DB::table('services')->insert([
-            'slug'            => 'servei-fallback',
-            'name'            => json_encode(['ca' => 'Nom de Fallback']),
-            'description'     => json_encode(['ca' => '<p>Descripció.</p>']),
-            'seo_title'       => json_encode([]),  // empty — triggers fallback to name()
+            'slug' => 'servei-fallback',
+            'name' => json_encode(['ca' => 'Nom de Fallback']),
+            'description' => json_encode(['ca' => '<p>Descripció.</p>']),
+            'seo_title' => json_encode([]),  // empty — triggers fallback to name()
             'seo_description' => json_encode([]),
-            'active'          => 1,
-            'sort_order'      => 2,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 2,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/servei-fallback');
@@ -388,15 +389,15 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         DB::table('services')->insert([
-            'slug'            => 'xss-test-service',
-            'name'            => json_encode(['ca' => 'Service Name']),
-            'description'     => json_encode(['ca' => 'Description']),
-            'seo_title'       => json_encode(['ca' => '<b>Bold</b> Title']),
+            'slug' => 'xss-test-service',
+            'name' => json_encode(['ca' => 'Service Name']),
+            'description' => json_encode(['ca' => 'Description']),
+            'seo_title' => json_encode(['ca' => '<b>Bold</b> Title']),
             'seo_description' => json_encode(['ca' => 'Description']),
-            'active'          => 1,
-            'sort_order'      => 3,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 3,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/xss-test-service');
@@ -432,15 +433,15 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         DB::table('services')->insert([
-            'slug'            => 'amp-encode-test',
-            'name'            => json_encode(['ca' => 'Test Service']),
-            'description'     => json_encode(['ca' => 'Description']),
-            'seo_title'       => json_encode(['ca' => 'Serveis & Solucions – AGC']),
+            'slug' => 'amp-encode-test',
+            'name' => json_encode(['ca' => 'Test Service']),
+            'description' => json_encode(['ca' => 'Description']),
+            'seo_title' => json_encode(['ca' => 'Serveis & Solucions – AGC']),
             'seo_description' => json_encode(['ca' => 'Fiscal & Laboral advisory']),
-            'active'          => 1,
-            'sort_order'      => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/amp-encode-test');
@@ -485,15 +486,15 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         DB::table('services')->insert([
-            'slug'            => 'xss-og-test',
-            'name'            => json_encode(['ca' => 'Service Name']),
-            'description'     => json_encode(['ca' => 'Description']),
-            'seo_title'       => json_encode(['ca' => '<script>alert("xss")</script>']),
+            'slug' => 'xss-og-test',
+            'name' => json_encode(['ca' => 'Service Name']),
+            'description' => json_encode(['ca' => 'Description']),
+            'seo_title' => json_encode(['ca' => '<script>alert("xss")</script>']),
             'seo_description' => json_encode(['ca' => 'Safe description']),
-            'active'          => 1,
-            'sort_order'      => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/xss-og-test');
@@ -536,7 +537,7 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         // Set global default title via SiteSetting
-        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+        SiteSetting::set(
             'seo.global.ca.title',
             'AGC Assessors – Fiscal i Laboral'
         );
@@ -546,14 +547,14 @@ final class SeoHeadTest extends TestCase
         // Both resolve to '' → section is empty → layout falls back to $globalDefaultTitle.
         // (services/show always falls back to name() so its section is never empty.)
         DB::table('pages')->insert([
-            'slug'            => 'global-fallback-page',
-            'title'           => json_encode(['ca' => '']),          // empty title
-            'content'         => json_encode(['ca' => '<p>Test.</p>']),
-            'seo_title'       => null,                               // null → $seoTitle = ''
+            'slug' => 'global-fallback-page',
+            'title' => json_encode(['ca' => '']),          // empty title
+            'content' => json_encode(['ca' => '<p>Test.</p>']),
+            'seo_title' => null,                               // null → $seoTitle = ''
             'seo_description' => null,
-            'published'       => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'published' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/pages/global-fallback-page');
@@ -578,21 +579,21 @@ final class SeoHeadTest extends TestCase
         $this->refreshDatabase();
 
         // Set global default — should NOT appear when entity seo_title is set
-        \AGC\Infrastructure\Persistence\Eloquent\Models\SiteSetting::set(
+        SiteSetting::set(
             'seo.global.ca.title',
             'Global Default Title'
         );
 
         DB::table('services')->insert([
-            'slug'            => 'priority-test-service',
-            'name'            => json_encode(['ca' => 'Service Name']),
-            'description'     => json_encode(['ca' => '<p>Desc.</p>']),
-            'seo_title'       => json_encode(['ca' => 'Entity SEO Title – AGC']),
+            'slug' => 'priority-test-service',
+            'name' => json_encode(['ca' => 'Service Name']),
+            'description' => json_encode(['ca' => '<p>Desc.</p>']),
+            'seo_title' => json_encode(['ca' => 'Entity SEO Title – AGC']),
             'seo_description' => json_encode(['ca' => 'Entity description.']),
-            'active'          => 1,
-            'sort_order'      => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
 
         $response = $this->get('/serveis/priority-test-service');
@@ -622,12 +623,12 @@ final class SeoHeadTest extends TestCase
     private function baseSeoData(array $overrides = []): array
     {
         return array_merge([
-            'canonicalUrl'       => 'https://agcassessors.com/',
-            'seoTitle'           => 'AGC Assessors',
-            'seoDescription'     => 'Assessoria fiscal, laboral i comptable a Barcelona.',
-            'ogLocale'           => 'ca_ES',
+            'canonicalUrl' => 'https://agcassessors.com/',
+            'seoTitle' => 'AGC Assessors',
+            'seoDescription' => 'Assessoria fiscal, laboral i comptable a Barcelona.',
+            'ogLocale' => 'ca_ES',
             'ogLocaleAlternates' => ['es_ES', 'en_GB'],
-            'ogType'             => 'website',
+            'ogType' => 'website',
             'hreflangAlternates' => [
                 ['locale' => 'ca', 'url' => 'https://agcassessors.com/'],
                 ['locale' => 'es', 'url' => 'https://agcassessors.com/es/'],
@@ -653,16 +654,15 @@ final class SeoHeadTest extends TestCase
     private function seedTestService(string $slug, string $name): void
     {
         DB::table('services')->insert([
-            'slug'            => $slug,
-            'name'            => json_encode(['ca' => $name, 'es' => $name, 'en' => $name]),
-            'description'     => json_encode(['ca' => '<p>Test description.</p>']),
-            'seo_title'       => json_encode(['ca' => $name . ' – AGC Assessors']),
+            'slug' => $slug,
+            'name' => json_encode(['ca' => $name, 'es' => $name, 'en' => $name]),
+            'description' => json_encode(['ca' => '<p>Test description.</p>']),
+            'seo_title' => json_encode(['ca' => $name.' – AGC Assessors']),
             'seo_description' => json_encode(['ca' => 'Test SEO description.']),
-            'active'          => 1,
-            'sort_order'      => 1,
-            'created_at'      => now()->toDateTimeString(),
-            'updated_at'      => now()->toDateTimeString(),
+            'active' => 1,
+            'sort_order' => 1,
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
         ]);
     }
 }
-

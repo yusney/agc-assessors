@@ -6,7 +6,6 @@ namespace AGC\Filament\Resources\Curator;
 
 use Awcodes\Curator\Models\Media;
 use Awcodes\Curator\Resources\Media\Schemas\MediaForm;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

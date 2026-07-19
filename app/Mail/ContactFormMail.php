@@ -23,7 +23,7 @@ final class ContactFormMail extends Mailable
                 config('mail.from.address', 'info@agcassessors.com'),
                 'AGC Assessors'
             ),
-            subject: 'Consulta web: ' . $this->data['subject'] . ' — ' . $this->data['name'],
+            subject: 'Consulta web: '.$this->data['subject'].' — '.$this->data['name'],
             replyTo: [
                 new Address(
                     $this->data['email'],

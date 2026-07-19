@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\SetLocaleFromUrl;
+use App\Http\Middleware\SpamProtection;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -8,7 +10,6 @@ use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
 use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
-use App\Http\Middleware\SetLocaleFromUrl;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeSessionRedirect' => LocaleSessionRedirect::class,
             'localeViewPath' => LaravelLocalizationViewPath::class,
             'localizationRedirect' => LaravelLocalizationRedirectFilter::class,
-            'spam' => \App\Http\Middleware\SpamProtection::class,
+            'spam' => SpamProtection::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

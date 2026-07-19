@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     'breadcrumb' => [
@@ -161,17 +162,17 @@ return [
         'learn_more' => 'Política de cookies',
     ],
     'search' => [
-        'title'            => 'Cerca',
-        'placeholder'      => 'Cercar...',
-        'results_for'      => 'Resultats per a',
-        'results_count'    => ':count resultat|:count resultats',
-        'no_results'       => 'No hem trobat res',
+        'title' => 'Cerca',
+        'placeholder' => 'Cercar...',
+        'results_for' => 'Resultats per a',
+        'results_count' => ':count resultat|:count resultats',
+        'no_results' => 'No hem trobat res',
         'no_results_subtitle' => 'Prova amb altres paraules o',
-        'contact_link'     => 'contacta\'ns directament',
-        'source_news'      => 'Actualitat',
-        'source_service'   => 'Servei',
-        'source_page'      => 'Pàgina',
-        'min_chars'        => 'Escriu almenys 3 caràcters per cercar',
+        'contact_link' => 'contacta\'ns directament',
+        'source_news' => 'Actualitat',
+        'source_service' => 'Servei',
+        'source_page' => 'Pàgina',
+        'min_chars' => 'Escriu almenys 3 caràcters per cercar',
     ],
     'trust' => [
         'une_title' => 'UNE 420001',

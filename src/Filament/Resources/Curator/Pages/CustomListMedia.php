@@ -7,11 +7,13 @@ namespace AGC\Filament\Resources\Curator\Pages;
 use AGC\Filament\Resources\Curator\Actions\CustomMultiUploadAction;
 use AGC\Filament\Resources\Curator\CustomMediaResource;
 use Awcodes\Curator\CuratorPlugin;
+use Awcodes\Curator\Models\Media;
 use Awcodes\Curator\Resources\Media\Pages\ListMedia;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -79,7 +81,7 @@ class CustomListMedia extends ListMedia
 
         // Guard: must exist
         if (! $storage->exists($path)) {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('La carpeta ya no existe')
                 ->warning()
                 ->send();
@@ -97,7 +99,7 @@ class CustomListMedia extends ListMedia
         ));
 
         if (count($userSubdirs) > 0) {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('La carpeta tiene subcarpetas')
                 ->body('Borrá las subcarpetas primero antes de eliminar esta.')
                 ->danger()
@@ -107,12 +109,12 @@ class CustomListMedia extends ListMedia
         }
 
         // Guard: no media records pointing here
-        $mediaCount = \Awcodes\Curator\Models\Media::query()
+        $mediaCount = Media::query()
             ->where('directory', $path)
             ->count();
 
         if ($mediaCount > 0) {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('La carpeta tiene archivos')
                 ->body("Hay {$mediaCount} archivo(s) adentro. Elimínalos primero.")
                 ->danger()
@@ -123,7 +125,7 @@ class CustomListMedia extends ListMedia
 
         $storage->deleteDirectory($path);
 
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Carpeta eliminada')
             ->body($path)
             ->success()
@@ -152,9 +154,9 @@ class CustomListMedia extends ListMedia
     public function getTitle(): string
     {
         $base = Str::headline(CuratorPlugin::get()->getPluralLabel());
-        
+
         if ($this->activeDirectory) {
-            return $base . ' — ' . Str::of($this->activeDirectory)->replace('/', ' › ')->title();
+            return $base.' — '.Str::of($this->activeDirectory)->replace('/', ' › ')->title();
         }
 
         return $base;
@@ -194,7 +196,7 @@ class CustomListMedia extends ListMedia
                         : $name;
 
                     if ($storage->exists($relativePath)) {
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title('Ya existe una carpeta con ese nombre')
                             ->danger()
                             ->send();
@@ -204,7 +206,7 @@ class CustomListMedia extends ListMedia
 
                     $storage->makeDirectory($relativePath);
 
-                    \Filament\Notifications\Notification::make()
+                    Notification::make()
                         ->title('Carpeta creada')
                         ->body($relativePath)
                         ->success()
@@ -287,7 +289,7 @@ class CustomListMedia extends ListMedia
         $tree = [];
         foreach ($dirs as $dir) {
             $children = $this->getDirectoryTree($dir);
-            $count = \Awcodes\Curator\Models\Media::query()
+            $count = Media::query()
                 ->where('directory', $dir)
                 ->count();
 

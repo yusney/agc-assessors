@@ -9,27 +9,28 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 final class SearchController extends Controller
 {
     private const PER_PAGE = 10;
 
-    public function __invoke(Request $request): \Illuminate\View\View
+    public function __invoke(Request $request): View
     {
-        $query     = trim($request->get('q', ''));
-        $locale    = app()->getLocale();
-        $vectorCol = 'search_vector_' . $locale;
-        $langConf  = match ($locale) {
-            'ca'    => 'catalan',
-            'es'    => 'spanish',
+        $query = trim($request->get('q', ''));
+        $locale = app()->getLocale();
+        $vectorCol = 'search_vector_'.$locale;
+        $langConf = match ($locale) {
+            'ca' => 'catalan',
+            'es' => 'spanish',
             default => 'english',
         };
 
-        $results   = new Collection();
+        $results = new Collection;
         $paginator = null;
 
         if (mb_strlen($query) >= 3) {
-            $page   = max(1, (int) $request->get('page', 1));
+            $page = max(1, (int) $request->get('page', 1));
             $offset = ($page - 1) * self::PER_PAGE;
 
             $unionSql = "
@@ -105,7 +106,7 @@ final class SearchController extends Controller
                 array_merge($bindings, [self::PER_PAGE, $offset])
             );
 
-            $results   = new Collection($rows);
+            $results = new Collection($rows);
             $paginator = new LengthAwarePaginator(
                 $results,
                 (int) $total,
@@ -116,8 +117,8 @@ final class SearchController extends Controller
         }
 
         return view('public.search.index', [
-            'results'   => $results,
-            'query'     => $query,
+            'results' => $results,
+            'query' => $query,
             'paginator' => $paginator,
         ]);
     }

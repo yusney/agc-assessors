@@ -18,6 +18,7 @@ try {
         exit(1);
     }
 
+    require '/var/www/html/vendor/autoload.php';
     $app = require '/var/www/html/bootstrap/app.php';
     $app->make(Kernel::class)->bootstrap();
     $connection = $app->make('db')->connection();

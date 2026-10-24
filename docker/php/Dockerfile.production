@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Human-readable tag: serversideup/php:8.4-fpm-nginx-alpine (v4.5.0 at pin time)
-FROM serversideup/php:8.4-fpm-nginx-alpine@sha256:87fa19088bf7230ccdd64594cbe6039a54aa5b8a5ed3e8cb5fbaf140ba0cf260 AS php-base
+# Human-readable tag: serversideup/php:8.4-fpm-nginx-alpine-v4.5.3 (PHP 8.4.27)
+FROM serversideup/php:8.4-fpm-nginx-alpine-v4.5.3@sha256:925259fd12545f17d9bae68dd51ca9d5d8c997efd2ea6a66830ca4a11e6afdf5 AS php-base
 
 USER root
 

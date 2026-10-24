@@ -19,7 +19,7 @@ Traefik → contenedor PHP+Nginx (puerto 8080)
 ```
 
 **Stack en producción:**
-- PHP 8.4 + Nginx (ServerSideUp v4.5.0 al fijar la imagen, tag legible `serversideup/php:8.4-fpm-nginx`, fijado por digest en el Dockerfile)
+- PHP 8.4.27 + Nginx (ServerSideUp v4.5.3, tag `serversideup/php:8.4-fpm-nginx-alpine-v4.5.3`, fijado por digest en el Dockerfile; incluye los fixes para CVE-2026-109618 y CVE-2026-109619)
 - Assets compilados con Node 24 Alpine y pnpm 10.32.1; Node, npm, pnpm y `node_modules` no existen en la imagen final
 - PostgreSQL gestionado por Dokploy
 - Sin Redis, sin Queue Worker, sin Scheduler
